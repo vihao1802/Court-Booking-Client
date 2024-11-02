@@ -16,10 +16,10 @@ import { formatVND } from "@/utils/currency";
 
 const steps = ["Đặt lịch", "Thanh toán", "Kết quả"];
 
-const BookCourtDateTimePage = () => {
+const BookCourtPaymentStatusPage = () => {
   const searchParams = useSearchParams();
   const amount = searchParams.get("amount");
-  const reservation_id = searchParams.get("apptransid")?.split("_")[1];
+  const reservation_id = searchParams.get("apptransid")?.split("_")[1] + "...";
   const reservation_status = Number(searchParams.get("status"));
 
   return (
@@ -202,4 +202,4 @@ const BookCourtDateTimePage = () => {
   );
 };
 
-export default BookCourtDateTimePage;
+export default BookCourtPaymentStatusPage;

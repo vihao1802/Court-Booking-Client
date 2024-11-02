@@ -8,35 +8,19 @@ import { ColorlibStepIcon } from "@/components/styles/StepperStyles";
 import { BookCourtContext } from "../../layout";
 import { useParams, useRouter } from "next/navigation";
 import { formatDate } from "@/utils/date";
+import PaymentDetail from "@/components/book-court/payment/PaymentDetail";
 
 const steps = ["Đặt lịch", "Thanh toán", "Hoàn tất"];
 
 const BookCourtPaymentPage = () => {
   const { date, startTime, duration } = useContext(BookCourtContext);
   const router = useRouter();
-  const { id } = useParams();
 
   useEffect(() => {
     if (!date || !startTime || !duration) {
-      router.push("/");
+      router.back();
     }
   }, []);
-
-  const handlePayment = async () => {
-    try {
-      const res = await fetch(
-        `http://localhost:8080/api/v1/payment/${id}/zalo-pay`
-      );
-
-      if (res.ok) {
-        const data = await res.json();
-        console.log(data.body.order_url);
-        router.push(data.body.order_url);
-      }
-    } catch (error) {
-      console.log("handlePayment: " + error);
-    }
-  };
 
   if (!date || !startTime || !duration) {
     return (
@@ -47,7 +31,7 @@ const BookCourtPaymentPage = () => {
           textAlign: "center",
         }}
       >
-        <Typography variant="h4" sx={{ color: "red" }}>
+        <Typography variant="h5" sx={{ color: "red" }}>
           Chưa thể đến bước thanh toán
         </Typography>
       </Box>
@@ -95,8 +79,8 @@ const BookCourtPaymentPage = () => {
           );
         })}
       </Stepper>
-
-      <Box
+      <PaymentDetail />
+      {/* <Box
         sx={{
           width: "100%",
           display: "flex",
@@ -186,7 +170,6 @@ const BookCourtPaymentPage = () => {
                 margin: "10px 0",
               }}
             >
-              {/* <Typography>Chi phí</Typography> */}
               <Box>
                 <Typography
                   sx={{
@@ -245,7 +228,7 @@ const BookCourtPaymentPage = () => {
             </Button>
           </Box>
         </Box>
-      </Box>
+      </Box> */}
     </Fragment>
   );
 };
