@@ -87,7 +87,7 @@ const BoxBookingButton = ({
         >
           <Link
             className="w-full h-full"
-            href={`/book-court/date-time/${courtId}`}
+            href={`/book-court/${courtId}/date-time`}
             onClick={() => setLoading(true)}
           >
             Đặt sân ngay

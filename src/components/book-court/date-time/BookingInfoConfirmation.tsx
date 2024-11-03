@@ -1,5 +1,5 @@
 import { BookCourtContext } from "@/app/(user)/book-court/layout";
-import { formatDate } from "@/utils/date";
+import { formatDate } from "@/utils/format";
 import { Box, Button, Divider, Typography } from "@mui/material";
 import { useParams, useRouter } from "next/navigation";
 import { useContext } from "react";

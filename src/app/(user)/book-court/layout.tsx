@@ -78,9 +78,9 @@ const BookCourtLayout = ({ children }: { children: React.ReactNode }) => {
       <Box
         sx={{
           width: "100%",
-          maxWidth: "1000px",
+          maxWidth: "1056px",
           margin: "auto",
-          padding: "20px 10px",
+          padding: "20px 5px",
         }}
       >
         {children}

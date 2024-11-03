@@ -105,9 +105,9 @@ const CourtDetail = ({ params: { id } }: { params: { id: string } }) => {
     <Box
       sx={{
         width: "100%",
-        maxWidth: "1200px",
+        maxWidth: "1056px",
         marginX: "auto",
-        padding: "24px 0",
+        padding: "24px 5px",
       }}
     >
       <ModalSliderImages

@@ -48,14 +48,36 @@ const BookingDetails = () => {
 
   const handleCheckout = async () => {
     setLoadingNextPage(true);
-    const reservation_id = uuidv4();
-    console.log(reservation_id);
+    // const reservation_id = uuidv4();
+    // console.log(reservation_id);
 
     try {
-      // const res = await fetch("")
-      router.push(`/book-court/payment/${reservation_id}`);
+      const res = await fetch("http://localhost:8080/api/v1/reservations", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBhZG1pbi5jb20iLCJleHAiOjE3MzA2NzYyNzEsImlhdCI6MTczMDY0MDI3MSwianRpIjoiN2ZlYmRhYzQtMjBkYS00YjBlLWIzY2MtNjA5MWYwOTY0ZmM2Iiwic2NvcGUiOiJBRE1JTiJ9.QJHBhn3qjbDcKdkdFvl1NinCv-aHOuP3-otvjKNn5MM`,
+        },
+        body: JSON.stringify({
+          checkInTime: "2024-11-03T14:11:50+0000",
+          checkOutTime: "2024-11-03T15:11:50+0000",
+          totalPrice: 10000,
+          reservationDate: "2024-11-02T14:11:50+0000",
+          userId: "00a46e0d-9cec-4f15-91bc-3b7b57343014",
+          courtId: "07ac677e-835f-49cd-99aa-3b37d9a388da",
+        }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        router.push(`/book-court/reservation/${data.id}/checkout`);
+      } else {
+        console.log(`Error: ${res.status} ${res.statusText}`);
+      }
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoadingNextPage(false);
     }
   };
 
