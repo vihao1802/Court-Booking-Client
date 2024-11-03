@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { CheckCircle, Cancel } from "@mui/icons-material";
 import { ColorlibStepIcon } from "@/components/styles/StepperStyles";
-import { formatVND } from "@/utils/currency";
+import { formatVND } from "@/utils/format";
 
 const steps = ["Đặt lịch", "Thanh toán", "Kết quả"];
 

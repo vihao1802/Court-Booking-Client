@@ -5,9 +5,9 @@ import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import { Button, Divider, StepLabel, Typography } from "@mui/material";
 import { ColorlibStepIcon } from "@/components/styles/StepperStyles";
-import { BookCourtContext } from "../../layout";
+import { BookCourtContext } from "../../../layout";
 import { useParams, useRouter } from "next/navigation";
-import { formatDate } from "@/utils/date";
+import { formatDate } from "@/utils/format";
 import PaymentDetail from "@/components/book-court/payment/PaymentDetail";
 
 const steps = ["Đặt lịch", "Thanh toán", "Hoàn tất"];
