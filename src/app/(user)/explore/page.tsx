@@ -10,7 +10,8 @@ import football from "@/assets/images/Football.png";
 import basketball from "@/assets/images/Basketball.png";
 import futsal from "@/assets/images/Futsal.png";
 import tableTennis from "@/assets/images/TableTennis.png";
-import coverPic from "@/assets/images/explore_page_header.jpg";
+
+import SearchPanel from "@/components/search-panel/SearchPanel";
 
 const types = [
   {
@@ -60,56 +61,7 @@ const page = () => {
         flexDirection: "column",
       }}
     >
-      <Box
-        sx={{
-          height: "200px",
-          width: "100%",
-          position: "relative",
-        }}
-      >
-        <Image
-          src={coverPic}
-          alt="cover"
-          style={{
-            objectFit: "cover",
-            objectPosition: "center",
-            width: "100%",
-            height: "200px",
-          }}
-        />
-        <Box
-          sx={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            backgroundColor: "rgba(0, 0, 0, 0.2)",
-            zIndex: 1,
-          }}
-        />
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            textAlign: "center",
-            color: "white",
-            zIndex: 2,
-          }}
-        >
-          <Typography
-            sx={{
-              fontSize: "38px",
-              color: "white",
-              fontWeight: "bold",
-            }}
-          >
-            Khám phá
-          </Typography>
-        </Box>
-      </Box>
+      <SearchPanel />
 
       <Box
         sx={{
