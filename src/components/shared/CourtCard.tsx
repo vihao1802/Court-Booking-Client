@@ -79,7 +79,7 @@ const CourtCard = ({ id, name, people, type }: CourtProps) => {
               backgroundColor: "var(--buttonHoverColor)",
             },
           }}
-          onClick={() => router.push(`/book-court/date-time/${id}`)}
+          onClick={() => router.push(`/book-court/${id}/date-time`)}
         >
           Đặt ngay
         </Button>

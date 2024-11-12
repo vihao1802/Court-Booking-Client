@@ -1,4 +1,4 @@
-const Loader = () => {
+const TennisBallLoader = () => {
   return (
     <div className="w-full flex justify-center">
       <video autoPlay loop muted style={{ width: "250px", height: "250px" }}>
@@ -9,4 +9,4 @@ const Loader = () => {
   );
 };
 
-export default Loader;
+export default TennisBallLoader;

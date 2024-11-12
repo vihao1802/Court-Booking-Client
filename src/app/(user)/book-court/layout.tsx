@@ -1,5 +1,5 @@
 "use client";
-import Loader from "@/components/shared/Loader";
+import Loader from "@/components/shared/TennisBallLoader";
 import { Box } from "@mui/material";
 import { useParams, useRouter } from "next/navigation";
 import React, { createContext, useEffect, useState } from "react";
@@ -78,9 +78,9 @@ const BookCourtLayout = ({ children }: { children: React.ReactNode }) => {
       <Box
         sx={{
           width: "100%",
-          maxWidth: "1000px",
+          maxWidth: "1056px",
           margin: "auto",
-          padding: "20px 10px",
+          padding: "20px 5px",
         }}
       >
         {children}

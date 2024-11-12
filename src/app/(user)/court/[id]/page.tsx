@@ -1,7 +1,7 @@
 "use client";
 import BoxBookingButton from "@/components/court-detail/BoxBookingButton";
 import ModalSliderImages from "@/components/court-detail/ModalSliderImages";
-import Loader from "@/components/shared/Loader";
+import Loader from "@/components/shared/TennisBallLoader";
 import { Avatar, Box, Rating, Typography } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { BookCourtContext } from "../../book-court/layout";
@@ -105,9 +105,9 @@ const CourtDetail = ({ params: { id } }: { params: { id: string } }) => {
     <Box
       sx={{
         width: "100%",
-        maxWidth: "1200px",
+        maxWidth: "1056px",
         marginX: "auto",
-        padding: "24px 0",
+        padding: "24px 5px",
       }}
     >
       <ModalSliderImages

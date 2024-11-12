@@ -9,13 +9,23 @@ import React from "react";
 import { navItems } from "@/constants";
 import { usePathname, useRouter } from "next/navigation";
 import AppLogo from "./Logo";
+import { useAuthenticatedUser } from "@/hooks/useAuthenticatedUser";
+import { authApi } from "@/api/auth";
 
 const lato = Lato({ subsets: ["latin"], weight: ["400"] });
 
 const Header = () => {
   const pathname = usePathname();
   const router = useRouter();
-  const isLogin = true;
+  const { user, logout } = useAuthenticatedUser();
+  const handleSignOut = async () => {
+    try {
+      logout(localStorage.getItem("token") || "");
+      router.push("/");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <Box
@@ -47,7 +57,7 @@ const Header = () => {
         >
           <AppLogo />
 
-          {isLogin ? (
+          {user ? (
             <Box
               sx={{
                 display: "flex",
