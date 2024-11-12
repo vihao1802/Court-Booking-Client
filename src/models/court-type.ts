@@ -1,14 +1,10 @@
-export interface CourtType {
+export interface CourtTypeBase {
+  courtTypeName: string;
+  isDisabled: boolean;
+}
+
+export interface CourtType extends CourtTypeBase {
   id: string;
-  courtTypeName: string;
-  isDisabled: boolean;
 }
 
-export interface CreateCourtType {
-  courtTypeName: string;
-}
-
-export interface UpdateCourtType {
-  courtTypeName: string;
-  isDisabled: boolean;
-}
+export interface CourtTypeRequest extends CourtTypeBase {}

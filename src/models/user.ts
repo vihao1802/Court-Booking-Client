@@ -1,5 +1,4 @@
-export interface User {
-  id: string;
+export interface UserBase {
   userName: string;
   email: string;
   phoneNumber: string;
@@ -8,10 +7,8 @@ export interface User {
   location: string;
 }
 
-export interface CreateUser {
-  userName: string;
-  email: string;
-  phoneNumber: string;
-  dayOfBirth: string;
-  password: string;
+export interface User extends UserBase {
+  id: string;
 }
+
+export interface UserRequest extends UserBase {}

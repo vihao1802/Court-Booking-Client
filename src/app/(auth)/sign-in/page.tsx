@@ -13,17 +13,51 @@ import { Form, Formik, Field, ErrorMessage } from "formik";
 import { useState } from "react";
 import { Visibility, VisibilityOffOutlined } from "@mui/icons-material";
 import AppLogo from "@/components/shared/Logo";
+import { LoginRequest } from "@/models/auth";
+import OvalLoader from "@/components/shared/OvalLoader";
+import { authApi } from "@/api/auth";
+import { useAuthenticatedUser } from "@/hooks/useAuthenticatedUser";
+import { Router } from "next/router";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 const SignInSchema = Yup.object().shape({
   email: Yup.string().email("Email không hợp lệ").required("Email là bắt buộc"),
   password: Yup.string().required("Mật khẩu là bắt buộc"),
+  // .matches(
+  //   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+  //   "Mật khẩu phải chứa ít nhất một chữ in hoa, một chữ in thường, một số và một ký tự đặc biệt"
+  // )
+  // .min(8, "Mật khẩu phải có ít nhất 8 ký tự"),
 });
 
 const SignInPage = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [isLogin, setIsLogin] = useState(false);
+  const { mutate } = useAuthenticatedUser({ revalidateOnMount: false });
+
+  const router = useRouter();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
+  };
+
+  const handleSignIn = async (payload: LoginRequest) => {
+    setIsLogin(true);
+    try {
+      const res = await authApi.login(payload);
+      if (res.status === 200) {
+        await mutate();
+        toast.success("Đăng nhập thành công");
+        router.push("/");
+      } else {
+        toast.error("Đăng nhập không thành công");
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLogin(false);
+    }
   };
 
   return (
@@ -117,6 +151,7 @@ const SignInPage = () => {
               validationSchema={SignInSchema}
               onSubmit={async (values) => {
                 console.log(values);
+                handleSignIn(values);
               }}
             >
               {({ errors, touched }) => (
@@ -185,6 +220,7 @@ const SignInPage = () => {
                   <Button
                     type="submit"
                     size="large"
+                    disabled={isLogin}
                     sx={{
                       marginTop: "25px",
                       width: "100%",
@@ -193,9 +229,12 @@ const SignInPage = () => {
                       ":hover": {
                         backgroundColor: "var(--buttonHoverColor)",
                       },
+                      ":disabled": {
+                        backgroundColor: "gray",
+                      },
                     }}
                   >
-                    Đăng nhập
+                    {isLogin ? <OvalLoader size="28" /> : "Đăng nhập"}
                   </Button>
                 </Form>
               )}

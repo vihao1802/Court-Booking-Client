@@ -1,5 +1,5 @@
 "use client";
-import Loader from "@/components/shared/Loader";
+import Loader from "@/components/shared/TennisBallLoader";
 import { Box } from "@mui/material";
 import { useParams, useRouter } from "next/navigation";
 import React, { createContext, useEffect, useState } from "react";

@@ -9,12 +9,23 @@ import React from "react";
 import { navItems } from "@/constants";
 import { usePathname, useRouter } from "next/navigation";
 import AppLogo from "./Logo";
+import { useAuthenticatedUser } from "@/hooks/useAuthenticatedUser";
+import { authApi } from "@/api/auth";
 
 const lato = Lato({ subsets: ["latin"], weight: ["400", "700"] });
 
 const Header = () => {
   const pathname = usePathname();
   const router = useRouter();
+  const { user, logout } = useAuthenticatedUser();
+  const handleSignOut = async () => {
+    try {
+      logout(localStorage.getItem("token") || "");
+      router.push("/");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <Box
@@ -64,36 +75,59 @@ const Header = () => {
             </Typography>
           </Box> */}
           <AppLogo />
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              gap: 2,
-            }}
-          >
-            <Button
-              variant="outlined"
+          {user ? (
+            <Box
               sx={{
-                color: "var(--buttonColor)",
-                borderColor: "var(--buttonHoverColor)",
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 2,
               }}
-              onClick={() => router.push("/sign-up")}
             >
-              Đăng ký
-            </Button>
-            <Button
-              variant="contained"
+              <Typography>Xin chào, {user.userName}</Typography>
+              <Button
+                variant="outlined"
+                sx={{
+                  color: "var(--buttonColor)",
+                  borderColor: "var(--buttonHoverColor)",
+                }}
+                onClick={handleSignOut}
+              >
+                Đăng xuất
+              </Button>
+            </Box>
+          ) : (
+            <Box
               sx={{
-                backgroundColor: "var(--buttonColor)",
-                ":hover": {
-                  backgroundColor: "var(--buttonHoverColor)",
-                },
+                display: "flex",
+                flexDirection: "row",
+                gap: 2,
               }}
-              onClick={() => router.push("/sign-in")}
             >
-              Đăng nhập
-            </Button>
-          </Box>
+              <Button
+                variant="outlined"
+                sx={{
+                  color: "var(--buttonColor)",
+                  borderColor: "var(--buttonHoverColor)",
+                }}
+                onClick={() => router.push("/sign-up")}
+              >
+                Đăng ký
+              </Button>
+              <Button
+                variant="contained"
+                sx={{
+                  backgroundColor: "var(--buttonColor)",
+                  ":hover": {
+                    backgroundColor: "var(--buttonHoverColor)",
+                  },
+                }}
+                onClick={() => router.push("/sign-in")}
+              >
+                Đăng nhập
+              </Button>
+            </Box>
+          )}
         </Box>
       </Box>
 
