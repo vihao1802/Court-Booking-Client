@@ -23,7 +23,15 @@ const CourtCard = ({ id, name, people, type }: CourtProps) => {
   const router = useRouter();
 
   return (
-    <Card>
+    <Card
+      sx={{
+        width: {
+          xs: "100%",
+          sm: "calc(50% - 12px)",
+          md: "calc(33.33% - 12px)",
+        },
+      }}
+    >
       <CardMedia
         component="img"
         alt="green iguana"

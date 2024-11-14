@@ -15,7 +15,7 @@ export const navItems = [
 
 export const exploreCategoriesTabs = [
   {
-    value: "1",
+    value: "0684",
     label: "Cầu lông",
     icon: (
       <svg
@@ -72,7 +72,7 @@ export const exploreCategoriesTabs = [
     ),
   },
   {
-    value: "2",
+    value: "6",
     label: "Bóng bàn",
     icon: (
       <svg
@@ -108,7 +108,7 @@ export const exploreCategoriesTabs = [
     ),
   },
   {
-    value: "3",
+    value: "e54f",
     label: "Futsal",
     icon: (
       <svg
@@ -214,7 +214,7 @@ export const exploreCategoriesTabs = [
     ),
   },
   {
-    value: "4",
+    value: "20b1",
     label: "Bóng chuyền",
     icon: (
       <svg
@@ -306,7 +306,7 @@ export const exploreCategoriesTabs = [
     ),
   },
   {
-    value: "5",
+    value: "e00e",
     label: "Bóng đá",
     icon: (
       <svg
@@ -412,7 +412,7 @@ export const exploreCategoriesTabs = [
     ),
   },
   {
-    value: "6",
+    value: "e1b2",
     label: "Tennis",
     icon: (
       <svg
