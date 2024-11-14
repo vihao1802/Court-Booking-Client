@@ -100,7 +100,6 @@ const page = () => {
       }}
     >
       <Paper
-        elevation={3}
         sx={{
           height: "100%",
           width: "1056px",
@@ -127,6 +126,7 @@ const page = () => {
               court.courtList.map((courtItem) => (
                 <CourtCard
                   key={courtItem.id}
+                  id=""
                   name={courtItem.name}
                   people={courtItem.people}
                   type={court.type}

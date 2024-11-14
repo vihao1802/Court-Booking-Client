@@ -1,102 +1,65 @@
 "use client";
 
 import { TabContext, TabPanel } from "@mui/lab";
-import { Box, Button, Paper, Tab, Tabs, Typography } from "@mui/material";
-import React, { SyntheticEvent, useState } from "react";
+import {
+  Box,
+  Button,
+  Pagination,
+  Paper,
+  Tab,
+  Tabs,
+  Typography,
+  Skeleton,
+} from "@mui/material";
+import React, { SyntheticEvent, useEffect, useState } from "react";
 import CourtCard from "@/components/shared/CourtCard";
 import { exploreCategoriesTabs } from "@/constants";
 import { useRouter } from "next/navigation";
-
-interface Court {
-  value: string;
-  type: string;
-  courtList: { id: string; name: string; people: number }[];
-}
-
-const courts: Court[] = [
-  {
-    value: "1",
-    type: "Cầu lông",
-    courtList: [
-      { id: "1-1", name: "Sân cầu lông 1", people: 4 },
-      { id: "1-2", name: "Sân cầu lông 2", people: 4 },
-      { id: "1-3", name: "Sân cầu lông 3", people: 4 },
-      { id: "1-4", name: "Sân cầu lông 4", people: 4 },
-      { id: "1-5", name: "Sân cầu lông 5", people: 4 },
-      { id: "1-6", name: "Sân cầu lông 6", people: 4 },
-      { id: "1-7", name: "Sân cầu lông 7", people: 4 },
-      { id: "1-8", name: "Sân cầu lông 8", people: 4 },
-    ],
-  },
-  {
-    value: "2",
-    type: "Bóng bàn",
-    courtList: [
-      { id: "2-1", name: "Sân bóng bàn 1", people: 2 },
-      { id: "2-2", name: "Sân bóng bàn 2", people: 2 },
-      { id: "2-3", name: "Sân bóng bàn 3", people: 2 },
-      { id: "2-4", name: "Sân bóng bàn 4", people: 2 },
-      { id: "2-5", name: "Sân bóng bàn 5", people: 2 },
-      { id: "2-6", name: "Sân bóng bàn 6", people: 2 },
-    ],
-  },
-  {
-    value: "3",
-    type: "Futsal",
-    courtList: [
-      { id: "3-1", name: "Sân futsal 1", people: 10 },
-      { id: "3-2", name: "Sân futsal 2", people: 10 },
-      { id: "3-3", name: "Sân futsal 3", people: 10 },
-      { id: "3-4", name: "Sân futsal 4", people: 10 },
-    ],
-  },
-  {
-    value: "4",
-    type: "Bóng chuyền",
-    courtList: [
-      { id: "4-1", name: "Sân bóng chuyền 1", people: 12 },
-      { id: "4-2", name: "Sân bóng chuyền 2", people: 12 },
-      { id: "4-3", name: "Sân bóng chuyền 3", people: 12 },
-    ],
-  },
-  {
-    value: "5",
-    type: "Bóng đá",
-    courtList: [
-      { id: "5-1", name: "Sân bóng đá 1", people: 22 },
-      { id: "5-2", name: "Sân bóng đá 2", people: 22 },
-      { id: "5-3", name: "Sân bóng đá 3", people: 22 },
-    ],
-  },
-  {
-    value: "6",
-    type: "Tenis",
-    courtList: [
-      { id: "6-1", name: "Sân tenis 1", people: 4 },
-      { id: "6-2", name: "Sân tenis 2", people: 4 },
-      { id: "6-3", name: "Sân tenis 3", people: 4 },
-      { id: "6-4", name: "Sân tenis 4", people: 4 },
-    ],
-  },
-  {
-    value: "7",
-    type: "Bóng rổ",
-    courtList: [
-      { id: "7-1", name: "Sân bóng rổ 1", people: 10 },
-      { id: "7-2", name: "Sân bóng rổ 2", people: 10 },
-      { id: "7-3", name: "Sân bóng rổ 3", people: 10 },
-    ],
-  },
-];
+import { useCourtList } from "@/hooks/useCourtList";
+import { Pagination as ApiPagination } from "@/models/api";
+import { useCourtTypeList } from "@/hooks/useCourtTypeList";
 
 const FeaturedCourts = () => {
   const router = useRouter();
 
-  const [value, setValue] = useState("1");
+  const [filters, setFilters] = useState<Partial<ApiPagination>>({
+    page: 0,
+    size: 6,
+  });
+
+  const { data: courtTypeData, isLoading: courtTypeDataLoading } =
+    useCourtTypeList({ isdisabled: 0 });
+
+  const [selectedType, setSelectedType] = useState("");
+
+  const { data: courtData, isLoading: courtDataLoading } = useCourtList({
+    typeId: selectedType,
+    params: filters,
+    enabled: Boolean(selectedType),
+  });
+
+  const { pageNumber, pageSize } = courtData?.pageable || {};
+  const totalPages = courtData?.totalPages;
+
+  useEffect(() => {
+    if (courtTypeData || !courtTypeDataLoading)
+      setSelectedType(courtTypeData?.[0]?.id);
+  }, [courtTypeData]);
 
   const handleChange = (event: SyntheticEvent, newid: string) => {
-    setValue(newid);
+    setSelectedType(newid);
   };
+
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    page: number
+  ) => {
+    setFilters({
+      ...filters,
+      page: page - 1,
+    });
+  };
+
   return (
     <Paper
       elevation={3}
@@ -118,10 +81,10 @@ const FeaturedCourts = () => {
           alignItems: "center",
         }}
       >
-        <TabContext value={value}>
+        <TabContext value={selectedType}>
           <Box>
             <Tabs
-              value={value}
+              value={selectedType}
               onChange={handleChange}
               variant="scrollable"
               scrollButtons="auto"
@@ -140,19 +103,32 @@ const FeaturedCourts = () => {
                 },
               }}
             >
-              {exploreCategoriesTabs.map((tab, index) => (
-                <Tab
-                  icon={tab.icon}
-                  label={tab.label}
-                  value={tab.value}
-                  key={index}
+              {courtTypeDataLoading ? (
+                <Skeleton
+                  animation="wave"
+                  variant="rounded"
+                  width={500}
+                  height={50}
                 />
-              ))}
+              ) : (
+                courtTypeData?.map((type: any, index: number) => (
+                  <Tab
+                    icon={
+                      exploreCategoriesTabs.find(
+                        (x) => x.value === type?.id.split("-")[1]
+                      )?.icon
+                    }
+                    label={type?.courtTypeName}
+                    value={type?.id}
+                    key={index}
+                  />
+                ))
+              )}
             </Tabs>
           </Box>
 
           <TabPanel
-            value={value}
+            value={selectedType}
             sx={{
               display: "flex",
               flexWrap: "wrap",
@@ -160,19 +136,29 @@ const FeaturedCourts = () => {
               gap: 2,
             }}
           >
-            {courts
-              .filter((item) => item.value === value)
-              .map((court) =>
-                court.courtList.map((courtItem) => (
+            {courtDataLoading ? (
+              <Skeleton
+                animation="wave"
+                variant="rounded"
+                width={700}
+                height={1000}
+              />
+            ) : (
+              courtData?.content.map(
+                (
+                  court: { id: string; courtName: string },
+                  index: React.Key | null | undefined
+                ) => (
                   <CourtCard
-                    key={courtItem.id}
-                    name={courtItem.name}
-                    people={courtItem.people}
-                    type={court.type}
-                    id={""}
+                    key={index}
+                    id={court?.id}
+                    name={court?.courtName}
+                    people={4}
+                    type={"Cầu lông"}
                   />
-                ))
-              )}
+                )
+              )
+            )}
           </TabPanel>
         </TabContext>
       </Box>
@@ -183,22 +169,24 @@ const FeaturedCourts = () => {
           marginTop: "20px",
         }}
       >
-        <Button
+        <Pagination
+          count={totalPages}
+          page={pageNumber + 1}
+          variant="outlined"
+          onChange={handlePageChange}
           sx={{
-            borderRadius: "20px",
-            border: "1px solid #858585",
-            height: "40px",
-            width: "150px",
-            color: "black",
-            "&:hover": {
-              backgroundColor: "unset",
-              boxShadow: " 0px 4px 4px rgba(0, 0, 0, 0.25)",
+            "& .MuiPaginationItem-root": {
+              color: "var(--buttonColor)",
+            },
+            "& .Mui-selected": {
+              color: "#fff",
+              backgroundColor: "var(--buttonColor)",
+            },
+            "& .MuiPaginationItem-root:hover": {
+              backgroundColor: "var(--buttonLightColor)",
             },
           }}
-          onClick={() => router.push(`/explore/category/${value}`)}
-        >
-          Xem thêm
-        </Button>
+        />
       </Box>
     </Paper>
   );
