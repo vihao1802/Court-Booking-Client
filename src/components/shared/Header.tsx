@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Button, Divider, Typography } from "@mui/material";
+import { Box, Button, Divider, Skeleton, Typography } from "@mui/material";
 import { Lato } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
@@ -17,10 +17,10 @@ const lato = Lato({ subsets: ["latin"], weight: ["400", "700"] });
 const Header = () => {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, logout } = useAuthenticatedUser();
+  const { user, logout, firstLoading } = useAuthenticatedUser();
   const handleSignOut = async () => {
     try {
-      logout(localStorage.getItem("token") || "");
+      logout();
       router.push("/");
     } catch (error) {
       console.log(error);
@@ -46,7 +46,10 @@ const Header = () => {
         <Box
           sx={{
             display: "flex",
-            justifyContent: "space-between",
+            justifyContent: {
+              xs: "right",
+              sm: "space-between",
+            },
             alignItems: "center",
             margin: "0 auto",
             maxWidth: "1056px",
@@ -54,28 +57,20 @@ const Header = () => {
             // height: "70px",
           }}
         >
-          {/* <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              gap: 1,
-            }}
-            onClick={() => router.push("/")}
-          >
-            <Image src="/icons/court.png" alt="icon" height={32} width={32} />
-            <Typography
-              fontSize="32px"
-              color="success"
-              fontFamily={lato.style.fontFamily}
-            >
-              courtsite
-            </Typography>
-          </Box> */}
           <AppLogo />
-          {user ? (
+          {firstLoading && !user ? (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 2,
+              }}
+            >
+              <Skeleton variant="rounded" width={100} height={40} />
+              <Skeleton variant="rounded" width={100} height={40} />
+            </Box>
+          ) : user ? (
             <Box
               sx={{
                 display: "flex",

@@ -1,71 +1,73 @@
 "use client";
-import React, { useContext, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
-import { Button, Divider, StepLabel, Typography } from "@mui/material";
+import { Button, Divider, Typography } from "@mui/material";
 import { useParams, useRouter } from "next/navigation";
-import { formatDate } from "@/utils/format";
-import { BookCourtContext } from "@/app/(user)/book-court/layout";
-import {
-  Avatar,
-  List,
-  ListItem,
-  ListItemDecorator,
-  Radio,
-  RadioGroup,
-  Sheet,
-} from "@mui/joy";
+import { formatDate, formatVND } from "@/utils/format";
+import { List, ListItem, ListItemDecorator, Radio, RadioGroup } from "@mui/joy";
+import { reservationApi } from "@/api/reservation";
+import OvalLoader from "@/components/shared/OvalLoader";
+import useSWR from "swr";
+import toast from "react-hot-toast";
+import Countdown from "@/components/shared/CountDown";
 
 const PaymentDetail = () => {
-  const { date, startTime, duration } = useContext(BookCourtContext);
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const [loadingPayment, setLoadingPayment] = useState(false);
+  const [selectedPayment, setSelectedPayment] = useState(-1);
   const router = useRouter();
 
-  const [selectedPayment, setSelectedPayment] = useState(-1);
+  useEffect(() => {
+    /* if (reservation.reservationState === "PAID") {
+      router.push(`/reservation/${id}/payment-success`);
+    } */
+  }, []);
+
+  const fetcher = async () => {
+    const res = await reservationApi.getReservation(id);
+    return res;
+  };
+
+  const { data: reservation } = useSWR("reservation", fetcher);
+
+  if (!reservation) {
+    return <OvalLoader size="50" />;
+  }
+
   const handlePayment = async () => {
     setLoadingPayment(true);
     try {
       let res;
-      if (selectedPayment === 1) {
-        res = await fetch(
-          `http://localhost:8080/api/v1/reservations/${id}/payment/zalo-pay`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBhZG1pbi5jb20iLCJleHAiOjE3MzA2NzYyNzEsImlhdCI6MTczMDY0MDI3MSwianRpIjoiN2ZlYmRhYzQtMjBkYS00YjBlLWIzY2MtNjA5MWYwOTY0ZmM2Iiwic2NvcGUiOiJBRE1JTiJ9.QJHBhn3qjbDcKdkdFvl1NinCv-aHOuP3-otvjKNn5MM`,
-            },
-            body: JSON.stringify({
-              totalPrice: 10000,
-              userName: "Vi Hao",
-            }),
-          }
-        );
-      } else if (selectedPayment === 2) {
-        res = await fetch(
-          `http://localhost:8080/api/v1/reservations/${id}/payment/momo`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBhZG1pbi5jb20iLCJleHAiOjE3MzA2NzYyNzEsImlhdCI6MTczMDY0MDI3MSwianRpIjoiN2ZlYmRhYzQtMjBkYS00YjBlLWIzY2MtNjA5MWYwOTY0ZmM2Iiwic2NvcGUiOiJBRE1JTiJ9.QJHBhn3qjbDcKdkdFvl1NinCv-aHOuP3-otvjKNn5MM`,
-            },
-            body: JSON.stringify({
-              requestType: "payWithCC",
-            }),
-          }
-        );
-      }
-      if (res && res.ok) {
-        const data = await res.json();
-        console.log(data.body.order_url);
-        router.push(data.body.order_url);
+      let res_status = 1;
+      if (selectedPayment === 0) {
+        res = await reservationApi.createPaymentZaloPay(id);
+        if (res.status === 200) {
+          router.push(res.data.order_url);
+        } else {
+          toast.error(
+            res.data.return_message + " " + res.data.sub_return_message
+          );
+        }
+        console.log(res);
+      } else if (selectedPayment === 1) {
+        res = await reservationApi.createPaymentMomo(id, {
+          requestType: "payWithCC",
+        });
+
+        console.log(res);
+
+        router.push(res.payUrl);
       }
     } catch (error) {
       console.log("handlePayment: " + error);
     } finally {
       setLoadingPayment(false);
     }
+  };
+
+  const handleTimeOutPayment = () => {
+    toast.error("Hết thời gian thanh toán. Xin vui lòng thử lại");
+    router.push(`/`);
   };
 
   return (
@@ -81,7 +83,6 @@ const PaymentDetail = () => {
           maxWidth: "600px",
           width: "100%",
           padding: { xs: "5px", md: "20px" },
-          boxShadow: "0 5px 10px rgba(0,0,0,0.3)",
           display: "flex",
           flexDirection: "column",
           "& > * + *": {
@@ -89,6 +90,7 @@ const PaymentDetail = () => {
           },
         }}
       >
+        <Countdown onComplete={handleTimeOutPayment} />
         <Box
           sx={{
             display: "flex",
@@ -123,7 +125,6 @@ const PaymentDetail = () => {
           <Box
             sx={{
               width: { md: "250px", xs: "100%" },
-              // height: "150px",
             }}
           >
             <Box
@@ -166,20 +167,14 @@ const PaymentDetail = () => {
                   color: "var(--buttonHoverColor)",
                 }}
               >
-                {formatDate(date)}
+                {formatDate(reservation?.reservationDate)}
               </Typography>
               <Typography
                 sx={{
                   color: "var(--buttonHoverColor)",
                 }}
               >
-                {startTime} -{" "}
-                {(
-                  Number(startTime.split(":")[0]) +
-                  Number(duration.split(" ")[0])
-                ).toString() +
-                  ":" +
-                  startTime.split(":")[1]}
+                {reservation.checkInTime} - {reservation.checkOutTime}
               </Typography>
             </Box>
             <Typography>20.000 đ / 1 tiếng</Typography>
@@ -198,7 +193,9 @@ const PaymentDetail = () => {
             }}
           >
             <Typography variant="h6">Tổng tiền</Typography>
-            <Typography variant="h6">40.000 đ</Typography>
+            <Typography variant="h6">
+              {formatVND(Number(reservation.totalPrice))}
+            </Typography>
           </Box>
         </Box>
         <Box>
@@ -217,8 +214,6 @@ const PaymentDetail = () => {
           >
             <List
               sx={{
-                // minWidth: 240,
-                // "--List-gap": "0.5rem",
                 "--ListItem-paddingY": "10px",
                 "--ListItem-radius": "8px",
                 "--ListItemDecorator-size": "32px",
