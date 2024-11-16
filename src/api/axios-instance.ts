@@ -18,7 +18,7 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
-    if (token && config.url !== "/login" && config.url !== "/logout") {
+    if (token && config.url !== "/auth/login") {
       config.headers.Authorization = `Bearer ${token.replace(/^"|"$/g, "")}`;
     }
     return config;
@@ -27,8 +27,8 @@ axiosInstance.interceptors.request.use(
 );
 
 axiosInstance.interceptors.response.use(
-  (response) => response,
-  (error) => {
+  (response) => response
+  /* (error) => {
     if (axios.isAxiosError(error)) {
       const errorMessage = error.response?.data?.error;
 
@@ -50,7 +50,7 @@ axiosInstance.interceptors.response.use(
 
     return Promise.reject(error);
   },
-  { synchronous: true }
+  { synchronous: true } */
 );
 
 export default axiosInstance;

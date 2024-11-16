@@ -13,14 +13,36 @@ import {
 import { CheckCircle, Cancel } from "@mui/icons-material";
 import { ColorlibStepIcon } from "@/components/styles/StepperStyles";
 import { formatVND } from "@/utils/format";
+import { reservationApi } from "@/api/reservation";
+import OvalLoader from "@/components/shared/OvalLoader";
+import useSWR from "swr";
 
 const steps = ["Đặt lịch", "Thanh toán", "Kết quả"];
 
 const BookCourtPaymentStatusPage = () => {
   const searchParams = useSearchParams();
-  const amount = searchParams.get("amount");
-  const reservation_id = searchParams.get("apptransid")?.split("_")[1] + "...";
+  const { id } = useParams<{ id: string }>();
   const reservation_status = Number(searchParams.get("status"));
+  // const [reservation, setReservation] = useState<Reservation>();
+
+  const fetcher = async () => {
+    const res = await reservationApi.getReservation(id);
+    return res;
+  };
+
+  const { data: reservation, error } = useSWR("reservation", fetcher);
+
+  console.log(reservation);
+
+  if (error) {
+    console.log(error);
+  }
+
+  if (!reservation) {
+    return <OvalLoader size="50" />;
+  }
+
+  console.log(reservation_status);
 
   return (
     <Fragment>
@@ -48,13 +70,13 @@ const BookCourtPaymentStatusPage = () => {
       >
         {steps.map((label, index) => {
           const stepProps: { completed?: boolean } = {
-            completed: Boolean(reservation_status),
+            completed: Boolean(reservation_status === 1),
           };
           const labelProps: {
             optional?: React.ReactNode;
             error?: boolean;
           } = {};
-          if (!reservation_status && index === 2) {
+          if (!(reservation_status === 1) && index === 2) {
             labelProps.optional = (
               <Typography variant="caption" color="error">
                 Thất bại
@@ -108,7 +130,7 @@ const BookCourtPaymentStatusPage = () => {
               flexDirection: "column",
             }}
           >
-            {reservation_status ? (
+            {reservation_status === 1 ? (
               <CheckCircle
                 sx={{
                   color: "green",
@@ -126,7 +148,7 @@ const BookCourtPaymentStatusPage = () => {
               />
             )}
             <Typography variant="h5">
-              {reservation_status
+              {reservation_status === 1
                 ? "Thanh toán thành công"
                 : "Thanh toán thất bại"}
             </Typography>
@@ -136,9 +158,6 @@ const BookCourtPaymentStatusPage = () => {
               display: "flex",
               flexDirection: "column",
               width: "100%",
-              // padding: "15px",
-              // border: "2px solid #DBDBDB",
-              // borderRadius: "10px",
               "& > * + *": {
                 marginTop: "15px",
               },
@@ -155,7 +174,12 @@ const BookCourtPaymentStatusPage = () => {
                 Mã hóa đơn
               </Typography>
               <Typography sx={{ flex: 2, textAlign: "right" }}>
-                {reservation_id}
+                {reservation.id.split("-")[0]}...{" "}
+                {
+                  reservation.id.split("-")[
+                    reservation.id.split("-").length - 1
+                  ]
+                }
               </Typography>
             </Box>
             <Box
@@ -166,10 +190,39 @@ const BookCourtPaymentStatusPage = () => {
               }}
             >
               <Typography sx={{ flex: 1, textAlign: "left", color: "gray" }}>
-                Số tiền
+                Tổng tiền
               </Typography>
               <Typography sx={{ flex: 2, textAlign: "right" }}>
-                {amount && formatVND(Number(amount))}
+                {reservation.totalPrice &&
+                  formatVND(Number(reservation.totalPrice))}
+              </Typography>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              <Typography sx={{ flex: 1, textAlign: "left", color: "gray" }}>
+                Thời gian vào
+              </Typography>
+              <Typography sx={{ flex: 2, textAlign: "right" }}>
+                {reservation.checkInTime}
+              </Typography>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              <Typography sx={{ flex: 1, textAlign: "left", color: "gray" }}>
+                Thời gian ra
+              </Typography>
+              <Typography sx={{ flex: 2, textAlign: "right" }}>
+                {reservation.checkOutTime}
               </Typography>
             </Box>
           </Box>
@@ -177,7 +230,7 @@ const BookCourtPaymentStatusPage = () => {
             <Button
               variant="outlined"
               sx={{
-                borderColor: "var(--buttonColor)",
+                border: "none",
               }}
             >
               <Link
@@ -185,10 +238,11 @@ const BookCourtPaymentStatusPage = () => {
                   width: "100%",
                   height: "100%",
                   textDecoration: "none",
+                  color: "var(--buttonColor)",
                   ":hover": {
-                    color: "var(--buttonColor)",
+                    color: "var(--buttonHoverColor)",
                   },
-                  fontSize: "20px",
+                  fontSize: "18px",
                 }}
                 href={"/"}
               >

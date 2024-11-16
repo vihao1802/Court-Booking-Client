@@ -1,4 +1,5 @@
 "use client";
+import AuthProvider from "@/components/common/auth";
 import Loader from "@/components/shared/TennisBallLoader";
 import { Box } from "@mui/material";
 import { useParams, useRouter } from "next/navigation";
@@ -23,8 +24,6 @@ export const BookCourtContext = createContext({
   setDuration: (duration: string) => {},
   totalPrice: 0,
   setTotalPrice: (totalPrice: number) => {},
-  // reservation: {} as Reservation,
-  // setReservation: (resv: Reservation) => {},
 });
 
 const BookCourtLayout = ({ children }: { children: React.ReactNode }) => {
@@ -32,33 +31,6 @@ const BookCourtLayout = ({ children }: { children: React.ReactNode }) => {
   const [startTime, setStartTime] = useState("");
   const [duration, setDuration] = useState("");
   const [totalPrice, setTotalPrice] = useState(0);
-  // const [reservation, setReservation] = useState<Reservation>({
-  //   userId: "",
-  //   courtId: "",
-  //   checkInTime: "",
-  //   checkOutTime: "",
-  //   totalPrice: 0,
-  //   reservationDate: "",
-  //   reservationState: 0,
-  // });
-
-  const router = useRouter();
-  const { id } = useParams();
-
-  // useEffect(() => {
-  /* if (!date || !startTime || !duration) {
-      router.push(`/book-court/date-time/${id}`);
-    }
-    console.log(id); */
-
-  //   if (id === "undefined") {
-  //     router.push("/");
-  //   }
-  // }, []);
-
-  // if (id === "undefined") {
-  //   return <Loader />;
-  // }
 
   return (
     <BookCourtContext.Provider
@@ -71,8 +43,6 @@ const BookCourtLayout = ({ children }: { children: React.ReactNode }) => {
         setDuration,
         totalPrice,
         setTotalPrice,
-        // reservation,
-        // setReservation,
       }}
     >
       <Box
@@ -83,7 +53,7 @@ const BookCourtLayout = ({ children }: { children: React.ReactNode }) => {
           padding: "20px 5px",
         }}
       >
-        {children}
+        <AuthProvider>{children}</AuthProvider>
       </Box>
     </BookCourtContext.Provider>
   );
