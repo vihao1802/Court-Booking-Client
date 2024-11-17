@@ -11,7 +11,7 @@ export interface UseCourtListProps {
     enabled?: boolean
 }
 
-export function useCourtList({typeId, params, options, enabled = true}: UseCourtListProps) {
+export function useGetCourtList({typeId, params, options, enabled = true}: UseCourtListProps) {
     const swrResponse = useSWR(
         enabled ? [QueryKeys.GET_COURT_LIST, typeId ,params] : null,
         () => courtApi.getByCourtType(typeId, params),

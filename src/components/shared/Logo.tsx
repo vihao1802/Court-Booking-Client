@@ -11,7 +11,10 @@ const AppLogo = () => {
   return (
     <Box
       sx={{
-        display: "flex",
+        display: {
+          xs: "none",
+          sm: "flex",
+        },
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "center",

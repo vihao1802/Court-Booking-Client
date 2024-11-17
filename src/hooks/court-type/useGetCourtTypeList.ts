@@ -2,7 +2,7 @@ import useSWR from 'swr';
 import { courtTypeApi } from '@/api/court-type';
 import { QueryKeys } from '@/constants/query-keys';
 
-export function useCourtTypeList(params: {isdisabled: number}) {
+export function useGetCourtTypeList(params: {isdisabled: number}) {
     const swrResponse = useSWR([QueryKeys.GET_COURT_LIST],
         () => courtTypeApi.getActiveCourtTypes(params),
         {

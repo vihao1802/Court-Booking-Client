@@ -4,25 +4,18 @@ import { LoginRequest } from "@/models/auth";
 import { User } from "@/models/user";
 import useSWR, { SWRConfiguration } from "swr";
 
-
-function getAuthenticatedUser(): User | null {
-  try {
-    return JSON.parse(localStorage.getItem("user") || "");
-  } catch (error) {
-    return null;
-  }
-}
-
 export function useAuthenticatedUser(options?: Partial<SWRConfiguration>) {
   const {
     data: user,
-    isLoading,
     error,
     mutate,
   } = useSWR(
     "authenticated_user",
     async () => {
       try {
+        if (localStorage.getItem("token") === null) {
+          return null;
+        }
         return await authApi.getAuthenticatedUser();
       } catch (error) {
         if (error instanceof UnauthorizedError) {
@@ -33,19 +26,25 @@ export function useAuthenticatedUser(options?: Partial<SWRConfiguration>) {
       }
     },
     {
-      initialData: getAuthenticatedUser(),
+      // initialData: getAuthenticatedUser(),
       ...options,
-      revalidateOnFocus: false,
+      // revalidateOnFocus: false,
     }
   );
 
-  /*   async function login(payload: LoginRequest) {
-    await authApi.login(payload);
+  const firstLoading = user === undefined && error === undefined;
+
+  async function login(payload: LoginRequest) {
+    const res = await authApi.login(payload);
     await mutate();
+    return res;
   }
- */
-  async function logout(token: string) {
-    await authApi.logout(token);
+
+  async function logout() {
+    const token = localStorage.getItem("token");
+    if (token) {
+      await authApi.logout(token);
+    }
     mutate(null, false);
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -53,9 +52,10 @@ export function useAuthenticatedUser(options?: Partial<SWRConfiguration>) {
 
   return {
     user,
-    isLoading,
+    firstLoading,
     error,
     mutate,
+    login,
     logout,
   };
 }
