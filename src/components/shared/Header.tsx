@@ -17,7 +17,7 @@ import React from "react";
 import { navItems } from "@/constants";
 import { usePathname, useRouter } from "next/navigation";
 import AppLogo from "./Logo";
-import { useAuthenticatedUser } from "@/hooks/useAuthenticatedUser";
+import { useAuthenticatedUser } from "@/hooks/auth/useAuthenticatedUser";
 import { authApi } from "@/api/auth";
 
 const lato = Lato({ subsets: ["latin"], weight: ["400"] });

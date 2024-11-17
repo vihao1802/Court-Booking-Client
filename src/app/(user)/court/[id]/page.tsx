@@ -5,6 +5,8 @@ import Loader from "@/components/shared/TennisBallLoader";
 import { Avatar, Box, Rating, Typography } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { BookCourtContext } from "../../book-court/layout";
+import { useGetCourtById } from "@/hooks/court/useGetCourtById";
+import { CourtImage } from "@/models/court-image";
 
 interface Court {
   id: number;
@@ -80,26 +82,16 @@ const CourtDetail = ({ params: { id } }: { params: { id: string } }) => {
     setEmergedImage(imgSrc);
   };
   const handleClose = () => setOpen(false);
-  const [courtDetail, setCourtDetail] = useState<Court | null>(null);
   const [emergedImage, setEmergedImage] = useState("");
   const [sliderImages, setSliderImages] = useState<string[]>([]);
 
-  useEffect(() => {
-    courts.map((item, _) => {
-      if (item.id.toString() === id) {
-        setCourtDetail(item);
-        let arr = [];
-        arr.push(item.mainImageSrc);
-        arr.push(item.subImage1Src);
-        arr.push(item.subImage2Src);
-        arr.push(item.subImage3Src);
-        arr.push(item.subImage4Src);
-        setSliderImages(arr);
-      }
-    });
-  }, []);
+  const { data: courtDetail, isLoading: isCourtLoading } = useGetCourtById({
+    courtId: id,
+  });
 
-  if (!courtDetail) return <Loader />;
+  console.log(courtDetail);
+
+  if (isCourtLoading) return <Loader />;
 
   return (
     <Box
@@ -123,7 +115,7 @@ const CourtDetail = ({ params: { id } }: { params: { id: string } }) => {
           fontWeight: "600",
         }}
       >
-        {courtDetail.name}
+        {courtDetail?.courtName}
       </Typography>
       <Box
         sx={{
@@ -134,71 +126,43 @@ const CourtDetail = ({ params: { id } }: { params: { id: string } }) => {
           padding: "20px 0",
         }}
       >
-        <Box
-          sx={{
-            gridColumn: "span 2",
-            gridRow: "span 2",
-          }}
-        >
-          <Box
-            component="img"
-            sx={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              borderRadius: "10px 0 0 10px",
-              cursor: "pointer",
-            }}
-            onClick={() => handleOpen(courtDetail.mainImageSrc)}
-            src={courtDetail.mainImageSrc}
-          />
-        </Box>
-        <Box
-          component="img"
-          sx={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            cursor: "pointer",
-          }}
-          onClick={() => handleOpen(courtDetail.subImage1Src)}
-          src={courtDetail.subImage1Src}
-        />
-        <Box
-          component="img"
-          sx={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            borderRadius: "0 10px 0 0",
-            cursor: "pointer",
-          }}
-          onClick={() => handleOpen(courtDetail.subImage2Src)}
-          src={courtDetail.subImage2Src}
-        />
-        <Box
-          component="img"
-          sx={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            cursor: "pointer",
-          }}
-          onClick={() => handleOpen(courtDetail.subImage3Src)}
-          src={courtDetail.subImage3Src}
-        />
-        <Box
-          component="img"
-          sx={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            borderRadius: "0 0 10px 0",
-            cursor: "pointer",
-          }}
-          onClick={() => handleOpen(courtDetail.subImage4Src)}
-          src={courtDetail.subImage4Src}
-        />
+        {courtDetail?.courtImageList.map((image: CourtImage, index: number) =>
+          image?.imageType === "main" ? (
+            <Box
+              key={index}
+              sx={{
+                gridColumn: "span 2",
+                gridRow: "span 2",
+              }}
+            >
+              <Box
+                component="img"
+                sx={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  borderRadius: "10px 0 0 10px",
+                  cursor: "pointer",
+                }}
+                onClick={() => handleOpen(image?.courtImageSrc)}
+                src={image?.courtImageSrc}
+              />
+            </Box>
+          ) : (
+            <Box
+              key={index}
+              component="img"
+              sx={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                cursor: "pointer",
+              }}
+              onClick={() => handleOpen(image?.courtImageSrc)}
+              src={image?.courtImageSrc}
+            />
+          )
+        )}
       </Box>
 
       <Box
@@ -232,7 +196,7 @@ const CourtDetail = ({ params: { id } }: { params: { id: string } }) => {
                 padding: "2px 10px",
               }}
             >
-              Tennis
+              {courtDetail?.courtType?.courtTypeName}
             </Typography>
           </Box>
           <Box
@@ -251,7 +215,7 @@ const CourtDetail = ({ params: { id } }: { params: { id: string } }) => {
                 textAlign: "right",
               }}
             >
-              273 Đ. An Dương Vương, Phường 3, Quận 5, Hồ Chí Minh
+              {courtDetail?.courtAddress}
             </Typography>
           </Box>
           <Box
@@ -270,7 +234,7 @@ const CourtDetail = ({ params: { id } }: { params: { id: string } }) => {
                 textAlign: "right",
               }}
             >
-              (Chưa có)
+              {courtDetail?.courtDescription}
             </Typography>
           </Box>
           <Box
@@ -583,10 +547,10 @@ const CourtDetail = ({ params: { id } }: { params: { id: string } }) => {
         </Box>
         {/* Box booking button*/}
         <BoxBookingButton
-          courtId={id}
-          rentalPricePerHour={courtDetail.rentalPricePerHour}
-          minimumRentalTime={courtDetail.minimumRentalTime}
-          maximumRentalTime={courtDetail.maximumRentalTime}
+          courtId={courtDetail?.id}
+          rentalPricePerHour={courtDetail?.rentalPricePerHour}
+          minimumRentalTime={courtDetail?.minimumRentalTime}
+          maximumRentalTime={courtDetail?.maximumRentalTime}
         />
       </Box>
     </Box>
