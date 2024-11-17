@@ -7,14 +7,16 @@ import {
   Step,
   StepLabel,
   StepContent,
+  Skeleton,
 } from "@mui/material";
 import React, { useState } from "react";
 import BasicDatePicker from "./DatePicker";
 import TimePickerViews from "./TimePicker";
 import BookingInfoConfirmation from "./BookingInfoConfirmation";
 import { useParams, useRouter } from "next/navigation";
-import { randomBytes } from "crypto";
-import { v4 as uuidv4 } from "uuid";
+import { reservationApi } from "@/api/reservation";
+import { useAuthenticatedUser } from "@/hooks/useAuthenticatedUser";
+import toast from "react-hot-toast";
 
 const steps = [
   {
@@ -36,6 +38,7 @@ const BookingDetails = () => {
   const router = useRouter();
   const [loadingNextPage, setLoadingNextPage] = useState(false);
   const { id } = useParams<{ id: string }>();
+  const { user } = useAuthenticatedUser();
 
   const handleNext = () => {
     setCompletedSteps((prev) => ({ ...prev, [activeStep]: true }));
@@ -48,35 +51,29 @@ const BookingDetails = () => {
 
   const handleCheckout = async () => {
     setLoadingNextPage(true);
-    // const reservation_id = uuidv4();
-    // console.log(reservation_id);
-
+    if (!user) {
+      router.push("/sign-in");
+      return;
+    }
     try {
-      const res = await fetch("http://localhost:8080/api/v1/reservations", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBhZG1pbi5jb20iLCJleHAiOjE3MzA2NzYyNzEsImlhdCI6MTczMDY0MDI3MSwianRpIjoiN2ZlYmRhYzQtMjBkYS00YjBlLWIzY2MtNjA5MWYwOTY0ZmM2Iiwic2NvcGUiOiJBRE1JTiJ9.QJHBhn3qjbDcKdkdFvl1NinCv-aHOuP3-otvjKNn5MM`,
-        },
-        body: JSON.stringify({
-          checkInTime: "2024-11-03T14:11:50+0000",
-          checkOutTime: "2024-11-03T15:11:50+0000",
-          totalPrice: 10000,
-          reservationDate: "2024-11-02T14:11:50+0000",
-          userId: "00a46e0d-9cec-4f15-91bc-3b7b57343014",
-          courtId: "07ac677e-835f-49cd-99aa-3b37d9a388da",
-        }),
+      const res = await reservationApi.createReservation({
+        checkInTime: "2024-11-03T14:11:50+0000",
+        checkOutTime: "2024-11-03T15:11:50+0000",
+        totalPrice: 10000,
+        reservationDate: "2024-11-02T14:11:50+0000",
+        userId: user.id,
+        courtId: "07ac677e-835f-49cd-99aa-3b37d9a388da",
       });
 
-      if (res.ok) {
-        const data = await res.json();
-        router.push(`/book-court/reservation/${data.id}/checkout`);
+      if (res) {
+        toast.success("Đang chuyển tới trang thanh toán");
+        router.push(`/book-court/reservation/${res.id}/checkout`);
       } else {
-        console.log(`Error: ${res.status} ${res.statusText}`);
+        toast.error("Đã xảy ra lỗi, vui lòng thử lại sau");
       }
     } catch (error) {
       console.log(error);
-    } finally {
+      toast.error("Đã xảy ra lỗi, vui lòng thử lại sau");
       setLoadingNextPage(false);
     }
   };
@@ -113,7 +110,7 @@ const BookingDetails = () => {
         sx={{
           flex: 2,
           padding: "10px",
-          boxShadow: "0 5px 25px rgba(0, 0, 0, 0.2)",
+          // boxShadow: "0 5px 25px rgba(0, 0, 0, 0.2)",
           borderRadius: "10px",
         }}
       >
@@ -210,7 +207,7 @@ const BookingDetails = () => {
           // width: "100%",
           flex: 1,
           padding: "10px",
-          boxShadow: "0 5px 25px rgba(0, 0, 0, 0.2)",
+          // boxShadow: "0 5px 25px rgba(0, 0, 0, 0.2)",
           borderRadius: "10px",
           height: "fit-content",
         }}
@@ -247,7 +244,7 @@ const BookingDetails = () => {
                   fontWeight: "500",
                 }}
               >
-                Trần Vĩ Hào
+                {user?.userName}
               </Typography>
             </Box>
             <Box
@@ -257,7 +254,7 @@ const BookingDetails = () => {
               }}
             >
               <Typography>Số điện thoại</Typography>
-              <Typography>0912345678</Typography>
+              <Typography>{user?.phoneNumber}</Typography>
             </Box>
             <Divider />
             <Box

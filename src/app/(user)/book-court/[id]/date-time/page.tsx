@@ -1,9 +1,8 @@
 "use client";
 import React, { Fragment } from "react";
-import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
-import { StepLabel } from "@mui/material";
+import { Box, StepLabel } from "@mui/material";
 import { useParams } from "next/navigation";
 import BookingDetails from "@/components/book-court/date-time/BookingDetails";
 import { ColorlibStepIcon } from "@/components/styles/StepperStyles";
@@ -14,7 +13,11 @@ const BookCourtDateTimePage = () => {
   const { id } = useParams<{ id: string }>();
 
   return (
-    <Fragment>
+    <Box
+      sx={{
+        height: "100%",
+      }}
+    >
       <Stepper
         activeStep={0}
         sx={{
@@ -56,7 +59,7 @@ const BookCourtDateTimePage = () => {
       </Stepper>
 
       <BookingDetails />
-    </Fragment>
+    </Box>
   );
 };
 

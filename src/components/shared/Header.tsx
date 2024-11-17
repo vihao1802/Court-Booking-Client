@@ -1,6 +1,14 @@
 "use client";
 
-import { Avatar, Box, Button, Divider, Icon, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Button,
+  Divider,
+  Icon,
+  Skeleton,
+  Typography,
+} from "@mui/material";
 import { Lato } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
@@ -17,10 +25,10 @@ const lato = Lato({ subsets: ["latin"], weight: ["400"] });
 const Header = () => {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, logout } = useAuthenticatedUser();
+  const { user, logout, firstLoading } = useAuthenticatedUser();
   const handleSignOut = async () => {
     try {
-      logout(localStorage.getItem("token") || "");
+      logout();
       router.push("/");
     } catch (error) {
       console.log(error);
@@ -47,7 +55,10 @@ const Header = () => {
         <Box
           sx={{
             display: "flex",
-            justifyContent: "space-between",
+            justifyContent: {
+              xs: "right",
+              sm: "space-between",
+            },
             alignItems: "center",
             margin: "0 auto",
             maxWidth: "1056px",
@@ -56,8 +67,19 @@ const Header = () => {
           }}
         >
           <AppLogo />
-
-          {user ? (
+          {firstLoading && !user ? (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 2,
+              }}
+            >
+              <Skeleton variant="rounded" width={100} height={40} />
+              <Skeleton variant="rounded" width={100} height={40} />
+            </Box>
+          ) : user ? (
             <Box
               sx={{
                 display: "flex",
@@ -67,7 +89,7 @@ const Header = () => {
                 gap: 2,
                 height: "100%",
                 width: "100%",
-                maxHeight: "56px",
+                maxHeight: "48px",
                 maxWidth: "104px",
                 padding: "8px 12px",
                 borderRadius: "20px",

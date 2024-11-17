@@ -14,17 +14,19 @@ const OvalLoader = ({
   secondaryColor = "#eeeeee",
 }: OvalLoaderProps) => {
   return (
-    <Oval
-      visible={true}
-      height={size}
-      width={size}
-      strokeWidth={strokeWidth}
-      color={color}
-      secondaryColor={secondaryColor}
-      ariaLabel="oval-loading"
-      wrapperStyle={{}}
-      wrapperClass=""
-    />
+    <div className="w-full h-full flex justify-center items-center">
+      <Oval
+        visible={true}
+        height={size}
+        width={size}
+        strokeWidth={strokeWidth}
+        color={color}
+        secondaryColor={secondaryColor}
+        ariaLabel="oval-loading"
+        wrapperStyle={{}}
+        wrapperClass=""
+      />
+    </div>
   );
 };
 
