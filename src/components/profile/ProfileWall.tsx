@@ -1,3 +1,4 @@
+import { authApi } from "@/api/auth";
 import { fetchGET } from "@/data/user/fetchGET";
 import { IError } from "@/models/error";
 import { User } from "@/models/user";
@@ -12,9 +13,7 @@ interface profileWallProps {
 }
 
 const ProfileWall = async ({ handleButtonAvatarClicked }: profileWallProps) => {
-  const userData = await fetchGET({
-    url: "http://localhost:8080/api/v1/users/my-info",
-  });
+  const userData = await authApi.getAuthenticatedUser();
   return (
     <Box
       sx={{
