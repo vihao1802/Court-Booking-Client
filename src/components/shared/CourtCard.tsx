@@ -66,7 +66,7 @@ const CourtCard = ({ id, name, people, type }: CourtProps) => {
               borderColor: "var(--buttonHoverColor)",
             },
           }}
-          onClick={() => router.push("/court/1")}
+          onClick={() => router.push(`/court/${id}`)}
         >
           Chi tiết
         </Button>

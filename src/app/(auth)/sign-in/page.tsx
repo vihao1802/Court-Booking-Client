@@ -16,7 +16,7 @@ import AppLogo from "@/components/shared/Logo";
 import { LoginRequest } from "@/models/auth";
 import OvalLoader from "@/components/shared/OvalLoader";
 import { authApi } from "@/api/auth";
-import { useAuthenticatedUser } from "@/hooks/useAuthenticatedUser";
+import { useAuthenticatedUser } from "@/hooks/auth/useAuthenticatedUser";
 import { Router } from "next/router";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";

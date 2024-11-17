@@ -15,9 +15,10 @@ import React, { SyntheticEvent, useEffect, useState } from "react";
 import CourtCard from "@/components/shared/CourtCard";
 import { exploreCategoriesTabs } from "@/constants";
 import { useRouter } from "next/navigation";
-import { useCourtList } from "@/hooks/useCourtList";
+import { useGetCourtList } from "@/hooks/court/useGetCourtList";
 import { Pagination as ApiPagination } from "@/models/api";
-import { useCourtTypeList } from "@/hooks/useCourtTypeList";
+import { useGetCourtTypeList } from "@/hooks/court-type/useGetCourtTypeList";
+import { Court } from "@/models/court";
 
 const FeaturedCourts = () => {
   const router = useRouter();
@@ -28,11 +29,11 @@ const FeaturedCourts = () => {
   });
 
   const { data: courtTypeData, isLoading: courtTypeDataLoading } =
-    useCourtTypeList({ isdisabled: 0 });
+    useGetCourtTypeList({ isdisabled: 0 });
 
-  const [selectedType, setSelectedType] = useState("");
+  const [selectedType, setSelectedType] = useState(courtTypeData?.[0]?.id);
 
-  const { data: courtData, isLoading: courtDataLoading } = useCourtList({
+  const { data: courtData, isLoading: courtDataLoading } = useGetCourtList({
     typeId: selectedType,
     params: filters,
     enabled: Boolean(selectedType),
@@ -144,50 +145,36 @@ const FeaturedCourts = () => {
                 height={1000}
               />
             ) : (
-              courtData?.content.map(
-                (
-                  court: { id: string; courtName: string },
-                  index: React.Key | null | undefined
-                ) => (
-                  <CourtCard
-                    key={index}
-                    id={court?.id}
-                    name={court?.courtName}
-                    people={4}
-                    type={"Cầu lông"}
-                  />
-                )
-              )
+              courtData?.content.map((court: Court, index: number) => (
+                <CourtCard
+                  key={index}
+                  id={court?.id}
+                  name={court?.courtName}
+                  people={4}
+                  type={court?.courtType?.courtTypeName}
+                />
+              ))
             )}
           </TabPanel>
         </TabContext>
       </Box>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          marginTop: "20px",
-        }}
-      >
-        <Pagination
-          count={totalPages}
-          page={pageNumber + 1}
-          variant="outlined"
-          onChange={handlePageChange}
+
+      {!courtTypeDataLoading && (
+        <Box
           sx={{
-            "& .MuiPaginationItem-root": {
-              color: "var(--buttonColor)",
-            },
-            "& .Mui-selected": {
-              color: "#fff",
-              backgroundColor: "var(--buttonColor)",
-            },
-            "& .MuiPaginationItem-root:hover": {
-              backgroundColor: "var(--buttonLightColor)",
-            },
+            display: "flex",
+            justifyContent: "center",
+            marginTop: "20px",
           }}
-        />
-      </Box>
+        >
+          <Pagination
+            count={totalPages}
+            page={pageNumber + 1}
+            variant="outlined"
+            onChange={handlePageChange}
+          />
+        </Box>
+      )}
     </Paper>
   );
 };

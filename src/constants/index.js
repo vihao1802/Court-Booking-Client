@@ -1,3 +1,25 @@
+import badminton from "@/assets/images/Badminton.png";
+import tennis from "@/assets/images/Tennis.png";
+import volleyball from "@/assets/images/Volleyball.png";
+import football from "@/assets/images/Football.png";
+import basketball from "@/assets/images/Basketball.png";
+import futsal from "@/assets/images/Futsal.png";
+import tableTennis from "@/assets/images/TableTennis.png";
+import {
+  HomeOutlined,
+  HomeRounded,
+  ExploreOutlined,
+  ExploreRounded,
+  VideoLibraryOutlined,
+  VideoLibraryRounded,
+  NearMeOutlined,
+  NearMeRounded,
+  FavoriteBorderOutlined,
+  FavoriteRounded,
+  PeopleAltOutlined,
+  PeopleAltRounded,
+} from "@mui/icons-material";
+
 export const navItems = [
   {
     name: "Trang chủ",
@@ -70,6 +92,8 @@ export const exploreCategoriesTabs = [
         </defs>
       </svg>
     ),
+    img: badminton,
+    type: 1,
   },
   {
     value: "6",
@@ -106,6 +130,8 @@ export const exploreCategoriesTabs = [
         ></path>
       </svg>
     ),
+    img: tableTennis,
+    type: 1,
   },
   {
     value: "e54f",
@@ -212,6 +238,8 @@ export const exploreCategoriesTabs = [
         </defs>
       </svg>
     ),
+    img: futsal,
+    type: 2,
   },
   {
     value: "20b1",
@@ -304,6 +332,8 @@ export const exploreCategoriesTabs = [
         </defs>
       </svg>
     ),
+    img: volleyball,
+    type: 2,
   },
   {
     value: "e00e",
@@ -410,6 +440,8 @@ export const exploreCategoriesTabs = [
         </defs>
       </svg>
     ),
+    img: football,
+    type: 2,
   },
   {
     value: "e1b2",
@@ -481,6 +513,8 @@ export const exploreCategoriesTabs = [
         </defs>
       </svg>
     ),
+    img: tennis,
+    type: 1,
   },
   {
     value: "7",
@@ -538,5 +572,121 @@ export const exploreCategoriesTabs = [
         </defs>
       </svg>
     ),
+    img: basketball,
+    type: 2,
+  },
+];
+
+export const sideBarItems = [
+  {
+    id: 1,
+    iconNonActive: <HomeOutlined />,
+    iconActive: <HomeRounded />,
+    route: "/",
+    label: "Home",
+  },
+  {
+    id: 2,
+    iconNonActive: (
+      <svg
+        aria-label="Search"
+        className="x1lliihq x1n2onr6 x5n08af"
+        fill="currentColor"
+        height="24"
+        role="img"
+        viewBox="0 0 24 24"
+        width="24"
+      >
+        <title>Search</title>
+        <path
+          d="M19 10.5A8.5 8.5 0 1 1 10.5 2a8.5 8.5 0 0 1 8.5 8.5Z"
+          fill="none"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+        ></path>
+        <line
+          fill="none"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          x1="16.511"
+          x2="22"
+          y1="16.511"
+          y2="22"
+        ></line>
+      </svg>
+    ),
+    iconActive: (
+      <svg
+        aria-label="Search"
+        className="x1lliihq x1n2onr6 x5n08af"
+        fill="currentColor"
+        height="24"
+        role="img"
+        viewBox="0 0 24 24"
+        width="24"
+      >
+        <title>Search</title>
+        <path
+          d="M18.5 10.5a8 8 0 1 1-8-8 8 8 0 0 1 8 8Z"
+          fill="none"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="3"
+        ></path>
+        <line
+          fill="none"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="3"
+          x1="16.511"
+          x2="21.643"
+          y1="16.511"
+          y2="21.643"
+        ></line>
+      </svg>
+    ),
+    route: "",
+    label: "Search",
+  },
+  {
+    id: 3,
+    iconNonActive: <ExploreOutlined />,
+    iconActive: <ExploreRounded />,
+    route: "/explore",
+    label: "Explore",
+  },
+  {
+    id: 4,
+    iconNonActive: <VideoLibraryOutlined />,
+    iconActive: <VideoLibraryRounded />,
+    route: "/reels",
+    label: "Reels",
+  },
+  {
+    id: 5,
+    iconNonActive: <NearMeOutlined />,
+    iconActive: <NearMeRounded />,
+    route: "/messages",
+    label: "Messages",
+  },
+  {
+    id: 6,
+    iconNonActive: <FavoriteBorderOutlined />,
+    iconActive: <FavoriteRounded />,
+    route: "",
+    label: "Notifications",
+  },
+  {
+    id: 7,
+    iconNonActive: <PeopleAltOutlined />,
+    iconActive: <PeopleAltRounded />,
+    route: "/friends",
+    label: "Friends",
   },
 ];

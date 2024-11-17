@@ -1,57 +1,23 @@
 "use client";
 
 import { Autocomplete, Box, Paper, TextField, Typography } from "@mui/material";
-import Image from "next/image";
+import { exploreCategoriesTabs as types } from "@/constants";
+import Image, { StaticImageData } from "next/image";
 import React from "react";
-import badminton from "@/assets/images/Badminton.png";
-import tennis from "@/assets/images/Tennis.png";
-import volleyball from "@/assets/images/Volleyball.png";
-import football from "@/assets/images/Football.png";
-import basketball from "@/assets/images/Basketball.png";
-import futsal from "@/assets/images/Futsal.png";
-import tableTennis from "@/assets/images/TableTennis.png";
 
 import SearchPanel from "@/components/search-panel/SearchPanel";
-
-const types = [
-  {
-    label: "Cầu lông",
-    src: badminton,
-    type: 1,
-  },
-  {
-    label: "Bóng bàn",
-    src: tableTennis,
-    type: 1,
-  },
-  {
-    label: "Futsal",
-    src: futsal,
-    type: 2,
-  },
-  {
-    label: "Bóng chuyền",
-    src: volleyball,
-    type: 2,
-  },
-  {
-    label: "Bóng đá",
-    src: football,
-    type: 2,
-  },
-  {
-    label: "Tennis",
-    src: tennis,
-    type: 1,
-  },
-  {
-    label: "Bóng rổ",
-    src: basketball,
-    type: 2,
-  },
-];
+import { useCourtTypeList } from "@/hooks/court-type/useGetCourtTypeList";
+import { CourtType } from "@/models/court-type";
+import { useRouter } from "next/navigation";
 
 const page = () => {
+  const router = useRouter();
+
+  const { data: courtTypeList, isLoading: courtTypeListLoading } =
+    useCourtTypeList({ isdisabled: 0 });
+
+  if (courtTypeListLoading) return;
+
   return (
     <Box
       sx={{
@@ -127,9 +93,14 @@ const page = () => {
                 gap: "20px",
               }}
             >
-              {types
-                .filter((court) => court.type === 1)
-                .map((court, index) => (
+              {courtTypeList
+                .filter((court: CourtType) =>
+                  types.some(
+                    (type) =>
+                      type.value === court.id.split("-")[1] && type.type === 1
+                  )
+                )
+                .map((court: CourtType, index: number) => (
                   <Paper
                     key={index}
                     sx={{
@@ -144,13 +115,17 @@ const page = () => {
                       },
                       border: "1px solid white",
                     }}
+                    onClick={() => router.push(`/explore/category/${court.id}`)}
                   >
                     <Typography fontSize="13px" color="#222222">
-                      {court.label}
+                      {court.courtTypeName}
                     </Typography>
                     <Image
-                      src={court.src}
-                      alt={court.label}
+                      src={
+                        types.find((x) => x.value === court?.id.split("-")[1])
+                          ?.img as StaticImageData
+                      }
+                      alt={court.courtTypeName}
                       width={100}
                       height={100}
                       style={{
@@ -180,9 +155,14 @@ const page = () => {
                 padding: "20px 0",
               }}
             >
-              {types
-                .filter((court) => court.type === 2)
-                .map((court, index) => (
+              {courtTypeList
+                .filter((court: CourtType) =>
+                  types.some(
+                    (type) =>
+                      type.value === court.id.split("-")[1] && type.type === 2
+                  )
+                )
+                .map((court: any, index: number) => (
                   <Paper
                     key={index}
                     sx={{
@@ -197,13 +177,17 @@ const page = () => {
                       },
                       border: "1px solid white",
                     }}
+                    onClick={() => router.push(`/explore/category/${court.id}`)}
                   >
                     <Typography fontSize="13px" color="#222222">
-                      {court.label}
+                      {court.courtTypeName}
                     </Typography>
                     <Image
-                      src={court.src}
-                      alt={court.label}
+                      src={
+                        types.find((x) => x.value === court?.id.split("-")[1])
+                          ?.img as StaticImageData
+                      }
+                      alt={court.courtTypeName}
                       width={100}
                       height={100}
                       style={{
