@@ -7,30 +7,31 @@ import { formatDate, formatVND } from "@/utils/format";
 import { List, ListItem, ListItemDecorator, Radio, RadioGroup } from "@mui/joy";
 import { reservationApi } from "@/api/reservation";
 import OvalLoader from "@/components/shared/OvalLoader";
-import useSWR from "swr";
 import toast from "react-hot-toast";
 import Countdown from "@/components/shared/CountDown";
+import { useGetReservationById } from "@/hooks/reservation/useGetReservationById";
+import { useUpdateReservation } from "@/hooks/reservation/useUpdateReservation";
+import { PaymentMethod } from "@/types/enums";
 
 const PaymentDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [loadingPayment, setLoadingPayment] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState(-1);
   const router = useRouter();
+  const {
+    data: reservation,
+    error,
+    isLoading,
+  } = useGetReservationById({
+    reservationId: id,
+  });
+  const { updateReservation } = useUpdateReservation({});
 
-  useEffect(() => {
-    /* if (reservation.reservationState === "PAID") {
-      router.push(`/reservation/${id}/payment-success`);
-    } */
-  }, []);
+  if (isLoading) {
+    return <OvalLoader size="50" />;
+  }
 
-  const fetcher = async () => {
-    const res = await reservationApi.getReservation(id);
-    return res;
-  };
-
-  const { data: reservation } = useSWR("reservation", fetcher);
-
-  if (!reservation) {
+  if (error) {
     return <OvalLoader size="50" />;
   }
 
@@ -66,8 +67,12 @@ const PaymentDetail = () => {
   };
 
   const handleTimeOutPayment = () => {
-    toast.error("Hết thời gian thanh toán. Xin vui lòng thử lại");
-    router.push(`/`);
+    updateReservation(id, {
+      reservationState: 2,
+      paymentMethod: "NONE" as PaymentMethod,
+    });
+    toast.error("Hết thời hạn thanh toán. Đơn đặt đã bị hủy.");
+    // router.push(`/`);
   };
 
   return (
@@ -75,9 +80,29 @@ const PaymentDetail = () => {
       sx={{
         width: "100%",
         display: "flex",
-        justifyContent: "center",
+        alignItems: "center",
+        flexDirection: "column",
+        gap: "20px",
       }}
     >
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          flexDirection: "column",
+          gap: "5px",
+        }}
+      >
+        <Typography
+          sx={{
+            color: "gray",
+          }}
+          variant="h6"
+        >
+          Đơn đặt sẽ hết hạn trong
+        </Typography>
+        <Countdown onComplete={handleTimeOutPayment} />
+      </Box>
       <Box
         sx={{
           maxWidth: "600px",
@@ -88,9 +113,10 @@ const PaymentDetail = () => {
           "& > * + *": {
             marginTop: "20px",
           },
+          borderRadius: "7px",
+          boxShadow: { sm: "none", md: "rgba(0, 0, 0, 0.2) 0px 0px 4px" },
         }}
       >
-        <Countdown onComplete={handleTimeOutPayment} />
         <Box
           sx={{
             display: "flex",
@@ -164,20 +190,22 @@ const PaymentDetail = () => {
               <Typography
                 sx={{
                   fontSize: "14px",
-                  color: "var(--buttonHoverColor)",
+                  color: "var(--buttonColor)",
                 }}
               >
                 {formatDate(reservation?.reservationDate)}
               </Typography>
               <Typography
                 sx={{
-                  color: "var(--buttonHoverColor)",
+                  color: "var(--buttonColor)",
                 }}
               >
                 {reservation.checkInTime} - {reservation.checkOutTime}
               </Typography>
             </Box>
-            <Typography>20.000 đ / 1 tiếng</Typography>
+            <Typography sx={{ textAlign: "right" }}>
+              20.000 đ / 1 tiếng
+            </Typography>
           </Box>
           <Divider
             sx={{
@@ -193,7 +221,7 @@ const PaymentDetail = () => {
             }}
           >
             <Typography variant="h6">Tổng tiền</Typography>
-            <Typography variant="h6">
+            <Typography variant="h6" sx={{ textAlign: "right" }}>
               {formatVND(Number(reservation.totalPrice))}
             </Typography>
           </Box>

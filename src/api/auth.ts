@@ -37,7 +37,7 @@ export const authApi = {
   },
   async getAuthenticatedUser() {
     const res = await axiosInstance.get<User>("/users/my-info");
-    localStorage.setItem("user", JSON.stringify(res.data));
+    // localStorage.setItem("user", JSON.stringify(res.data));
     return res.data;
   },
 };

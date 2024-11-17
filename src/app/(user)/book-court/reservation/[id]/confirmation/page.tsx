@@ -16,6 +16,7 @@ import { formatVND } from "@/utils/format";
 import { reservationApi } from "@/api/reservation";
 import OvalLoader from "@/components/shared/OvalLoader";
 import useSWR from "swr";
+import { useGetReservationById } from "@/hooks/reservation/useGetReservationById";
 
 const steps = ["Đặt lịch", "Thanh toán", "Kết quả"];
 
@@ -23,22 +24,22 @@ const BookCourtPaymentStatusPage = () => {
   const searchParams = useSearchParams();
   const { id } = useParams<{ id: string }>();
   const reservation_status = Number(searchParams.get("status"));
-  // const [reservation, setReservation] = useState<Reservation>();
-
-  const fetcher = async () => {
-    const res = await reservationApi.getReservation(id);
-    return res;
-  };
-
-  const { data: reservation, error } = useSWR("reservation", fetcher);
+  const {
+    data: reservation,
+    error,
+    isLoading,
+  } = useGetReservationById({
+    reservationId: id,
+  });
 
   console.log(reservation);
 
   if (error) {
+    // router.push(`/`);
     console.log(error);
   }
 
-  if (!reservation) {
+  if (isLoading) {
     return <OvalLoader size="50" />;
   }
 

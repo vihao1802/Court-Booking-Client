@@ -26,12 +26,12 @@ const CountdownComponent = ({
                 gap: "10px",
               }}
             >
-              <AccessAlarmsRounded sx={{ color: "var(--buttonHoverColor)" }} />
+              <AccessAlarmsRounded sx={{ color: "var(--buttonColor)" }} />
               <Typography
-                variant="h5"
+                variant="h6"
                 fontWeight="bold"
                 sx={{
-                  color: "var(--buttonHoverColor)",
+                  color: "var(--buttonColor)",
                 }}
               >
                 {zeroPad(minutes)}:{zeroPad(seconds)}

@@ -1,11 +1,7 @@
-import axios from "axios";
-import {
-  BadRequestError,
-  UnauthorizedError,
-  NotFoundError,
-  ConflictError,
-  TooManyRequestsError,
-} from "./http-errors";
+import { Error } from "@/types/interfaces";
+import axios, { AxiosError } from "axios";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
@@ -27,30 +23,30 @@ axiosInstance.interceptors.request.use(
 );
 
 axiosInstance.interceptors.response.use(
-  (response) => response
-  /* (error) => {
-    if (axios.isAxiosError(error)) {
-      const errorMessage = error.response?.data?.error;
+  (response) => response,
+  (error: Error) => {
+    if (error.response) {
+      console.error("API Error:", error.response.data);
+      console.error("Status Code:", error.response.status);
 
-      switch (error.response?.status) {
-        case 400:
-          throw new BadRequestError(errorMessage);
-        case 401:
-          throw new UnauthorizedError(errorMessage);
-        case 404:
-          throw new NotFoundError(errorMessage);
-        case 409:
-          throw new ConflictError(errorMessage);
-        case 429:
-          throw new TooManyRequestsError(errorMessage);
-        default:
-          throw error;
+      if (error.response.status === 401) {
+        console.error("Unauthorized request - redirecting to login");
+        toast.error("Vui lòng đăng nhập để tiếp tục");
+        window.location.href = "/sign-in";
+      } else if (error.response.status === 404) {
+        console.error("Resource not found");
+        window.location.href = "/";
+      } else if (error.response.status >= 500) {
+        console.error("Server error, please try again later");
       }
+    } else if (error.request) {
+      console.error("No response received from server:", error.request);
+    } else {
+      console.error("Error setting up request:", error.message);
     }
 
     return Promise.reject(error);
-  },
-  { synchronous: true } */
+  }
 );
 
 export default axiosInstance;

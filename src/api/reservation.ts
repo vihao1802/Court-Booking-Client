@@ -2,13 +2,21 @@ import {
   MomoPaymentRequest,
   Reservation,
   ReservationRequest,
+  UpdateReservationRequest,
 } from "@/models/reservation";
 import axiosInstance from "./axios-instance";
 
 export const reservationApi = {
-  async getReservation(reservationId: string) {
+  async getReservationById(reservationId: string) {
     const res = await axiosInstance.get<Reservation>(
       `/reservations/${reservationId}`
+    );
+    return res.data;
+  },
+  async updateReservation(id: string, data: UpdateReservationRequest) {
+    const res = await axiosInstance.put<Reservation>(
+      `/reservations/${id}`,
+      data
     );
     return res.data;
   },

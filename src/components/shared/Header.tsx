@@ -89,7 +89,7 @@ const Header = () => {
                 gap: 2,
                 height: "100%",
                 width: "100%",
-                maxHeight: "56px",
+                maxHeight: "48px",
                 maxWidth: "104px",
                 padding: "8px 12px",
                 borderRadius: "20px",
