@@ -1,4 +1,5 @@
 import { CourtImage, CourtImageRequest } from "./court-image";
+import { CourtType } from "./court-type";
 
 interface CourtBase {
   courtName: string;
@@ -7,14 +8,15 @@ interface CourtBase {
   rentalPricePerHour: number;
   minimumRentalTime: number;
   maximumRentalTime: number;
-  courtTypeId: string;
 }
 
 export interface Court extends CourtBase {
   id: string;
+  courtType: CourtType;
   courtImageList: CourtImage[];
 }
 
 export interface CourtRequest extends CourtBase {
+  courtTypeId: string;
   courtImageList: CourtImageRequest[];
 }
