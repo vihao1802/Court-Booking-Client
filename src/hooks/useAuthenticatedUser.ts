@@ -4,6 +4,7 @@ import { LoginRequest } from "@/models/auth";
 import { User } from "@/models/user";
 import useSWR, { SWRConfiguration } from "swr";
 
+
 function getAuthenticatedUser(): User | null {
   try {
     return JSON.parse(localStorage.getItem("user") || "");

@@ -5,6 +5,7 @@ export interface UserBase {
   dayOfBirth: string;
   createdAt: string;
   location: string;
+  profileImage: string;
 }
 
 export interface User extends UserBase {

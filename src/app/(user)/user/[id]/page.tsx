@@ -1,5 +1,5 @@
 "use client";
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { Divider, Box } from "@mui/material";
 import dayjs from "dayjs";
 import ProfileWall from "@/components/profile/ProfileWall";
@@ -7,26 +7,27 @@ import Section from "@/components/profile/ProfileSection";
 import { User } from "@/models/user";
 import { IError } from "@/models/error";
 import BookingInfoComponent from "@/components/profile/BookingInfoComponent";
-import { fetchGET } from "@/data/user/fetchGET";
 import { IReservation } from "@/models/reservation";
 import BookingSectionComponent from "@/components/profile/BookingSectionComponent";
 import ProfileContactComponent from "@/components/profile/ProfileContactComponent";
 import { useRouter, useParams } from "next/navigation";
+import { useGetMyReservation } from "@/hooks/useGetMyReservation";
 
-const Profile = async () => {
+async function Profile() {
+  const [totalHours, setTotalHours] = useState<number>(0);
   const router = useRouter();
   const params = useParams();
-  const myReservations: IReservation[] = await fetchGET({
-    url: "http://localhost:8080/api/v1/reservations/my-reservations",
-  });
-  const totalBookingHours = calculateBookingHours();
+  const { reservationList, isLoading, error, mutate } =
+    await useGetMyReservation().getMyReservation();
+
   function handleProfileWallButton() {
     router.push(`/user/${params}/edit`);
   }
 
-  function calculateBookingHours() {
+  useEffect(() => {
+    if (reservationList === undefined || error) return;
     let totalhours: number = 0;
-    myReservations.forEach((reservation) => {
+    reservationList?.forEach((reservation) => {
       // Parse check-in and check-out times with dayjs
       const checkIn = dayjs(reservation.checkInTime, "MM/DD/YY, h:mm A");
       const checkOut = dayjs(reservation.checkOutTime, "MM/DD/YY, h:mm A");
@@ -37,9 +38,8 @@ const Profile = async () => {
       // Add to total hours
       totalhours += hours;
     });
-
-    return totalhours;
-  }
+    setTotalHours(totalhours);
+  }, [reservationList]);
   return (
     <Box
       sx={{
@@ -92,12 +92,12 @@ const Profile = async () => {
           >
             <BookingInfoComponent
               title="Booking made"
-              info={myReservations.length.toString()}
+              info={(reservationList?.length ?? 0).toString()}
             />
             <Divider orientation="vertical" variant="middle" flexItem />
             <BookingInfoComponent
               title="Booking hours"
-              info={totalBookingHours.toString()}
+              info={setTotalHours.toString()}
             />
           </Box>
         </Box>
@@ -116,15 +116,17 @@ const Profile = async () => {
         }}
       >
         {/* Booking */}
-        <Suspense fallback={<p>Loading...</p>}>
-          <BookingSectionComponent
-            id={myReservations[0].id}
-            checkInTime={myReservations[0].checkInTime}
-            checkOutTime={myReservations[0].checkOutTime}
-            courtId={myReservations[0].courtId}
-            reservationDate={myReservations[0].reservationDate}
-          />
-        </Suspense>
+        {reservationList && reservationList.length > 0 && (
+          <Suspense fallback={<p>Loading...</p>}>
+            <BookingSectionComponent
+              id={reservationList[0].id}
+              checkInTime={reservationList[0].checkInTime}
+              checkOutTime={reservationList[0].checkOutTime}
+              courtId={reservationList[0].courtId}
+              reservationDate={reservationList[0].reservationDate}
+            />
+          </Suspense>
+        )}
         {/* Contact */}
         <Suspense fallback={<p>Loading...</p>}>
           <ProfileContactComponent />
@@ -132,6 +134,6 @@ const Profile = async () => {
       </Box>
     </Box>
   );
-};
+}
 
 export default Profile;

@@ -1,5 +1,4 @@
 import { authApi } from "@/api/auth";
-import { fetchGET } from "@/data/user/fetchGET";
 import { IError } from "@/models/error";
 import { User } from "@/models/user";
 import { Edit } from "@mui/icons-material";
@@ -7,13 +6,14 @@ import { Avatar, Box, Divider, IconButton, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import React, { Suspense, useEffect, useState } from "react";
 import { string } from "yup";
+import { useAuthenticatedUser } from "@/hooks/useAuthenticatedUser";
 
 interface profileWallProps {
   handleButtonAvatarClicked?: () => void;
 }
 
 const ProfileWall = async ({ handleButtonAvatarClicked }: profileWallProps) => {
-  const userData = await authApi.getAuthenticatedUser();
+  const { user } = useAuthenticatedUser();
   return (
     <Box
       sx={{
@@ -75,17 +75,19 @@ const ProfileWall = async ({ handleButtonAvatarClicked }: profileWallProps) => {
             marginBottom: "1em",
           }}
         >
-          <Avatar
-            src={userData.profileImage}
-            sx={{
-              width: "148px",
-              height: "148px",
-              border: "4px solid white",
-              borderRadius: "50%",
-              position: "relative",
-            }}
-            alt="your profile picture"
-          ></Avatar>
+          {user && (
+            <Avatar
+              src={user.profileImage}
+              sx={{
+                width: "148px",
+                height: "148px",
+                border: "4px solid white",
+                borderRadius: "50%",
+                position: "relative",
+              }}
+              alt="your profile picture"
+            ></Avatar>
+          )}
           {handleButtonAvatarClicked && (
             <Box
               sx={{
@@ -139,10 +141,10 @@ const ProfileWall = async ({ handleButtonAvatarClicked }: profileWallProps) => {
           }}
         >
           <Typography variant="h6" fontWeight="700">
-            {userData.userName}
+            {user && user.userName}
           </Typography>
           <Typography variant="body2" color="rgb(109 105 123)">
-            {userData.email}
+            {user && user.email}
           </Typography>
         </Box>
         <Divider
@@ -154,7 +156,8 @@ const ProfileWall = async ({ handleButtonAvatarClicked }: profileWallProps) => {
             color: "rgb(109, 105, 123)",
           }}
         >
-          {`Joined since ${dayjs(userData.createdAt).format("DD MMM YYYY")}`}
+          {user &&
+            `Joined since ${dayjs(user.createdAt).format("DD MMM YYYY")}`}
         </Divider>
       </Box>
     </Box>

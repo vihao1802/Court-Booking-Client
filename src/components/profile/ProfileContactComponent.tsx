@@ -4,15 +4,13 @@ import Section from "./ProfileSection";
 import { Box, Typography } from "@mui/material";
 import { useParams, useRouter } from "next/navigation";
 import { PhoneIphone, Edit, Email, LocationOn } from "@mui/icons-material";
-import { fetchGET } from "@/data/user/fetchGET";
 import { User } from "@/models/user";
+import { useAuthenticatedUser } from "@/hooks/useAuthenticatedUser";
 
 const ProfileContactComponent = async () => {
   const idParam = useParams();
   const router = useRouter();
-  const userContact: User = await fetchGET({
-    url: `http://localhost:8080/api/v1/users/my-info`,
-  });
+  const { user, isLoading, error, mutate, logout } = useAuthenticatedUser();
   function handleButtonClick() {
     router.push(`/user/${idParam}/edit`);
   }
@@ -53,7 +51,7 @@ const ProfileContactComponent = async () => {
             }}
           >
             <Email />
-            <Typography>{userContact.email}</Typography>
+            <Typography>{user?.email}</Typography>
           </Box>
         </Box>
         <Box
@@ -80,7 +78,7 @@ const ProfileContactComponent = async () => {
             }}
           >
             <PhoneIphone />
-            <Typography>{userContact.phoneNumber}</Typography>
+            <Typography>{user?.phoneNumber}</Typography>
           </Box>
         </Box>
         <Box
@@ -107,7 +105,7 @@ const ProfileContactComponent = async () => {
             }}
           >
             <LocationOn />
-            <Typography>{userContact.location}</Typography>
+            <Typography>{user?.location}</Typography>
           </Box>
         </Box>
       </Box>

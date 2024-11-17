@@ -3,7 +3,6 @@ import { Box, Button, Divider, Typography } from "@mui/material";
 import React, { use } from "react";
 import Section from "./ProfileSection";
 import dayjs from "dayjs";
-import { fetchGET } from "@/data/user/fetchGET";
 import { Court } from "@/models/court";
 import { useParams, useRouter } from "next/navigation";
 
@@ -23,9 +22,17 @@ const BookingSectionComponent = async ({
 }: BookingSectionProps) => {
   const paramId = useParams();
   const router = useRouter();
-  const courtInfo: Court = await fetchGET({
-    url: `http://localhost:8080/api/v1/courts/${courtId}`,
-  });
+  const courtInfo: Court = {
+    id: courtId,
+    courtName: "Court 1",
+    courtDescription: "Court 1 Description",
+    courtAddress: "Kathmandu",
+    rentalPricePerHour: 1000,
+    minimumRentalTime: 1,
+    maximumRentalTime: 2,
+    courtTypeId: "1",
+    courtImageList: [],
+  };
 
   function getDay(date: Date) {
     // Parse the date with dayjs

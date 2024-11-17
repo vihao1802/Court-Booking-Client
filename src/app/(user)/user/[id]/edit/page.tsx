@@ -13,11 +13,11 @@ import { CameraAlt } from "@mui/icons-material";
 import React, { Suspense } from "react";
 import ProfileTextField from "@/components/profile/ProfileTextField";
 import ProfileAutocomplete from "@/components/profile/ProfileAutocomplete";
-import { fetchGET } from "@/data/user/fetchGET";
+import { useAuthenticatedUser } from "@/hooks/useAuthenticatedUser";
 import { useParams } from "next/navigation";
 
 const EditProfile = () => {
-  // const userData = await fetchGET(`http://localhost:8080/api/v1/users/my-info`)
+  const { user, isLoading, error, mutate, logout } = useAuthenticatedUser();
   const gender = [
     {
       id: "1",
