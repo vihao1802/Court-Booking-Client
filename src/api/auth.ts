@@ -3,11 +3,11 @@ import {
   LoginResponse,
   LogoutRequest,
   RefreshTokenRequest,
+  RefreshTokenResponse,
 } from "@/models/auth";
 import axiosInstance from "./axios-instance";
-import Cookies from "js-cookie";
 import { User } from "@/models/user";
-import { log } from "console";
+import { get } from "http";
 
 const prefix = "/auth";
 
@@ -32,12 +32,46 @@ export const authApi = {
     return axiosInstance.post(`${prefix}/logout`, request);
   },
 
-  refresh(request: RefreshTokenRequest) {
-    return axiosInstance.post(`${prefix}/refresh-token`, request);
+  async refresh(request: RefreshTokenRequest) {
+    console.log("2: refresh: " + request.token);
+
+    const res = await axiosInstance.post<RefreshTokenResponse>(
+      `${prefix}/refresh-token`,
+      request
+    );
+
+    console.log("3: refresh: " + res);
+
+    if (res.status === 400 || res.status === 401) {
+      localStorage.removeItem("token");
+      // window.location.href = "/sign-in";
+      return;
+    }
+
+    localStorage.setItem("token", JSON.stringify(res.data.token));
+    return res.data;
   },
+
   async getAuthenticatedUser() {
+    console.log("getAuthenticatedUser");
+
+    if (localStorage.getItem("token") === null) {
+      return null;
+    }
     const res = await axiosInstance.get<User>("/users/my-info");
-    // localStorage.setItem("user", JSON.stringify(res.data));
+
+    console.log("getAuthenticatedUser: res: " + res);
+
+    if (res.status === 400 || res.status === 401) {
+      // getAuthenticatedUser: status 400 or 401, refresh token and try again
+
+      await this.refresh({
+        token: localStorage.getItem("token") as string,
+      });
+
+      this.getAuthenticatedUser();
+    }
+
     return res.data;
   },
 };
