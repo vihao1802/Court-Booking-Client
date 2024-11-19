@@ -2,6 +2,7 @@ import { Error } from "@/types/interfaces";
 import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { authApi } from "./auth";
 
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
@@ -26,13 +27,20 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   (error: Error) => {
     if (error.response) {
-      console.error("API Error:", error.response.data);
-      console.error("Status Code:", error.response.status);
+      console.log("1. API Error:", error.response.data);
+      // console.error("Status Code:", error.response.status);
 
       if (error.response.status === 401) {
-        console.error("Unauthorized request - redirecting to login");
-        toast.error("Vui lòng đăng nhập để tiếp tục");
-        window.location.href = "/sign-in";
+        // console.error("Unauthorized request - redirecting to login");
+        // toast.error("Vui lòng đăng nhập để tiếp tục");
+        // window.location.href = "/sign-in";
+        // if (localStorage.getItem("token")) {
+        //   const token = localStorage.getItem("token")?.replace(/^"|"$/g, "");
+        //   console.log("2. Token:", token);
+        //   if (token) {
+        //     // authApi.refresh({ token });
+        //   }
+        // }
       } else if (error.response.status === 404) {
         console.error("Resource not found");
         window.location.href = "/";
@@ -45,7 +53,7 @@ axiosInstance.interceptors.response.use(
       console.error("Error setting up request:", error.message);
     }
 
-    return Promise.reject(error);
+    return error;
   }
 );
 

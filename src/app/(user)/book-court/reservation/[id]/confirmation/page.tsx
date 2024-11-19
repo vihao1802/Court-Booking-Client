@@ -17,6 +17,7 @@ import { reservationApi } from "@/api/reservation";
 import OvalLoader from "@/components/shared/OvalLoader";
 import useSWR from "swr";
 import { useGetReservationById } from "@/hooks/reservation/useGetReservationById";
+import StepperPayment from "@/components/book-court/payment/StepperPayment";
 
 const steps = ["Đặt lịch", "Thanh toán", "Kết quả"];
 
@@ -47,7 +48,12 @@ const BookCourtPaymentStatusPage = () => {
 
   return (
     <Fragment>
-      <Stepper
+      <StepperPayment
+        activeCurrStep={3}
+        isCompleted={reservation_status === 1}
+        enableError={true}
+      />
+      {/* <Stepper
         activeStep={3}
         sx={{
           "& .Mui-active": {
@@ -99,7 +105,7 @@ const BookCourtPaymentStatusPage = () => {
             </Step>
           );
         })}
-      </Stepper>
+      </Stepper> */}
 
       <Box
         sx={{
@@ -206,10 +212,24 @@ const BookCourtPaymentStatusPage = () => {
               }}
             >
               <Typography sx={{ flex: 1, textAlign: "left", color: "gray" }}>
+                Ngày đến sân
+              </Typography>
+              <Typography sx={{ flex: 2, textAlign: "right" }}>
+                {reservation.reservationDate}
+              </Typography>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              <Typography sx={{ flex: 1, textAlign: "left", color: "gray" }}>
                 Thời gian vào
               </Typography>
               <Typography sx={{ flex: 2, textAlign: "right" }}>
-                {reservation.checkInTime}
+                {reservation.checkInTime}:00
               </Typography>
             </Box>
             <Box
@@ -223,7 +243,7 @@ const BookCourtPaymentStatusPage = () => {
                 Thời gian ra
               </Typography>
               <Typography sx={{ flex: 2, textAlign: "right" }}>
-                {reservation.checkOutTime}
+                {reservation.checkOutTime}:00
               </Typography>
             </Box>
           </Box>

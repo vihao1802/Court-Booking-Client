@@ -1,47 +1,47 @@
-import * as React from "react";
-import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import { useContext, useState } from "react";
 import dayjs from "dayjs";
 import {
   Box,
   Button,
-  duration,
   FormControl,
   FormHelperText,
-  InputLabel,
   MenuItem,
   Select,
   SelectChangeEvent,
 } from "@mui/material";
 import { BookCourtContext } from "@/app/(user)/book-court/layout";
+import { Court } from "@/models/court";
 
 export default function TimePickerViews({
   handleNext,
   handleBack,
+  court,
 }: {
   handleNext: () => void;
   handleBack: () => void;
+  court: Court | undefined;
 }) {
-  const { startTime, setStartTime, duration, setDuration } =
-    React.useContext(BookCourtContext);
-  const [disabledDuration, setDisabledDuration] = React.useState(
+  const { startTime, setStartTime, duration, setDuration, setTotalPrice } =
+    useContext(BookCourtContext);
+  const [disabledDuration, setDisabledDuration] = useState(
     startTime ? false : true
   );
-  const [showContinueButton, setShowContinueButton] = React.useState(
+  const [showContinueButton, setShowContinueButton] = useState(
     startTime && duration ? true : false
   );
 
-  const maximumRentalTime = 3;
+  const maximumRentalTime = court?.maximumRentalTime || 1;
 
   const handleChangeStartTime = (event: SelectChangeEvent) => {
-    setStartTime(event.target.value as string);
+    const t = Number(event.target.value);
+    setStartTime(t.toString());
     setDisabledDuration(false);
   };
 
   const handleChangeDuration = (event: SelectChangeEvent) => {
-    setDuration(event.target.value as string);
+    const dur = Number(event.target.value);
+    setDuration(dur.toString());
+    if (court) setTotalPrice(court?.rentalPricePerHour * dur);
     setShowContinueButton(true);
   };
 
@@ -50,16 +50,12 @@ export default function TimePickerViews({
   const currentHour = now.hour();
   const startHour = Math.max(currentHour + 1, 8);
   for (let hour = startHour; hour <= 22; hour++) {
-    const period = hour < 12 ? "AM" : "PM";
-    const displayHour = hour % 12 === 0 ? 12 : hour % 12;
-    const timeString = `${displayHour}:00 ${period}`;
-    timeOptions.push(timeString);
+    timeOptions.push(hour);
   }
 
   const timeDurationOptions = [];
-  for (let i = 1; i < maximumRentalTime; i++) {
-    let durationString = `${i} tiếng`;
-    timeDurationOptions.push(durationString);
+  for (let i = 1; i <= maximumRentalTime; i++) {
+    timeDurationOptions.push(i);
   }
 
   return (
@@ -97,7 +93,7 @@ export default function TimePickerViews({
           >
             {timeOptions.map((time) => (
               <MenuItem key={time} value={time}>
-                {time}
+                {time}:00
               </MenuItem>
             ))}
           </Select>
@@ -126,7 +122,7 @@ export default function TimePickerViews({
           >
             {timeDurationOptions.map((time) => (
               <MenuItem key={time} value={time}>
-                {time}
+                {time} tiếng
               </MenuItem>
             ))}
           </Select>
