@@ -1,17 +1,20 @@
 import { BookCourtContext } from "@/app/(user)/book-court/layout";
-import { formatDate } from "@/utils/format";
+import { formatDate, formatVND } from "@/utils/format";
 import { Box, Button, Divider, Typography } from "@mui/material";
 import { useParams, useRouter } from "next/navigation";
 import { useContext } from "react";
 
 const BookingInfoConfirmation = ({
+  courtPrice,
   handleNext,
   handleBack,
 }: {
+  courtPrice: number;
   handleNext: () => void;
   handleBack: () => void;
 }) => {
-  const { date, startTime, duration } = useContext(BookCourtContext);
+  const { date, startTime, duration, totalPrice } =
+    useContext(BookCourtContext);
   const router = useRouter();
   const { id } = useParams<{ id: string }>();
 
@@ -42,7 +45,7 @@ const BookingInfoConfirmation = ({
           }}
         >
           <Typography>Giờ bắt đầu</Typography>
-          <Typography>{startTime}</Typography>
+          <Typography>{startTime}:00</Typography>
         </Box>
         <Box
           sx={{
@@ -52,7 +55,7 @@ const BookingInfoConfirmation = ({
           }}
         >
           <Typography>Khoảng thời gian</Typography>
-          <Typography>{duration}</Typography>
+          <Typography>{duration} tiếng</Typography>
         </Box>
         <Divider
           sx={{
@@ -60,7 +63,7 @@ const BookingInfoConfirmation = ({
             margin: "15px 0",
           }}
         />
-        {/* <Box
+        <Box
           sx={{
             display: "flex",
             flexDirection: "row",
@@ -68,7 +71,7 @@ const BookingInfoConfirmation = ({
           }}
         >
           <Typography>Chi phí</Typography>
-          <Typography>20.000 đ / 1 tiếng</Typography>
+          <Typography>{formatVND(Number(courtPrice))} / 1 tiếng</Typography>
         </Box>
         <Divider
           sx={{
@@ -84,8 +87,8 @@ const BookingInfoConfirmation = ({
           }}
         >
           <Typography>Tổng tiền</Typography>
-          <Typography>40.000 đ</Typography>
-        </Box> */}
+          <Typography>{formatVND(Number(totalPrice))}</Typography>
+        </Box>
       </Box>
       <Box
         sx={{
