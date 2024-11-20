@@ -11,6 +11,7 @@ import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import React from "react";
 import { useParams, useRouter } from "next/navigation";
 import courtDemo from "@/assets/images/court_demo.png";
+import { useAuthenticatedUser } from "@/hooks/auth/useAuthenticatedUser";
 
 interface CourtProps {
   id: string;
@@ -21,6 +22,7 @@ interface CourtProps {
 
 const CourtCard = ({ id, name, people, type }: CourtProps) => {
   const router = useRouter();
+  const { user } = useAuthenticatedUser();
 
   return (
     <Card
@@ -79,7 +81,13 @@ const CourtCard = ({ id, name, people, type }: CourtProps) => {
               backgroundColor: "var(--buttonHoverColor)",
             },
           }}
-          onClick={() => router.push(`/book-court/${id}/date-time`)}
+          onClick={() => {
+            const url = `/book-court/${id}/date-time`;
+            if (!user) {
+              localStorage.setItem("pageNextUrl", url);
+            }
+            router.push(url);
+          }}
         >
           Đặt ngay
         </Button>
