@@ -99,7 +99,7 @@ const ModalUserProfile = ({
         }}
       >
         <img
-          src="https://img.courtsite.my/insecure/rs:auto:128:0:0/g:sm/aHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jTHpjNlpUWW9hN1paMEFJX0tQOURHQzY0allYRVlGbl9JOEFIZUp5RkVkbHFNaHhsd0U9czk2LWM.webp"
+          src={user.profileImage}
           className="rounded-full w-[100px] h-[100px]"
         />
         <Typography

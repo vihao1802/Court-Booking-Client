@@ -13,6 +13,8 @@ import { Form, Formik, Field, ErrorMessage } from "formik";
 import { useState } from "react";
 import { Visibility, VisibilityOffOutlined } from "@mui/icons-material";
 import AppLogo from "@/components/shared/Logo";
+import { useAuthenticatedUser } from "@/hooks/auth/useAuthenticatedUser";
+import toast from "react-hot-toast";
 
 const SignInSchema = Yup.object().shape({
   username: Yup.string().required("Tên đăng nhập là bắt buộc"),
@@ -24,11 +26,13 @@ const SignInSchema = Yup.object().shape({
   confirmPassword: Yup.string()
     .oneOf([Yup.ref("password"), undefined], "Mật khẩu xác nhận không khớp")
     .required("Mật khẩu xác nhận là bắt buộc"),
+  dayOfBirth: Yup.string().required("Ngày sinh là bắt buộc"),
 });
 
 const SignUpPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const { register } = useAuthenticatedUser();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -128,10 +132,24 @@ const SignUpPage = () => {
                 phone: "",
                 password: "",
                 confirmPassword: "",
+                dayOfBirth: "",
               }}
               validationSchema={SignInSchema}
               onSubmit={async (values) => {
-                console.log(values);
+                const res = await register({
+                  userName: values.username,
+                  email: values.email,
+                  phoneNumber: values.phone,
+                  password: values.password,
+                  dayOfBirth: values.dayOfBirth,
+                });
+
+                if (res && res.status === 200) {
+                  toast.success("Đăng ký thành công");
+                  window.location.href = "/sign-in";
+                } else {
+                  toast.error("Đăng ký thất bại");
+                }
               }}
             >
               {({ errors, touched }) => (
@@ -177,6 +195,23 @@ const SignUpPage = () => {
                     color="success"
                     error={touched.phone && !!errors.phone}
                     helperText={<ErrorMessage name="phone" />}
+                  />
+                  <Field
+                    as={TextField}
+                    name="dayOfBirth"
+                    type="date"
+                    fullWidth
+                    id="dayOfBirth"
+                    label="Ngày sinh"
+                    variant="outlined"
+                    margin="dense"
+                    size="normal"
+                    color="success"
+                    InputLabelProps={{
+                      shrink: true, // Forces the label to stay above the field
+                    }}
+                    error={touched.dayOfBirth && !!errors.dayOfBirth}
+                    helperText={<ErrorMessage name="dayOfBirth" />}
                   />
 
                   <Field

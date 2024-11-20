@@ -1,4 +1,5 @@
 "use client";
+import { useAuthenticatedUser } from "@/hooks/auth/useAuthenticatedUser";
 import { Box, Button, Typography } from "@mui/material";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -17,6 +18,7 @@ const BoxBookingButton = ({
   maximumRentalTime,
 }: BoxBookingButtonProps) => {
   const [loading, setLoading] = useState(false);
+  const { user } = useAuthenticatedUser();
 
   return (
     <Box
@@ -88,7 +90,15 @@ const BoxBookingButton = ({
           <Link
             className="w-full h-full"
             href={`/book-court/${courtId}/date-time`}
-            onClick={() => setLoading(true)}
+            onClick={() => {
+              if (!user) {
+                localStorage.setItem(
+                  "pageNextUrl",
+                  `/book-court/${courtId}/date-time`
+                );
+              }
+              setLoading(true);
+            }}
           >
             Đặt sân ngay
           </Link>
