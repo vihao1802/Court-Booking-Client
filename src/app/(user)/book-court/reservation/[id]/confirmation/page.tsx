@@ -33,18 +33,13 @@ const BookCourtPaymentStatusPage = () => {
     reservationId: id,
   });
 
-  console.log(reservation);
-
   if (error) {
-    // router.push(`/`);
     console.log(error);
   }
 
   if (isLoading) {
     return <OvalLoader size="50" />;
   }
-
-  console.log(reservation_status);
 
   return (
     <Fragment>
@@ -53,59 +48,6 @@ const BookCourtPaymentStatusPage = () => {
         isCompleted={reservation_status === 1}
         enableError={true}
       />
-      {/* <Stepper
-        activeStep={3}
-        sx={{
-          "& .Mui-active": {
-            "& .MuiStepIcon-root": {
-              color: "var(--buttonColor)",
-            },
-            "& .MuiStepConnector-line": {
-              color: "var(--buttonColor)",
-            },
-          },
-          "& .Mui-completed": {
-            "& .MuiStepIcon-root": {
-              color: "var(--buttonColor)",
-            },
-            "& .MuiStepConnector-line": {
-              borderColor: "var(--buttonColor)",
-            },
-          },
-          marginBottom: "20px",
-        }}
-      >
-        {steps.map((label, index) => {
-          const stepProps: { completed?: boolean } = {
-            completed: Boolean(reservation_status === 1),
-          };
-          const labelProps: {
-            optional?: React.ReactNode;
-            error?: boolean;
-          } = {};
-          if (!(reservation_status === 1) && index === 2) {
-            labelProps.optional = (
-              <Typography variant="caption" color="error">
-                Thất bại
-              </Typography>
-            );
-            labelProps.error = true;
-          }
-          return (
-            <Step
-              key={label}
-              {...stepProps}
-              sx={{
-                padding: "5px",
-              }}
-            >
-              <StepLabel StepIconComponent={ColorlibStepIcon} {...labelProps}>
-                {label}
-              </StepLabel>
-            </Step>
-          );
-        })}
-      </Stepper> */}
 
       <Box
         sx={{
