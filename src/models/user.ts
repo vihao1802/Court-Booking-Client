@@ -3,12 +3,14 @@ export interface UserBase {
   email: string;
   phoneNumber: string;
   dayOfBirth: string;
-  createdAt: string;
-  location: string;
 }
 
 export interface User extends UserBase {
   id: string;
+  createdAt: string;
+  profileImage: string;
 }
 
-export interface UserRequest extends UserBase {}
+export interface UserRequest extends UserBase {
+  password: string;
+}
