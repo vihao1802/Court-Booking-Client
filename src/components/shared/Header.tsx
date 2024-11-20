@@ -125,7 +125,7 @@ const Header = () => {
                     ></path>
                   </svg>
                 </Icon>
-                <Avatar>{user.userName[0]}</Avatar>
+                <Avatar src={user.profileImage} />
               </Box>
               <ModalUserProfile
                 open={open}
