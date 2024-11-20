@@ -1,6 +1,6 @@
 "use client";
 import OvalLoader from "@/components/shared/OvalLoader";
-import { useAuthenticatedUser } from "@/hooks/useAuthenticatedUser";
+import { useAuthenticatedUser } from "@/hooks/auth/useAuthenticatedUser";
 import { useRouter } from "next/navigation";
 import React, { ReactNode, useEffect } from "react";
 

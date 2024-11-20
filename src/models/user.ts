@@ -6,6 +6,7 @@ export interface UserBase {
   createdAt: string;
   location: string;
   profileImage: string;
+  gender:boolean
 }
 
 export interface User extends UserBase {
@@ -13,3 +14,15 @@ export interface User extends UserBase {
 }
 
 export interface UserRequest extends UserBase {}
+
+export interface UpdateUserRequest {
+  userName: string;
+  phoneNumber: string;
+  dayOfBirth: string;
+  location: string;
+  gender:boolean
+}
+
+export interface UpdateProfileImageRequest {
+  profileImage: string;
+}

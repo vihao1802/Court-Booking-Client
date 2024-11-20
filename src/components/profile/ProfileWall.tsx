@@ -1,4 +1,5 @@
 import { authApi } from "@/api/auth";
+import { useAuthenticatedUser } from "@/hooks/auth/useAuthenticatedUser";
 import { IError } from "@/models/error";
 import { User } from "@/models/user";
 import { Edit } from "@mui/icons-material";
@@ -6,7 +7,6 @@ import { Avatar, Box, Divider, IconButton, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import React, { Suspense, useEffect, useState } from "react";
 import { string } from "yup";
-import { useAuthenticatedUser } from "@/hooks/useAuthenticatedUser";
 
 interface profileWallProps {
   handleButtonAvatarClicked?: () => void;
@@ -14,6 +14,7 @@ interface profileWallProps {
 
 const ProfileWall = async ({ handleButtonAvatarClicked }: profileWallProps) => {
   const { user } = useAuthenticatedUser();
+
   return (
     <Box
       sx={{

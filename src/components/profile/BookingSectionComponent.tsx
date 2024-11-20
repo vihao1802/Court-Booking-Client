@@ -5,6 +5,7 @@ import Section from "./ProfileSection";
 import dayjs from "dayjs";
 import { Court } from "@/models/court";
 import { useParams, useRouter } from "next/navigation";
+import { useGetCourtById } from "@/hooks/court/useGetCourtById";
 
 interface BookingSectionProps {
   id: string;
@@ -22,18 +23,9 @@ const BookingSectionComponent = async ({
 }: BookingSectionProps) => {
   const paramId = useParams();
   const router = useRouter();
-  const courtInfo: Court = {
-    id: courtId,
-    courtName: "Court 1",
-    courtDescription: "Court 1 Description",
-    courtAddress: "Kathmandu",
-    rentalPricePerHour: 1000,
-    minimumRentalTime: 1,
-    maximumRentalTime: 2,
-    courtTypeId: "1",
-    courtImageList: [],
-  };
-
+  const { data, isLoading, isValidating, mutate, error } = useGetCourtById({
+    courtId,
+  });
   function getDay(date: Date) {
     // Parse the date with dayjs
     const parsedDate = dayjs(date, "MM/DD/YY");
@@ -132,7 +124,7 @@ const BookingSectionComponent = async ({
                 fontWeight: "700",
               }}
             >
-              {courtInfo.courtName}
+              {data && data.courtName}
             </Typography>
           </Box>
           <Box

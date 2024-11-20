@@ -1,8 +1,11 @@
 import { Box, Button, Divider, Typography } from "@mui/material";
 import { Tune, ArrowForward } from "@mui/icons-material";
 import React from "react";
+import { useGetMyReservation } from "@/hooks/reservation/useGetMyReservation";
 
 const MyBooking = () => {
+  const { reservationList, isLoading, error, mutate } = useGetMyReservation();
+
   return (
     <Box
       sx={{
@@ -26,8 +29,19 @@ const MyBooking = () => {
         <Button
           variant="outlined"
           sx={{
-            backgroundColor: "rgb(235 238 253)",
-            color: "rgb(67 97 238)",
+            display: "flex",
+            height: "28px", // 7 * 4px (Tailwind's spacing scale)
+            width: "max-content", // equivalent to w-max
+            cursor: "pointer",
+            alignItems: "center", // items-center
+            borderRadius: "8px", // rounded-lg (lg is 8px)
+            border: "1px solid rgb(67 97 238)",
+            paddingX: "12px", // px-3 (3 * 4px = 12px)
+            paddingY: "4px", // py-1 (1 * 4px = 4px)
+            transition: "all 0.2s", // transition-all
+            borderColor: "", // border-primary
+            backgroundColor: "rgb(235 238 253)", // bg-primary-50
+            color: "rgb(0 37 140)", // text-primary-700
           }}
         >
           Sắp tới
@@ -35,8 +49,19 @@ const MyBooking = () => {
         <Button
           variant="outlined"
           sx={{
-            backgroundColor: "rgb(235 238 253)",
-            color: "rgb(67 97 238)",
+            display: "flex",
+            height: "28px", // 7 * 4px (Tailwind's spacing scale)
+            width: "max-content", // equivalent to w-max
+            cursor: "pointer",
+            alignItems: "center", // items-center
+            borderRadius: "8px", // rounded-lg (lg is 8px)
+            border: "1px solid rgb(67 97 238)",
+            paddingX: "12px", // px-3 (3 * 4px = 12px)
+            paddingY: "4px", // py-1 (1 * 4px = 4px)
+            transition: "all 0.2s", // transition-all
+            borderColor: "", // border-primary
+            backgroundColor: "rgb(235 238 253)", // bg-primary-50
+            color: "rgb(0 37 140)", // text-primary-700
           }}
         >
           Quá khứ
@@ -52,7 +77,6 @@ const MyBooking = () => {
         <Box
           sx={{
             height: "3rem",
-            backgroundColor: "rgb(235 238 253)",
             display: "flex",
             flexDirection: "row",
             alignItems: "center",

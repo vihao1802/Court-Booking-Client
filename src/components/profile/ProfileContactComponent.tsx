@@ -5,12 +5,12 @@ import { Box, Typography } from "@mui/material";
 import { useParams, useRouter } from "next/navigation";
 import { PhoneIphone, Edit, Email, LocationOn } from "@mui/icons-material";
 import { User } from "@/models/user";
-import { useAuthenticatedUser } from "@/hooks/useAuthenticatedUser";
+import { useAuthenticatedUser } from "@/hooks/auth/useAuthenticatedUser";
 
 const ProfileContactComponent = async () => {
   const idParam = useParams();
   const router = useRouter();
-  const { user, isLoading, error, mutate, logout } = useAuthenticatedUser();
+  const { user, error, mutate, logout } = useAuthenticatedUser();
   function handleButtonClick() {
     router.push(`/user/${idParam}/edit`);
   }

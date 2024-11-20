@@ -1,5 +1,6 @@
 "use client";
 import ProfileSideNavHeader from "@/components/profile/ProfileSideNavHeader";
+import { UserProvider } from "@/context/user-context";
 import { Box } from "@mui/material";
 import React, { Suspense } from "react";
 
@@ -10,31 +11,33 @@ export default function UserRootLayout({
 }>) {
   return (
     <main>
-      <Box
-        style={{
-          backgroundColor: "#f5f5f5",
-        }}
-      >
+      <UserProvider>
         <Box
           style={{
-            maxWidth: "1056px",
-            minHeight: "100vh",
-            margin: "0 auto",
+            backgroundColor: "#f5f5f5",
           }}
         >
           <Box
             style={{
-              display: "flex",
-              flexDirection: "row",
-              paddingTop: "1.5em",
-              gap: "1em",
+              maxWidth: "1056px",
+              minHeight: "100vh",
+              margin: "0 auto",
             }}
           >
-            <ProfileSideNavHeader />
-            {children}
+            <Box
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                paddingTop: "1.5em",
+                gap: "1em",
+              }}
+            >
+              <ProfileSideNavHeader />
+              {children}
+            </Box>
           </Box>
         </Box>
-      </Box>
+      </UserProvider>
     </main>
   );
 }

@@ -37,9 +37,10 @@ const Section: React.FC<SectionProps> = ({
         }}
       >
         <Typography
-          variant="h6"
+          variant="body2"
           sx={{
-            fontWeight: "700",
+            fontWeight: "500",
+            color: "rgb(109 105 123)",
           }}
         >
           {sectionHeader}

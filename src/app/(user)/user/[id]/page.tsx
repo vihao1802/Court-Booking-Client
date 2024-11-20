@@ -7,18 +7,16 @@ import Section from "@/components/profile/ProfileSection";
 import { User } from "@/models/user";
 import { IError } from "@/models/error";
 import BookingInfoComponent from "@/components/profile/BookingInfoComponent";
-import { IReservation } from "@/models/reservation";
 import BookingSectionComponent from "@/components/profile/BookingSectionComponent";
 import ProfileContactComponent from "@/components/profile/ProfileContactComponent";
 import { useRouter, useParams } from "next/navigation";
-import { useGetMyReservation } from "@/hooks/useGetMyReservation";
+import { useGetMyReservation } from "@/hooks/reservation/useGetMyReservation";
 
 async function Profile() {
   const [totalHours, setTotalHours] = useState<number>(0);
   const router = useRouter();
   const params = useParams();
-  const { reservationList, isLoading, error, mutate } =
-    await useGetMyReservation().getMyReservation();
+  const { reservationList, isLoading, error, mutate } = useGetMyReservation();
 
   function handleProfileWallButton() {
     router.push(`/user/${params}/edit`);
@@ -97,7 +95,7 @@ async function Profile() {
             <Divider orientation="vertical" variant="middle" flexItem />
             <BookingInfoComponent
               title="Booking hours"
-              info={setTotalHours.toString()}
+              info={totalHours.toString()}
             />
           </Box>
         </Box>
@@ -120,10 +118,10 @@ async function Profile() {
           <Suspense fallback={<p>Loading...</p>}>
             <BookingSectionComponent
               id={reservationList[0].id}
-              checkInTime={reservationList[0].checkInTime}
-              checkOutTime={reservationList[0].checkOutTime}
+              checkInTime={new Date(reservationList[0].checkInTime)}
+              checkOutTime={new Date(reservationList[0].checkOutTime)}
               courtId={reservationList[0].courtId}
-              reservationDate={reservationList[0].reservationDate}
+              reservationDate={new Date(reservationList[0].reservationDate)}
             />
           </Suspense>
         )}

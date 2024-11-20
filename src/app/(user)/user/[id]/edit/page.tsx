@@ -6,28 +6,55 @@ import {
   Avatar,
   Box,
   Button,
+  Modal,
   TextField,
   Typography,
 } from "@mui/material";
-import { CameraAlt } from "@mui/icons-material";
-import React, { Suspense } from "react";
-import ProfileTextField from "@/components/profile/ProfileTextField";
-import ProfileAutocomplete from "@/components/profile/ProfileAutocomplete";
-import { useAuthenticatedUser } from "@/hooks/useAuthenticatedUser";
-import { useParams } from "next/navigation";
-
+import { CameraAlt, PhotoCamera } from "@mui/icons-material";
+import React, { Suspense, useState } from "react";
+import PersonalInfo from "@/components/profile/EditProfile/PersonalInfo";
+import PersonalContact from "@/components/profile/EditProfile/PersonalContact";
+import UpdateButton from "@/components/profile/EditProfile/UpdateButton";
+import { useUpdateUser } from "@/hooks/user/useUpdateUser";
+import { UnauthorizedError } from "@/api/http-errors";
+import ProfileAvatar from "@/components/profile/EditProfile/ProfileAvatar";
 const EditProfile = () => {
-  const { user, isLoading, error, mutate, logout } = useAuthenticatedUser();
-  const gender = [
-    {
-      id: "1",
-      label: "Male",
-    },
-    {
-      id: "2",
-      label: "Female",
-    },
-  ];
+  const { updateProfileImage, mutate } = useUpdateUser();
+  // for modal upload avatar
+  const [open, setOpen] = useState(false);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      setSelectedFile(file);
+      setPreview(URL.createObjectURL(file)); // Preview the selected image
+    }
+  };
+  const handleUpload = async () => {
+    if (selectedFile) {
+      console.log("Uploading file:", selectedFile);
+      if (selectedFile.size >= 2 * 1024 * 1024) {
+        return;
+      }
+      const formData = new FormData();
+      formData.append("imageFile", selectedFile);
+
+      try {
+        await updateProfileImage(formData);
+      } catch (error) {
+        console.error(error);
+        if (error instanceof UnauthorizedError) {
+          throw new UnauthorizedError();
+        }
+      }
+      handleClose();
+    }
+  };
   return (
     <Box
       sx={{
@@ -70,63 +97,87 @@ const EditProfile = () => {
           }}
         >
           <Section sectionHeader={"AVATAR"}>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                gap: "1rem",
-              }}
-            >
-              <Avatar
-                src="https://static.wikia.nocookie.net/rezero/images/6/68/Emilia_ep.41_%283%29.jpg"
-                alt="your profile avatar"
-                sx={{ width: "110px", height: "110px" }}
-              />
-              <Button variant="outlined" startIcon={<CameraAlt />}>
-                Edit photo
-              </Button>
-            </Box>
+            <ProfileAvatar handleOpen={handleOpen} />
           </Section>
           <Section sectionHeader={"CONTACT"}>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              Autoco
-            </Box>
+            <PersonalContact />
           </Section>
         </Box>
         <Box
           sx={{
             flex: "1",
+            display: "flex",
+            flexDirection: "column",
+            gap: "1rem",
           }}
         >
           <Section sectionHeader="PERSONAL">
-            <Box
-              sx={{
-                width: "100%",
-                display: "flex",
-                flexDirection: "column",
-                gap: "1rem",
-              }}
-            >
-              <ProfileTextField id="email" label="Email" variant="outlined">
-                Changes of name will be reflected across your Courtsite Account,
-                but past documents will retain the original profile name.
-              </ProfileTextField>
-              <ProfileAutocomplete
-                id="gender"
-                options={gender}
-                label="Gender"
-              />
-            </Box>
+            <PersonalInfo />
           </Section>
+          <UpdateButton width={"70%"}>Cập nhật</UpdateButton>
         </Box>
       </Box>
+      {/* Modal */}
+      <Modal open={open} onClose={handleClose}>
+        <Box
+          sx={{
+            position: "absolute" as "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "background.paper",
+            borderRadius: 2,
+            boxShadow: 24,
+            p: 4,
+          }}
+        >
+          <Typography variant="h6" component="h2" mb={2}>
+            Upload Avatar
+          </Typography>
+
+          {/* Avatar preview */}
+          <Box display="flex" justifyContent="center" mb={2}>
+            <Avatar
+              src={preview || ""}
+              alt="Preview"
+              sx={{ width: 100, height: 100 }}
+            />
+          </Box>
+
+          {/* File input */}
+          <Box display="flex" justifyContent="center" mb={2}>
+            <Button
+              variant="contained"
+              component="label"
+              startIcon={<PhotoCamera />}
+            >
+              Choose File
+              <input
+                hidden
+                accept="image/*"
+                type="file"
+                onChange={handleFileChange}
+              />
+            </Button>
+          </Box>
+
+          {/* Actions */}
+          <Box display="flex" justifyContent="space-between">
+            <Button variant="outlined" onClick={handleClose}>
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleUpload}
+              disabled={!selectedFile} // Disable if no file selected
+            >
+              Upload
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
     </Box>
   );
 };
