@@ -60,9 +60,34 @@ cd client
 npm install
 ```
 
-3. Create file `.env.local`:
+3. Create file `.env.local` in folder `client`:
 ```env
 NEXT_PUBLIC_BACKEND_URL=http://localhost:8080/api/v1
+```
+
+4. Create file `application.properties` in folder `src/main/resources` with format:
+
+```env
+spring.application.name=court-booking-server
+spring.datasource.url=jdbc:mysql://localhost:3306/court_booking_db
+spring.datasource.username=root
+spring.datasource.password=
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.application.api-prefix=/api/v1
+
+# ZALOPAY ( Learn more about ZaloPay Developer at: https://docs.zalopay.vn/v2/general/overview.html )
+zalopay.app_id=2553
+zalopay.key1=PcY4iZIKFCIdgZvA6ueMcMHHUbRLYjPL
+zalopay.key2=kLtgPl8HHhfvMuDHPwKfgfsY4Ydm9eIz
+zalopay.endpoint=https://sb-openapi.zalopay.vn/v2/create
+zalopay.redirectUrl=
+zalopay.callbackUrl=
+
+# JWT
+jwt.secretSigningKey=
+jwt.expirationTime=
 ```
 
 ## 🚀 Usage
@@ -81,12 +106,10 @@ cd client
 npm run dev
 ```
 
-### Client:
+### Server:
 
-- Run in command line:
-```
-npm run dev
-```
+- Run `CourtBookingServerApplication` file in `src/main/java/com/court_booking_project/court_booking_server`
+
 
 ## ✨ Code Contributors
 
