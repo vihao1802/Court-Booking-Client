@@ -1,7 +1,6 @@
-import { QueryKeys } from '@/constants/query-keys';
-import useSWR from 'swr';
-import { courtApi } from '@/api/court';
-
+import { QueryKeys } from "@/constants/query-keys";
+import useSWR from "swr";
+import { courtApi } from "@/api/court";
 
 export function useGetCourtById({ courtId, enabled = true } : { courtId: string, enabled?: boolean }) {
     const swrResponse = useSWR(enabled ? [QueryKeys.GET_COURT_LIST, courtId] : null,
@@ -13,5 +12,5 @@ export function useGetCourtById({ courtId, enabled = true } : { courtId: string,
 		}
     )
 
-    return swrResponse;
+  return swrResponse;
 }

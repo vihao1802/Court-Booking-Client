@@ -5,13 +5,15 @@ import Step from "@mui/material/Step";
 import { StepLabel } from "@mui/material";
 import { ColorlibStepIcon } from "@/components/styles/StepperStyles";
 import PaymentDetail from "@/components/book-court/payment/PaymentDetail";
+import StepperPayment from "@/components/book-court/payment/StepperPayment";
 
 const steps = ["Đặt lịch", "Thanh toán", "Hoàn tất"];
 
 const BookCourtPaymentPage = () => {
   return (
     <Fragment>
-      <Stepper
+      <StepperPayment activeCurrStep={2} />
+      {/* <Stepper
         activeStep={2}
         sx={{
           "& .Mui-active": {
@@ -49,7 +51,7 @@ const BookCourtPaymentPage = () => {
             </Step>
           );
         })}
-      </Stepper>
+      </Stepper> */}
       <PaymentDetail />
     </Fragment>
   );

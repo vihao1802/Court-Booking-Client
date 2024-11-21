@@ -8,10 +8,9 @@ import {
   Icon,
   Skeleton,
   Typography,
+  Link,
 } from "@mui/material";
 import { Lato } from "next/font/google";
-import Image from "next/image";
-import Link from "next/link";
 import React from "react";
 
 import { navItems } from "@/constants";
@@ -19,21 +18,15 @@ import { usePathname, useRouter } from "next/navigation";
 import AppLogo from "./Logo";
 import { useAuthenticatedUser } from "@/hooks/auth/useAuthenticatedUser";
 import { authApi } from "@/api/auth";
+import ModalUserProfile from "../ModalUserProfile";
 
 const lato = Lato({ subsets: ["latin"], weight: ["400"] });
 
 const Header = () => {
   const pathname = usePathname();
-  const router = useRouter();
   const { user, logout, firstLoading } = useAuthenticatedUser();
-  const handleSignOut = async () => {
-    try {
-      logout();
-      router.push("/");
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const [open, setOpen] = React.useState(false);
+  const router = useRouter();
 
   return (
     <Box
@@ -82,51 +75,64 @@ const Header = () => {
           ) : user ? (
             <Box
               sx={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                gap: 2,
-                height: "100%",
-                width: "100%",
-                maxHeight: "48px",
-                maxWidth: "104px",
-                padding: "8px 12px",
-                borderRadius: "20px",
-                border: "1px solid #e5e7eb",
-                cursor: "pointer",
+                position: "relative",
               }}
             >
-              <Icon>
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="size-7 text-blue-grey"
-                >
-                  <path
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                    d="M3 5C3 4.44772 3.44772 4 4 4H16C16.5523 4 17 4.44772 17 5C17 5.55228 16.5523 6 16 6H4C3.44772 6 3 5.55228 3 5Z"
-                    fill="currentColor"
-                  ></path>
-                  <path
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                    d="M3 10C3 9.44772 3.44772 9 4 9H10C10.5523 9 11 9.44772 11 10C11 10.5523 10.5523 11 10 11H4C3.44772 11 3 10.5523 3 10Z"
-                    fill="currentColor"
-                  ></path>
-                  <path
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                    d="M3 15C3 14.4477 3.44772 14 4 14H16C16.5523 14 17 14.4477 17 15C17 15.5523 16.5523 16 16 16H4C3.44772 16 3 15.5523 3 15Z"
-                    fill="currentColor"
-                  ></path>
-                </svg>
-              </Icon>
-              <Avatar>HC</Avatar>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  gap: 2,
+                  height: "100%",
+                  width: "100%",
+                  maxHeight: "48px",
+                  maxWidth: "104px",
+                  padding: "8px 12px",
+                  borderRadius: "20px",
+                  border: "1px solid #e5e7eb",
+                  cursor: "pointer",
+                }}
+                onClick={() => setOpen(!open)}
+              >
+                <Icon>
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="size-7 text-blue-grey"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      clipRule="evenodd"
+                      d="M3 5C3 4.44772 3.44772 4 4 4H16C16.5523 4 17 4.44772 17 5C17 5.55228 16.5523 6 16 6H4C3.44772 6 3 5.55228 3 5Z"
+                      fill="currentColor"
+                    ></path>
+                    <path
+                      fillRule="evenodd"
+                      clipRule="evenodd"
+                      d="M3 10C3 9.44772 3.44772 9 4 9H10C10.5523 9 11 9.44772 11 10C11 10.5523 10.5523 11 10 11H4C3.44772 11 3 10.5523 3 10Z"
+                      fill="currentColor"
+                    ></path>
+                    <path
+                      fillRule="evenodd"
+                      clipRule="evenodd"
+                      d="M3 15C3 14.4477 3.44772 14 4 14H16C16.5523 14 17 14.4477 17 15C17 15.5523 16.5523 16 16 16H4C3.44772 16 3 15.5523 3 15Z"
+                      fill="currentColor"
+                    ></path>
+                  </svg>
+                </Icon>
+                <Avatar src={user.profileImage} />
+              </Box>
+              <ModalUserProfile
+                open={open}
+                setOpen={setOpen}
+                user={user}
+                logout={logout}
+              />
             </Box>
           ) : (
             <Box
@@ -175,7 +181,7 @@ const Header = () => {
           }}
         >
           {navItems.map((item, index) => (
-            <Link href={item.url} key={index}>
+            <Link href={item.url} key={index} sx={{ textDecoration: "none" }}>
               <Typography
                 sx={{
                   fontWeight: 400,
@@ -183,6 +189,7 @@ const Header = () => {
                   padding: "5px",
                   borderRadius: "10px",
                   transition: "0.3s",
+
                   "&:hover": {
                     backgroundColor: "#f0f0f0",
                   },

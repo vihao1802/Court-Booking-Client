@@ -5,8 +5,8 @@ export enum ReservationState {
 }
 
 export enum PaymentMethod {
-  NONE = "NONE",
   ZALOPAY = "ZALOPAY",
   MOMO = "MOMO",
   CASH = "CASH",
+  NO = "NO",
 }

@@ -15,15 +15,18 @@ import TimePickerViews from "./TimePicker";
 import BookingInfoConfirmation from "./BookingInfoConfirmation";
 import { useParams, useRouter } from "next/navigation";
 import { reservationApi } from "@/api/reservation";
-import { useAuthenticatedUser } from "@/hooks/useAuthenticatedUser";
+import { useAuthenticatedUser } from "@/hooks/auth/useAuthenticatedUser";
 import toast from "react-hot-toast";
+import { useGetCourtById } from "@/hooks/court/useGetCourtById";
+import OvalLoader from "@/components/shared/OvalLoader";
+import { BookCourtContext } from "@/app/(user)/book-court/layout";
 
 const steps = [
   {
     label: "Chọn ngày",
   },
   {
-    label: "Chọn giờ bắt và khoảng thời gian",
+    label: "Chọn giờ bắt đầu và khoảng thời gian",
   },
   {
     label: "Xác nhận",
@@ -39,6 +42,29 @@ const BookingDetails = () => {
   const [loadingNextPage, setLoadingNextPage] = useState(false);
   const { id } = useParams<{ id: string }>();
   const { user } = useAuthenticatedUser();
+  const { date, startTime, duration, totalPrice } =
+    React.useContext(BookCourtContext);
+
+  const { data: court, error, isLoading } = useGetCourtById({ courtId: id });
+
+  if (isLoading || !court) {
+    return <OvalLoader />;
+  }
+
+  if (!isLoading && (court === undefined || court === null)) {
+    router.push("/");
+    return <OvalLoader />;
+  }
+
+  if (error) {
+    toast.error("Đã xảy ra lỗi, vui lòng thử lại sau");
+    return null;
+  }
+
+  if (!user) {
+    router.push("/login");
+    return null;
+  }
 
   const handleNext = () => {
     setCompletedSteps((prev) => ({ ...prev, [activeStep]: true }));
@@ -51,25 +77,26 @@ const BookingDetails = () => {
 
   const handleCheckout = async () => {
     setLoadingNextPage(true);
-    if (!user) {
-      router.push("/sign-in");
-      return;
-    }
     try {
+      const reservationDate = date.split("T")[0];
+      const checkInTime = startTime;
+      const checkOutTime = (Number(startTime) + Number(duration)).toString();
+
       const res = await reservationApi.createReservation({
-        checkInTime: "2024-11-03T14:11:50+0000",
-        checkOutTime: "2024-11-03T15:11:50+0000",
-        totalPrice: 10000,
-        reservationDate: "2024-11-02T14:11:50+0000",
+        checkInTime: checkInTime,
+        checkOutTime: checkOutTime,
+        totalPrice: totalPrice,
+        reservationDate: reservationDate,
         userId: user.id,
-        courtId: "07ac677e-835f-49cd-99aa-3b37d9a388da",
+        courtId: court.id,
       });
 
       if (res) {
-        toast.success("Đang chuyển tới trang thanh toán");
+        toast.success("Đặt lịch thành công");
         router.push(`/book-court/reservation/${res.id}/checkout`);
       } else {
         toast.error("Đã xảy ra lỗi, vui lòng thử lại sau");
+        setLoadingNextPage(false);
       }
     } catch (error) {
       console.log(error);
@@ -83,11 +110,16 @@ const BookingDetails = () => {
       return <BasicDatePicker handleNext={handleNext} />;
     } else if (activeStep === 1) {
       return (
-        <TimePickerViews handleNext={handleNext} handleBack={handleBack} />
+        <TimePickerViews
+          handleNext={handleNext}
+          handleBack={handleBack}
+          court={court}
+        />
       );
     } else if (activeStep === 2) {
       return (
         <BookingInfoConfirmation
+          courtPrice={court?.rentalPricePerHour ?? 0}
           handleNext={handleNext}
           handleBack={handleBack}
         />
@@ -109,7 +141,7 @@ const BookingDetails = () => {
       <Box
         sx={{
           flex: 2,
-          padding: "10px",
+          padding: "0 10px",
           // boxShadow: "0 5px 25px rgba(0, 0, 0, 0.2)",
           borderRadius: "10px",
         }}
@@ -206,9 +238,9 @@ const BookingDetails = () => {
           // maxWidth: "350px",
           // width: "100%",
           flex: 1,
-          padding: "10px",
-          // boxShadow: "0 5px 25px rgba(0, 0, 0, 0.2)",
-          borderRadius: "10px",
+          padding: "20px 10px",
+          boxShadow: { sm: "none", md: "rgba(0, 0, 0, 0.2) 0px 0px 4px" },
+          borderRadius: "7px",
           height: "fit-content",
         }}
       >
@@ -276,7 +308,7 @@ const BookingDetails = () => {
                   textAlign: "right",
                 }}
               >
-                Sân Tennis A
+                {court.courtName}
               </Typography>
             </Box>
             <Box
@@ -294,7 +326,7 @@ const BookingDetails = () => {
                   padding: "2px 10px",
                 }}
               >
-                Tennis
+                {court.courtType.courtTypeName}
               </Typography>
             </Box>
             <Box
@@ -316,7 +348,7 @@ const BookingDetails = () => {
                   textAlign: "right",
                 }}
               >
-                273 Đ. An Dương Vương, Phường 3, Quận 5, Hồ Chí Minh
+                {court.courtAddress}
               </Typography>
             </Box>
           </Box>
