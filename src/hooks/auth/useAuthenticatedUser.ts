@@ -2,8 +2,9 @@ import { authApi } from "@/api/auth";
 import { UnauthorizedError } from "@/api/http-errors";
 import { QueryKeys } from "@/constants/query-keys";
 import { LoginRequest } from "@/models/auth";
-import { User } from "@/models/user";
+import { User, UserRequest } from "@/models/user";
 import useSWR, { SWRConfiguration } from "swr";
+import cookies from "js-cookie";
 
 export function useAuthenticatedUser(options?: Partial<SWRConfiguration>) {
   const {
@@ -14,7 +15,10 @@ export function useAuthenticatedUser(options?: Partial<SWRConfiguration>) {
     QueryKeys.GET_AUTHENTICATED,
     async () => {
       try {
-        if (localStorage.getItem("token") === null) {
+        if (
+          cookies.get("token") === null ||
+          cookies.get("token") === undefined
+        ) {
           return null;
         }
         return await authApi.getAuthenticatedUser();
@@ -41,13 +45,17 @@ export function useAuthenticatedUser(options?: Partial<SWRConfiguration>) {
   }
 
   async function logout() {
-    const token = localStorage.getItem("token");
+    const token = cookies.get("token");
     if (token) {
       await authApi.logout(token);
     }
     mutate(null, false);
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    cookies.remove("token");
+  }
+
+  async function register(payload: UserRequest) {
+    const res = await authApi.register(payload);
+    return res;
   }
 
   return {
@@ -57,5 +65,6 @@ export function useAuthenticatedUser(options?: Partial<SWRConfiguration>) {
     mutate,
     login,
     logout,
+    register,
   };
 }

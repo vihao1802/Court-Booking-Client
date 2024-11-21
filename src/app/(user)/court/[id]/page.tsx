@@ -546,12 +546,14 @@ const CourtDetail = ({ params: { id } }: { params: { id: string } }) => {
           </Box>
         </Box>
         {/* Box booking button*/}
-        <BoxBookingButton
-          courtId={courtDetail?.id}
-          rentalPricePerHour={courtDetail?.rentalPricePerHour}
-          minimumRentalTime={courtDetail?.minimumRentalTime}
-          maximumRentalTime={courtDetail?.maximumRentalTime}
-        />
+        {courtDetail && (
+          <BoxBookingButton
+            courtId={courtDetail?.id}
+            rentalPricePerHour={courtDetail?.rentalPricePerHour}
+            minimumRentalTime={courtDetail?.minimumRentalTime}
+            maximumRentalTime={courtDetail?.maximumRentalTime}
+          />
+        )}
       </Box>
     </Box>
   );

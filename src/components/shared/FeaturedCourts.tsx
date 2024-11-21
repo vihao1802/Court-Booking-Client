@@ -24,7 +24,7 @@ import TennisBallLoader from "./TennisBallLoader";
 const FeaturedCourts = () => {
   const router = useRouter();
 
-  const [filters, setFilters] = useState<Partial<ApiPagination>>({
+  const [filters, setFilters] = useState<ApiPagination>({
     page: 0,
     size: 6,
   });
@@ -63,6 +63,16 @@ const FeaturedCourts = () => {
       page: page - 1,
     });
   };
+
+  if (courtDataLoading || courtTypeDataLoading)
+    return (
+      <Skeleton
+        animation="wave"
+        variant="rectangular"
+        width={1056}
+        height={1000}
+      />
+    );
 
   return (
     <Paper

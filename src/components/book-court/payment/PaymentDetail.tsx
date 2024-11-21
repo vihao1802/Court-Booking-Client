@@ -60,13 +60,10 @@ const PaymentDetail = () => {
             res.data.return_message + " " + res.data.sub_return_message
           );
         }
-        console.log(res);
       } else if (selectedPayment === 1) {
         res = await reservationApi.createPaymentMomo(id, {
           requestType: "payWithCC",
         });
-
-        console.log(res);
 
         router.push(res.payUrl);
       }
@@ -83,7 +80,6 @@ const PaymentDetail = () => {
         reservationState: ReservationState.FAILED,
         paymentMethod: PaymentMethod.NO,
       });
-      toast.error("Hết thời hạn thanh toán. Đơn đặt đã bị hủy.");
       window.location.reload();
     } catch (error) {
       console.log("handleTimeOutPayment: " + error);

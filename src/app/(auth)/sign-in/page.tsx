@@ -47,12 +47,16 @@ const SignInPage = () => {
     setIsLogin(true);
     try {
       const res = await login(payload);
-      if (res.status === 200) {
+      if (res && res.status === 200) {
         toast.success("Đăng nhập thành công");
-        router.push("/");
+        let url = "/";
+        if (localStorage.getItem("pageNextUrl")) {
+          url = localStorage.getItem("pageNextUrl")!;
+          localStorage.setItem("pageNextUrl", "/");
+        }
+        router.push(url);
       } else {
         toast.error("Đăng nhập không thành công");
-        console.log("handleSignIn: " + res);
       }
     } catch (error) {
       toast.error("Đăng nhập không thành công");
@@ -152,7 +156,6 @@ const SignInPage = () => {
               initialValues={{ email: "", password: "" }}
               validationSchema={SignInSchema}
               onSubmit={async (values) => {
-                console.log(values);
                 handleSignIn(values);
               }}
             >
