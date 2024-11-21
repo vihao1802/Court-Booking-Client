@@ -1,3 +1,5 @@
+import { Role } from "./role";
+
 export interface UserBase {
   userName: string;
   email: string;
@@ -9,6 +11,9 @@ export interface UserBase {
 
 export interface User extends UserBase {
   id: string;
+  isDisabled: boolean;
+  role: Role;
+  profileImage: string;
 }
 
 export interface UserRequest extends UserBase {}

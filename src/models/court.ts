@@ -18,5 +18,5 @@ export interface Court extends CourtBase {
 
 export interface CourtRequest extends CourtBase {
   courtTypeId: string;
-  courtImageList: CourtImageRequest[];
+  // courtImageList: CourtImageRequest[];
 }

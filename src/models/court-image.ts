@@ -1,10 +1,13 @@
 export interface CourtImageBase {
-  courtImageSrc: string;
+  
   imageType: string;
 }
 
 export interface CourtImage extends CourtImageBase {
   id: string;
+  courtImageSrc: string;
 }
 
-export interface CourtImageRequest extends CourtImageBase {}
+export interface CourtImageRequest extends CourtImageBase {
+  courtImageSrc: File;
+}
