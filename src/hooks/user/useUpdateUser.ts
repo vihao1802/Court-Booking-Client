@@ -2,7 +2,7 @@ import { reservationApi } from "@/api/reservation";
 import { userApi } from "@/api/user";
 import { QueryKeys } from "@/constants/query-keys";
 import { UpdateReservationRequest } from "@/models/reservation";
-import { UpdateUserRequest } from "@/models/user";
+import { UpdatePasswordRequest, UpdateUserRequest } from "@/models/user";
 import useSWR, { SWRConfiguration } from "swr";
 
 export function useUpdateUser() {
@@ -23,9 +23,17 @@ export function useUpdateUser() {
   async function updateProfileImage(
     payload: FormData
   ) {
-    await userApi.updateProfileImage(payload);
+    const res = await userApi.updateProfileImage(payload);
     swrResponse.mutate();
-    return;
+    return res;
   }
-  return { ...swrResponse, updateUser,updateProfileImage };
+
+  async function updatePassword(
+    payload: UpdatePasswordRequest
+  ) {
+    const res = await userApi.updatePassword(payload);
+    swrResponse.mutate();
+    return res;
+  }
+  return { ...swrResponse, updateUser,updateProfileImage,updatePassword };
 }

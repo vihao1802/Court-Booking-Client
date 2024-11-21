@@ -5,6 +5,9 @@ import {
   ExpandLess,
   ExpandMore,
   Inbox,
+  BookOnline,
+  Edit,
+  Lock,
 } from "@mui/icons-material";
 import {
   Box,
@@ -25,8 +28,7 @@ const ProfileSideNavHeader = () => {
   const [openMe, setOpenMe] = React.useState(true);
   const [openAcc, setOpenAcc] = React.useState(true);
   const router = useRouter();
-  const pathname = usePathname().split("/")[2];
-  const userId = useParams().id;
+  const pathname = usePathname();
 
   const handleClick = () => {
     setOpenMe(!openMe);
@@ -35,9 +37,41 @@ const ProfileSideNavHeader = () => {
     event: React.MouseEvent<HTMLDivElement, MouseEvent>,
     endpoint: string
   ) => {
-    router.push(`/${endpoint}`);
-    console.log("endpoint", endpoint);
+    router.push(`${endpoint}`);
   };
+
+  const NAVIGATE_ENDPOINT = [
+    {
+      group: "CÁ NHÂN",
+      item: [
+        {
+          title: "Trang cá nhân",
+          url: "/user/profile",
+          icon: Person2,
+        },
+        {
+          title: "Lịch đặt",
+          url: "/user/profile/booking",
+          icon: BookOnline,
+        },
+      ],
+    },
+    {
+      group: "TÀI KHOẢN",
+      item: [
+        {
+          title: "Chỉnh sửa thông tin",
+          url: "/user/profile/edit",
+          icon: Edit,
+        },
+        {
+          title: "Đổi mật khẩu",
+          url: "/user/profile/change-password",
+          icon: Lock,
+        },
+      ],
+    },
+  ];
   return (
     <Box
       style={{
@@ -57,94 +91,49 @@ const ProfileSideNavHeader = () => {
           justifyContent: "center",
         }}
       >
-        <ListItemButton
-          onClick={handleClick}
-          sx={{
-            width: "100%",
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            color: "rgb(109 105 123)",
-          }}
-        >
-          <ListItemText primary="ME" />
-          {openMe ? <ExpandLess /> : <ExpandMore />}
-        </ListItemButton>
-        <Collapse
-          in={openMe}
-          timeout="auto"
-          unmountOnExit
-          sx={{
-            width: "100%",
-            display: "flex",
-            flexDirection: "row",
-          }}
-        >
-          <List component="div" disablePadding>
+        {NAVIGATE_ENDPOINT.map((group) => {
+          const groupHeader = (
             <ListItemButton
-              selected={pathname === ""}
-              onClick={(event) => handleListItemClick(event, `user/${userId}`)}
+              onClick={handleClick}
+              sx={{
+                width: "100%",
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                color: "rgb(109 105 123)",
+              }}
             >
-              <ListItemIcon>
-                <Person2 />
-              </ListItemIcon>
-              <ListItemText primary="My Profile" />
+              <ListItemText primary={group.group} />
+              {openMe ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
-          </List>
-          <List component="div" disablePadding>
-            <ListItemButton
-              selected={pathname === "booking"}
-              onClick={(event) =>
-                handleListItemClick(event, `user/${userId}/booking`)
-              }
+          );
+          const groupItem = group.item.map((item) => (
+            <Collapse
+              in={openMe}
+              timeout="auto"
+              unmountOnExit
+              sx={{
+                width: "100%",
+                display: "flex",
+                flexDirection: "row",
+              }}
             >
-              <ListItemIcon>
-                <Person2 />
-              </ListItemIcon>
-              <ListItemText primary="My Bookings" />
-            </ListItemButton>
-          </List>
-        </Collapse>
-        {/* Account Setting */}
-        <ListItemButton
-          onClick={handleClick}
-          sx={{
-            width: "100%",
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            color: "rgb(109 105 123)",
-          }}
-        >
-          <ListItemText primary="ACCOUNT SETTINGS" />
-          {openMe ? <ExpandLess /> : <ExpandMore />}
-        </ListItemButton>
-        <Collapse
-          in={openAcc}
-          timeout="auto"
-          unmountOnExit
-          sx={{
-            width: "100%",
-            display: "flex",
-            flexDirection: "row",
-          }}
-        >
-          <List component="div" disablePadding>
-            <ListItemButton
-              selected={pathname === "edit"}
-              onClick={(event) =>
-                handleListItemClick(event, `user/${userId}/edit`)
-              }
-            >
-              <ListItemIcon>
-                <Person2 />
-              </ListItemIcon>
-              <ListItemText primary="Edit Profile" />
-            </ListItemButton>
-          </List>
-        </Collapse>
+              <List component="div" disablePadding>
+                <ListItemButton
+                  selected={pathname === item.url}
+                  onClick={(event) => handleListItemClick(event, item.url)}
+                >
+                  <ListItemIcon>
+                    <Person2 />
+                  </ListItemIcon>
+                  <ListItemText primary={item.title} />
+                </ListItemButton>
+              </List>
+            </Collapse>
+          ));
+          return [groupHeader, ...groupItem];
+        })}
       </Box>
     </Box>
   );

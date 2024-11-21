@@ -16,4 +16,5 @@ export interface LoginResponse {
 
 export interface RefreshTokenResponse {
   token: string;
+  authenticated: boolean;
 }

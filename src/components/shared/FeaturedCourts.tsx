@@ -19,6 +19,7 @@ import { useGetCourtList } from "@/hooks/court/useGetCourtList";
 import { Pagination as ApiPagination } from "@/models/api";
 import { useGetCourtTypeList } from "@/hooks/court-type/useGetCourtTypeList";
 import { Court } from "@/models/court";
+import TennisBallLoader from "./TennisBallLoader";
 
 const FeaturedCourts = () => {
   const router = useRouter();
@@ -51,6 +52,8 @@ const FeaturedCourts = () => {
     setSelectedType(newid);
   };
 
+  // if (courtTypeDataLoading || courtDataLoading) return <TennisBallLoader />;
+
   const handlePageChange = (
     event: React.ChangeEvent<unknown>,
     page: number
@@ -65,98 +68,125 @@ const FeaturedCourts = () => {
     <Paper
       elevation={3}
       sx={{
+        minHeight: "1000px",
         height: "100%",
-        width: "1056px",
+        width: "100%",
+        maxWidth: "1056px",
         margin: "0 auto",
         padding: "20px",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
       }}
     >
-      <Typography variant="h5" fontWeight="bold">
-        Sân nổi bật
-      </Typography>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <TabContext value={selectedType}>
-          <Box>
-            <Tabs
-              value={selectedType}
-              onChange={handleChange}
-              variant="scrollable"
-              scrollButtons="auto"
-              sx={{
-                color: "#009265",
-                "& .MuiTab-root.Mui-selected": {
+      <Box>
+        <Typography variant="h5" fontWeight="bold">
+          Sân nổi bật
+        </Typography>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <TabContext value={selectedType}>
+            <Box>
+              <Tabs
+                value={selectedType}
+                onChange={handleChange}
+                variant="scrollable"
+                scrollButtons="auto"
+                sx={{
                   color: "#009265",
-                },
-                "& .MuiButtonBase-root": {
-                  gap: 1,
-                },
-              }}
-              TabIndicatorProps={{
-                style: {
-                  backgroundColor: "#009265",
-                },
+                  "& .MuiTab-root.Mui-selected": {
+                    color: "#009265",
+                  },
+                  "& .MuiButtonBase-root": {
+                    gap: 1,
+                  },
+                }}
+                TabIndicatorProps={{
+                  style: {
+                    backgroundColor: "#009265",
+                  },
+                }}
+              >
+                {courtTypeDataLoading ? (
+                  <Skeleton
+                    animation="wave"
+                    variant="rounded"
+                    width={500}
+                    height={50}
+                  />
+                ) : (
+                  courtTypeData?.map((type: any, index: number) => (
+                    <Tab
+                      icon={
+                        exploreCategoriesTabs.find(
+                          (x) => x.value === type?.id.split("-")[1]
+                        )?.icon
+                      }
+                      label={type?.courtTypeName}
+                      value={type?.id}
+                      key={index}
+                    />
+                  ))
+                )}
+              </Tabs>
+            </Box>
+
+            <TabPanel
+              value={selectedType}
+              sx={{
+                display: "flex",
+                flexWrap: "wrap",
+                padding: "10px",
+                gap: 2,
               }}
             >
-              {courtTypeDataLoading ? (
-                <Skeleton
-                  animation="wave"
-                  variant="rounded"
-                  width={500}
-                  height={50}
-                />
-              ) : (
-                courtTypeData?.map((type: any, index: number) => (
-                  <Tab
-                    icon={
-                      exploreCategoriesTabs.find(
-                        (x) => x.value === type?.id.split("-")[1]
-                      )?.icon
-                    }
-                    label={type?.courtTypeName}
-                    value={type?.id}
-                    key={index}
-                  />
-                ))
-              )}
-            </Tabs>
-          </Box>
-
-          <TabPanel
-            value={selectedType}
-            sx={{
-              display: "flex",
-              flexWrap: "wrap",
-              padding: "10px",
-              gap: 2,
-            }}
-          >
-            {courtDataLoading ? (
-              <Skeleton
-                animation="wave"
-                variant="rounded"
-                width={700}
-                height={1000}
-              />
-            ) : (
-              courtData?.content.map((court: Court, index: number) => (
-                <CourtCard
-                  key={index}
-                  id={court?.id}
-                  name={court?.courtName}
-                  people={4}
-                  type={court?.courtType?.courtTypeName}
-                />
-              ))
-            )}
-          </TabPanel>
-        </TabContext>
+              {courtDataLoading
+                ? Array.from(new Array(6)).map(() => (
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "10px",
+                      }}
+                    >
+                      <Skeleton
+                        animation="wave"
+                        variant="rounded"
+                        width={300}
+                        height={200}
+                      />
+                      <Skeleton animation="wave" width="70%" height={30} />
+                      <Skeleton animation="wave" width="60%" />
+                      <Skeleton animation="wave" width="60%" />
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <Skeleton animation="wave" width="45%" height={60} />
+                        <Skeleton animation="wave" width="45%" height={60} />
+                      </Box>
+                    </Box>
+                  ))
+                : courtData?.content.map((court: Court, index: number) => (
+                    <CourtCard
+                      key={index}
+                      id={court?.id}
+                      name={court?.courtName}
+                      people={4}
+                      type={court?.courtType?.courtTypeName}
+                    />
+                  ))}
+            </TabPanel>
+          </TabContext>
+        </Box>
       </Box>
 
       {!courtTypeDataLoading && (

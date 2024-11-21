@@ -1,4 +1,4 @@
-import { UpdateUserRequest, User, UserRequest } from "@/models/user";
+import { UpdatePasswordRequest, UpdateUserRequest, User, UserRequest } from "@/models/user";
 import axiosInstance from "./axios-instance";
 import { headers } from "next/headers";
 
@@ -17,5 +17,10 @@ export const userApi = {
         }
         );
         return res.data;
+    },
+
+    async updatePassword(requestBody: UpdatePasswordRequest) {
+        const res = await axiosInstance.put(`${prefix}/update/password`, requestBody);
+        return res;
     }
 };

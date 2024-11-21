@@ -26,3 +26,8 @@ export interface UpdateUserRequest {
 export interface UpdateProfileImageRequest {
   profileImage: string;
 }
+
+export interface UpdatePasswordRequest {
+  oldPassword:string;
+  newPassword:string
+}

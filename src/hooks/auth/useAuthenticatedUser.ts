@@ -29,7 +29,6 @@ export function useAuthenticatedUser(options?: Partial<SWRConfiguration>) {
     {
       // initialData: getAuthenticatedUser(),
       ...options,
-      // revalidateOnFocus: false,
     }
   );
 

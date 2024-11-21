@@ -16,16 +16,18 @@ async function Profile() {
   const [totalHours, setTotalHours] = useState<number>(0);
   const router = useRouter();
   const params = useParams();
-  const { reservationList, isLoading, error, mutate } = useGetMyReservation();
+  const { data, isLoading, error, mutate } = useGetMyReservation({
+    enabled: true,
+  });
 
   function handleProfileWallButton() {
     router.push(`/user/${params}/edit`);
   }
 
   useEffect(() => {
-    if (reservationList === undefined || error) return;
+    if (data === undefined || error) return;
     let totalhours: number = 0;
-    reservationList?.forEach((reservation) => {
+    data?.forEach((reservation) => {
       // Parse check-in and check-out times with dayjs
       const checkIn = dayjs(reservation.checkInTime, "MM/DD/YY, h:mm A");
       const checkOut = dayjs(reservation.checkOutTime, "MM/DD/YY, h:mm A");
@@ -37,7 +39,7 @@ async function Profile() {
       totalhours += hours;
     });
     setTotalHours(totalhours);
-  }, [reservationList]);
+  }, [data]);
   return (
     <Box
       sx={{
@@ -90,7 +92,7 @@ async function Profile() {
           >
             <BookingInfoComponent
               title="Booking made"
-              info={(reservationList?.length ?? 0).toString()}
+              info={(data?.length ?? 0).toString()}
             />
             <Divider orientation="vertical" variant="middle" flexItem />
             <BookingInfoComponent
@@ -114,14 +116,14 @@ async function Profile() {
         }}
       >
         {/* Booking */}
-        {reservationList && reservationList.length > 0 && (
+        {data && data.length > 0 && (
           <Suspense fallback={<p>Loading...</p>}>
             <BookingSectionComponent
-              id={reservationList[0].id}
-              checkInTime={new Date(reservationList[0].checkInTime)}
-              checkOutTime={new Date(reservationList[0].checkOutTime)}
-              courtId={reservationList[0].courtId}
-              reservationDate={new Date(reservationList[0].reservationDate)}
+              id={data[0].id}
+              checkInTime={new Date(data[0].checkInTime)}
+              checkOutTime={new Date(data[0].checkOutTime)}
+              courtId={data[0].court.id}
+              reservationDate={new Date(data[0].reservationDate)}
             />
           </Suspense>
         )}

@@ -1,7 +1,7 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import Box from "@mui/material/Box";
-import { Button, Divider, Typography } from "@mui/material";
+import { Alert, Button, Divider, Typography } from "@mui/material";
 import { useParams, useRouter } from "next/navigation";
 import { formatDate, formatVND } from "@/utils/format";
 import { List, ListItem, ListItemDecorator, Radio, RadioGroup } from "@mui/joy";
@@ -11,7 +11,8 @@ import toast from "react-hot-toast";
 import Countdown from "@/components/shared/CountDown";
 import { useGetReservationById } from "@/hooks/reservation/useGetReservationById";
 import { useUpdateReservation } from "@/hooks/reservation/useUpdateReservation";
-import { PaymentMethod } from "@/types/enums";
+import { PaymentMethod, ReservationState } from "@/types/enums";
+import { CalendarToday } from "@mui/icons-material";
 
 const PaymentDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -27,11 +28,21 @@ const PaymentDetail = () => {
   });
   const { updateReservation } = useUpdateReservation({});
 
-  if (isLoading) {
+  useEffect(() => {
+    if (!isLoading) {
+      if (!reservation) {
+        toast.error("Đơn đặt không tồn tại.");
+        router.push(`/`);
+      }
+    }
+  }, [reservation, isLoading]);
+
+  if (isLoading || !reservation) {
     return <OvalLoader size="50" />;
   }
 
   if (error) {
+    console.log(error);
     return <OvalLoader size="50" />;
   }
 
@@ -66,13 +77,17 @@ const PaymentDetail = () => {
     }
   };
 
-  const handleTimeOutPayment = () => {
-    updateReservation(id, {
-      reservationState: 2,
-      paymentMethod: "NONE" as PaymentMethod,
-    });
-    toast.error("Hết thời hạn thanh toán. Đơn đặt đã bị hủy.");
-    // router.push(`/`);
+  const handleTimeOutPayment = async () => {
+    try {
+      await updateReservation(id, {
+        reservationState: ReservationState.FAILED,
+        paymentMethod: PaymentMethod.NO,
+      });
+      toast.error("Hết thời hạn thanh toán. Đơn đặt đã bị hủy.");
+      window.location.reload();
+    } catch (error) {
+      console.log("handleTimeOutPayment: " + error);
+    }
   };
 
   return (
@@ -85,24 +100,27 @@ const PaymentDetail = () => {
         gap: "20px",
       }}
     >
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          flexDirection: "column",
-          gap: "5px",
-        }}
-      >
-        <Typography
+      {reservation.reservationState === ReservationState.PENDING && (
+        <Box
           sx={{
-            color: "gray",
+            display: "flex",
+            alignItems: "center",
+            flexDirection: "column",
+            gap: "5px",
           }}
-          variant="h6"
         >
-          Đơn đặt sẽ hết hạn trong
-        </Typography>
-        <Countdown onComplete={handleTimeOutPayment} />
-      </Box>
+          <Typography
+            sx={{
+              color: "gray",
+            }}
+            variant="h6"
+          >
+            Đơn đặt sẽ hết hạn trong
+          </Typography>
+          <Countdown onComplete={handleTimeOutPayment} />
+        </Box>
+      )}
+
       <Box
         sx={{
           maxWidth: "600px",
@@ -117,6 +135,12 @@ const PaymentDetail = () => {
           boxShadow: { sm: "none", md: "rgba(0, 0, 0, 0.2) 0px 0px 4px" },
         }}
       >
+        {reservation.reservationState === ReservationState.FAILED && (
+          <Alert severity="error">Đơn đặt đã bị hủy</Alert>
+        )}
+        {reservation.reservationState === ReservationState.SUCCESS && (
+          <Alert severity="success">Đơn đặt thành công</Alert>
+        )}
         <Box
           sx={{
             display: "flex",
@@ -135,18 +159,16 @@ const PaymentDetail = () => {
               }}
               variant="h5"
             >
-              Sân Tennis A
+              {reservation.court.courtName}
             </Typography>
             <Typography
               sx={{
                 color: "var(--buttonColor)",
               }}
             >
-              Tennis
+              {reservation.court.courtType.courtTypeName}
             </Typography>
-            <Typography>
-              273 Đ. An Dương Vương, Phường 3, Quận 5, Hồ Chí Minh
-            </Typography>
+            <Typography>{reservation.court.courtAddress}</Typography>
           </Box>
           <Box
             sx={{
@@ -155,7 +177,11 @@ const PaymentDetail = () => {
           >
             <Box
               component="img"
-              src="https://corsairathletics.com/images/2023/8/8/IMG_1449_o98sJ.JPG"
+              src={
+                reservation.court.courtImageList.find(
+                  (img) => img.imageType === "main"
+                )?.courtImageSrc
+              }
               sx={{
                 maxWidth: "100%",
                 maxHeight: "100%",
@@ -187,24 +213,44 @@ const PaymentDetail = () => {
             }}
           >
             <Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: "5px",
+                }}
+              >
+                {reservation.reservationState === ReservationState.FAILED && (
+                  <CalendarToday fontSize="small" />
+                )}
+                <Typography
+                  sx={{
+                    fontSize: "14px",
+                    color: "var(--buttonColor)",
+                    textDecoration: "none",
+                    ...(reservation.reservationState ===
+                      ReservationState.FAILED && {
+                      fontSize: "18px",
+                      color: "#48445A",
+                      textDecoration: "line-through",
+                    }),
+                  }}
+                >
+                  {formatDate(reservation.reservationDate)}
+                </Typography>
+              </Box>
+
               <Typography
                 sx={{
-                  fontSize: "14px",
                   color: "var(--buttonColor)",
                 }}
               >
-                {formatDate(reservation?.reservationDate)}
-              </Typography>
-              <Typography
-                sx={{
-                  color: "var(--buttonColor)",
-                }}
-              >
-                {reservation.checkInTime} - {reservation.checkOutTime}
+                {reservation.checkInTime}:00 - {reservation.checkOutTime}:00
               </Typography>
             </Box>
             <Typography sx={{ textAlign: "right" }}>
-              20.000 đ / 1 tiếng
+              {formatVND(Number(reservation.court.rentalPricePerHour))}/ 1 tiếng
             </Typography>
           </Box>
           <Divider
@@ -221,132 +267,147 @@ const PaymentDetail = () => {
             }}
           >
             <Typography variant="h6">Tổng tiền</Typography>
-            <Typography variant="h6" sx={{ textAlign: "right" }}>
+            <Typography
+              variant="h6"
+              sx={{
+                textAlign: "right",
+                ...(reservation.reservationState ===
+                  ReservationState.FAILED && {
+                  color: "#48445A",
+                  textDecoration: "line-through",
+                }),
+              }}
+            >
               {formatVND(Number(reservation.totalPrice))}
             </Typography>
           </Box>
         </Box>
-        <Box>
-          <Typography
-            sx={{
-              color: "var(--buttonHoverColor)",
-            }}
-            variant="h5"
-          >
-            Phương thức thanh toán
-          </Typography>
-          <RadioGroup
-            aria-label="Phương thức thanh toán"
-            name="payment"
-            defaultValue="Individual"
-          >
-            <List
-              sx={{
-                "--ListItem-paddingY": "10px",
-                "--ListItem-radius": "8px",
-                "--ListItemDecorator-size": "32px",
-                margin: "10px 0 0",
-                flexDirection: { xs: "column", sm: "row" },
-                alignItems: { xs: "normal", sm: "center" },
-                gap: "10px",
-              }}
-            >
-              {["Ví ZaloPay", "Ví Momo"].map((item, index) => (
-                <ListItem
-                  variant="outlined"
-                  key={item}
+
+        {reservation?.reservationState === ReservationState.PENDING && (
+          <Fragment>
+            <Box>
+              <Typography
+                sx={{
+                  color: "var(--buttonHoverColor)",
+                }}
+                variant="h5"
+              >
+                Phương thức thanh toán
+              </Typography>
+              <RadioGroup
+                aria-label="Phương thức thanh toán"
+                name="payment"
+                defaultValue="Individual"
+              >
+                <List
                   sx={{
-                    boxShadow: "sm",
-                    height: "80px",
-                    flex: 1,
+                    "--ListItem-paddingY": "10px",
+                    "--ListItem-radius": "8px",
+                    "--ListItemDecorator-size": "32px",
+                    margin: "10px 0 0",
+                    flexDirection: { xs: "column", sm: "row" },
+                    alignItems: { xs: "normal", sm: "center" },
+                    gap: "10px",
                   }}
                 >
-                  <ListItemDecorator>
-                    {
-                      [
-                        <Box
-                          sx={{
-                            width: "70px",
-                            height: "70px",
-                            padding: "10px",
-                            marginRight: "5px",
-                          }}
-                        >
-                          <Box
-                            component="img"
-                            src="/icons/zalopay/Logo FA-11.png"
-                            sx={{
-                              padding: "5px",
-                              height: "100%",
-                            }}
-                          />
-                        </Box>,
-                        <Box
-                          sx={{
-                            width: "70px",
-                            height: "70px",
-                            padding: "10px",
-                            marginRight: "5px",
-                          }}
-                        >
-                          <Box
-                            component="img"
-                            src="/icons/momo/momo_icon_square_pinkbg@5x.png"
-                            sx={{
-                              padding: "5px",
-                              height: "100%",
-                            }}
-                          />
-                        </Box>,
-                      ][index]
-                    }
-                  </ListItemDecorator>
-                  <Radio
-                    overlay
-                    value={index}
-                    label={item}
-                    sx={{
-                      flexGrow: 1,
-                      flexDirection: "row-reverse",
-                    }}
-                    onChange={() => setSelectedPayment(index)}
-                    slotProps={{
-                      action: ({ checked }) => ({
-                        sx: (theme) => ({
-                          ...(checked && {
-                            inset: -1,
-                            border: "2px solid",
-                            borderColor: theme.vars.palette.primary[500],
+                  {["Ví ZaloPay", "Ví Momo"].map((item, index) => (
+                    <ListItem
+                      variant="outlined"
+                      key={item}
+                      sx={{
+                        boxShadow: "sm",
+                        height: "80px",
+                        flex: 1,
+                      }}
+                    >
+                      <ListItemDecorator>
+                        {
+                          [
+                            <Box
+                              sx={{
+                                width: "70px",
+                                height: "70px",
+                                padding: "10px",
+                                marginRight: "5px",
+                              }}
+                            >
+                              <Box
+                                component="img"
+                                src="/icons/zalopay/Logo FA-11.png"
+                                sx={{
+                                  padding: "5px",
+                                  height: "100%",
+                                }}
+                              />
+                            </Box>,
+                            <Box
+                              sx={{
+                                width: "70px",
+                                height: "70px",
+                                padding: "10px",
+                                marginRight: "5px",
+                              }}
+                            >
+                              <Box
+                                component="img"
+                                src="/icons/momo/momo_icon_square_pinkbg@5x.png"
+                                sx={{
+                                  padding: "5px",
+                                  height: "100%",
+                                }}
+                              />
+                            </Box>,
+                          ][index]
+                        }
+                      </ListItemDecorator>
+                      <Radio
+                        overlay
+                        value={index}
+                        label={item}
+                        sx={{
+                          flexGrow: 1,
+                          flexDirection: "row-reverse",
+                        }}
+                        onChange={() => setSelectedPayment(index)}
+                        slotProps={{
+                          action: ({ checked }) => ({
+                            sx: (theme) => ({
+                              ...(checked && {
+                                inset: -1,
+                                border: "2px solid",
+                                borderColor: theme.vars.palette.primary[500],
+                              }),
+                            }),
                           }),
-                        }),
-                      }),
-                    }}
-                  />
-                </ListItem>
-              ))}
-            </List>
-          </RadioGroup>
-        </Box>
+                        }}
+                      />
+                    </ListItem>
+                  ))}
+                </List>
+              </RadioGroup>
+            </Box>
 
-        <Box>
-          <Button
-            sx={{
-              backgroundColor: "var(--buttonColor)",
-              color: "white",
-              ":hover": {
-                backgroundColor: "var(--buttonHoverColor)",
-              },
-              ":disabled": {
-                backgroundColor: "gray",
-              },
-              width: "100%",
-            }}
-            disabled={selectedPayment === -1 || loadingPayment}
-            onClick={handlePayment}
-          >
-            Thanh toán ngay
-          </Button>
-        </Box>
+            <Box>
+              <Button
+                sx={{
+                  backgroundColor: "var(--buttonColor)",
+                  color: "white",
+                  ":hover": {
+                    backgroundColor: "var(--buttonHoverColor)",
+                  },
+                  ":disabled": {
+                    backgroundColor: "gray",
+                  },
+                  width: "100%",
+                }}
+                disabled={selectedPayment === -1 || loadingPayment}
+                onClick={handlePayment}
+              >
+                Thanh toán ngay
+              </Button>
+            </Box>
+          </Fragment>
+        )}
       </Box>
     </Box>
   );

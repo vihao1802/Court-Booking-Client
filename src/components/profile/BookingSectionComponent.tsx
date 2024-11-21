@@ -6,6 +6,7 @@ import dayjs from "dayjs";
 import { Court } from "@/models/court";
 import { useParams, useRouter } from "next/navigation";
 import { useGetCourtById } from "@/hooks/court/useGetCourtById";
+import { getDay } from "@/utils/format";
 
 interface BookingSectionProps {
   id: string;
@@ -26,13 +27,6 @@ const BookingSectionComponent = async ({
   const { data, isLoading, isValidating, mutate, error } = useGetCourtById({
     courtId,
   });
-  function getDay(date: Date) {
-    // Parse the date with dayjs
-    const parsedDate = dayjs(date, "MM/DD/YY");
-    // Get day of the week as full name (e.g., "Monday")
-    const dayOfWeekName = parsedDate.format("dddd");
-    return dayOfWeekName;
-  }
   function handleButtonClick() {
     router.push(`/user/${paramId}/booking`);
   }

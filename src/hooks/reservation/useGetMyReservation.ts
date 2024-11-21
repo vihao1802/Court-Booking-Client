@@ -1,31 +1,26 @@
-import { UnauthorizedError } from "@/api/http-errors";
 import { reservationApi } from "@/api/reservation";
-import React from "react";
+import { QueryKeys } from "@/constants/query-keys";
 import useSWR, { SWRConfiguration } from "swr";
 
-export const useGetMyReservation = (options?: Partial<SWRConfiguration>) => {
-  const {
-    data: reservationList,
-    isLoading,
-    error,
-    mutate,
-  } = useSWR(
-    "reservation",
-    async () => {
-      try {
-        return await reservationApi.getMyReservation();
-      } catch (error) {
-        if (error instanceof UnauthorizedError) {
-          return null;
-        } else {
-          throw error;
-        }
-      }
-    },
-    {
+
+export interface UseGetMyReservationProps {
+  options?: SWRConfiguration;
+  enabled?: boolean;
+}
+
+export const useGetMyReservation = ({
+  options,
+  enabled
+}:UseGetMyReservationProps) => {
+  const swrResponse = useSWR(
+    enabled ? [QueryKeys.GET_RESERVATION] : null,
+    () => reservationApi.getMyReservation(),
+    {   
+      dedupingInterval: 30 * 1000, // 30s
+      keepPreviousData: true,
+      fallbackData: null,
       ...options,
-      revalidateOnFocus: false,
     }
   );
-  return { reservationList, isLoading, error, mutate };
+  return {...swrResponse};
 };

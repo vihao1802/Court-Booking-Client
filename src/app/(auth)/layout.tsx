@@ -19,7 +19,11 @@ export default function AuthLayout({
   }, [user, firstLoading]);
 
   if (firstLoading || user) {
-    return <OvalLoader size="50" />;
+    return (
+      <div className="h-[100vh]">
+        <OvalLoader size="50" />
+      </div>
+    );
   }
 
   return <main>{children}</main>;

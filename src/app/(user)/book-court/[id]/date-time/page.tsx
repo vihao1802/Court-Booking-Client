@@ -1,24 +1,23 @@
 "use client";
-import React, { Fragment } from "react";
+import React from "react";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import { Box, StepLabel } from "@mui/material";
-import { useParams } from "next/navigation";
 import BookingDetails from "@/components/book-court/date-time/BookingDetails";
 import { ColorlibStepIcon } from "@/components/styles/StepperStyles";
+import StepperPayment from "@/components/book-court/payment/StepperPayment";
 
 const steps = ["Đặt lịch", "Thanh toán", "Hoàn tất"];
 
 const BookCourtDateTimePage = () => {
-  const { id } = useParams<{ id: string }>();
-
   return (
     <Box
       sx={{
         height: "100%",
       }}
     >
-      <Stepper
+      <StepperPayment activeCurrStep={0} />
+      {/* <Stepper
         activeStep={0}
         sx={{
           "& .Mui-active": {
@@ -56,7 +55,7 @@ const BookCourtDateTimePage = () => {
             </Step>
           );
         })}
-      </Stepper>
+      </Stepper> */}
 
       <BookingDetails />
     </Box>
