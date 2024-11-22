@@ -1,7 +1,7 @@
 "use client";
 import React, { Fragment, useEffect, useState } from "react";
 import Box from "@mui/material/Box";
-import { Alert, Button, Divider, Typography } from "@mui/material";
+import { Alert, Button, Chip, Divider, Typography } from "@mui/material";
 import { useParams, useRouter } from "next/navigation";
 import { formatDate, formatVND } from "@/utils/format";
 import { List, ListItem, ListItemDecorator, Radio, RadioGroup } from "@mui/joy";
@@ -69,7 +69,6 @@ const PaymentDetail = () => {
       }
     } catch (error) {
       console.log("handlePayment: " + error);
-    } finally {
       setLoadingPayment(false);
     }
   };
@@ -149,22 +148,10 @@ const PaymentDetail = () => {
               flex: 1,
             }}
           >
-            <Typography
-              sx={{
-                color: "var(--buttonHoverColor)",
-              }}
-              variant="h5"
-            >
-              {reservation.court.courtName}
+            <Typography variant="h5">{reservation.court.courtName} </Typography>
+            <Typography sx={{ color: "GrayText" }}>
+              {reservation.court.courtAddress}{" "}
             </Typography>
-            <Typography
-              sx={{
-                color: "var(--buttonColor)",
-              }}
-            >
-              {reservation.court.courtType.courtTypeName}
-            </Typography>
-            <Typography>{reservation.court.courtAddress}</Typography>
           </Box>
           <Box
             sx={{
@@ -190,14 +177,7 @@ const PaymentDetail = () => {
           </Box>
         </Box>
         <Box>
-          <Typography
-            sx={{
-              color: "var(--buttonHoverColor)",
-            }}
-            variant="h5"
-          >
-            Chi tiết
-          </Typography>
+          <Typography variant="h5">Chi tiết</Typography>
 
           <Box
             sx={{
@@ -206,6 +186,7 @@ const PaymentDetail = () => {
               justifyContent: "space-between",
               alignItems: "end",
               margin: "10px 0",
+              color: "GrayText",
             }}
           >
             <Box>
@@ -223,7 +204,6 @@ const PaymentDetail = () => {
                 <Typography
                   sx={{
                     fontSize: "14px",
-                    color: "var(--buttonColor)",
                     textDecoration: "none",
                     ...(reservation.reservationState ===
                       ReservationState.FAILED && {
@@ -237,11 +217,7 @@ const PaymentDetail = () => {
                 </Typography>
               </Box>
 
-              <Typography
-                sx={{
-                  color: "var(--buttonColor)",
-                }}
-              >
+              <Typography>
                 {reservation.checkInTime}:00 - {reservation.checkOutTime}:00
               </Typography>
             </Box>
@@ -260,11 +236,11 @@ const PaymentDetail = () => {
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",
+              fontWeight: "normal",
             }}
           >
-            <Typography variant="h6">Tổng tiền</Typography>
+            <Typography>Tổng tiền</Typography>
             <Typography
-              variant="h6"
               sx={{
                 textAlign: "right",
                 ...(reservation.reservationState ===
@@ -282,14 +258,7 @@ const PaymentDetail = () => {
         {reservation?.reservationState === ReservationState.PENDING && (
           <Fragment>
             <Box>
-              <Typography
-                sx={{
-                  color: "var(--buttonHoverColor)",
-                }}
-                variant="h5"
-              >
-                Phương thức thanh toán
-              </Typography>
+              <Typography variant="h5">Phương thức thanh toán</Typography>
               <RadioGroup
                 aria-label="Phương thức thanh toán"
                 name="payment"

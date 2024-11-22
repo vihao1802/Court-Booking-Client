@@ -7,6 +7,7 @@ export interface ReservationBase {
   checkInTime: string;
   checkOutTime: string;
   totalPrice: number;
+  createdAt: string;
 }
 
 export interface Reservation extends ReservationBase {

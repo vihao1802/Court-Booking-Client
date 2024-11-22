@@ -44,8 +44,8 @@ const StepperPayment = ({
       {steps.map((label, index) => {
         let stepProps: { completed?: boolean } = {};
 
-        if (enableError) {
-          stepProps.completed = true;
+        if (!isCompleted && enableError) {
+          stepProps.completed = false;
         }
 
         const labelProps: {
@@ -54,11 +54,7 @@ const StepperPayment = ({
         } = {};
 
         if (!isCompleted && index === 2) {
-          labelProps.optional = (
-            <Typography variant="caption" color="error">
-              Thất bại
-            </Typography>
-          );
+          label = "Thất bại";
           labelProps.error = true;
         }
 

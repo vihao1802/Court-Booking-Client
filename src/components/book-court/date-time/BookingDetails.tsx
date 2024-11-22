@@ -20,6 +20,7 @@ import toast from "react-hot-toast";
 import { useGetCourtById } from "@/hooks/court/useGetCourtById";
 import OvalLoader from "@/components/shared/OvalLoader";
 import { BookCourtContext } from "@/app/(user)/book-court/layout";
+import dayjs from "dayjs";
 
 const steps = [
   {
@@ -78,9 +79,14 @@ const BookingDetails = () => {
   const handleCheckout = async () => {
     setLoadingNextPage(true);
     try {
-      const reservationDate = date.split("T")[0];
+      const reservationDate = date;
       const checkInTime = startTime;
       const checkOutTime = (Number(startTime) + Number(duration)).toString();
+
+      const vietnamOffset = 7 * 60 * 60 * 1000;
+      const createdAt = new Date(
+        new Date().getTime() + vietnamOffset
+      ).toISOString();
 
       const res = await reservationApi.createReservation({
         checkInTime: checkInTime,
@@ -89,6 +95,7 @@ const BookingDetails = () => {
         reservationDate: reservationDate,
         userId: user.id,
         courtId: court.id,
+        createdAt: createdAt,
       });
 
       if (res) {
@@ -106,9 +113,9 @@ const BookingDetails = () => {
   };
 
   function NavigateStepper() {
-    if (activeStep === 0) {
-      return <BasicDatePicker handleNext={handleNext} />;
-    } else if (activeStep === 1) {
+    if (activeStep === 0 && court) {
+      return <BasicDatePicker courtId={court.id} handleNext={handleNext} />;
+    } else if (activeStep === 1 && court) {
       return (
         <TimePickerViews
           handleNext={handleNext}
@@ -116,10 +123,10 @@ const BookingDetails = () => {
           court={court}
         />
       );
-    } else if (activeStep === 2) {
+    } else if (activeStep === 2 && court) {
       return (
         <BookingInfoConfirmation
-          courtPrice={court?.rentalPricePerHour ?? 0}
+          courtPrice={court.rentalPricePerHour ?? 0}
           handleNext={handleNext}
           handleBack={handleBack}
         />
