@@ -5,6 +5,7 @@ export interface UserBase {
   email: string;
   phoneNumber: string;
   dayOfBirth: string;
+  location: string;
 }
 
 export interface User extends UserBase {

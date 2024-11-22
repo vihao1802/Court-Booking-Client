@@ -344,9 +344,15 @@ const CourtForm = ({ courtId, open, handleClose }: CourtFormProps) => {
         </Box>
 
         <Box mb="10px">
-          <Typography fontSize="12px" color="var(--buttonColor)">
-            Hình ảnh:
+          <Typography fontSize="12px" color="var(--buttonColor)" mb="10px">
+            Hình ảnh:{" "}
           </Typography>
+          {isAddMode && (
+            <Typography color="black" fontStyle="italic" fontSize="12px">
+              * Ảnh đầu tiên sẽ được chọn làm ảnh chính
+            </Typography>
+          )}
+
           {isAddMode ? (
             <>
               <ImagesUpload

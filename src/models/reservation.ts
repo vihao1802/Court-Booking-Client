@@ -15,6 +15,7 @@ export interface Reservation extends ReservationBase {
   paymentMethod: PaymentMethod;
   user: User;
   court: Court;
+  createdAt: string;
 }
 
 export interface ReservationRequest extends ReservationBase {
