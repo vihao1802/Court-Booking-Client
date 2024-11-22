@@ -9,7 +9,9 @@ export default function AdminRootLayout({
   return (
     <main className="flex flex-row">
       <LeftSideBar />
-      {children}
+      <div className="h-screen w-[calc(100%-250px)] ml-auto flex flex-row justify-center">
+        {children}
+      </div>
     </main>
   );
 }
