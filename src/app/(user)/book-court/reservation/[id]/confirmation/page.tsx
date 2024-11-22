@@ -18,6 +18,7 @@ import OvalLoader from "@/components/shared/OvalLoader";
 import useSWR from "swr";
 import { useGetReservationById } from "@/hooks/reservation/useGetReservationById";
 import StepperPayment from "@/components/book-court/payment/StepperPayment";
+import dayjs from "dayjs";
 
 const steps = ["Đặt lịch", "Thanh toán", "Kết quả"];
 
@@ -186,6 +187,20 @@ const BookCourtPaymentStatusPage = () => {
               </Typography>
               <Typography sx={{ flex: 2, textAlign: "right" }}>
                 {reservation.checkOutTime}:00
+              </Typography>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              <Typography sx={{ flex: 1, textAlign: "left", color: "gray" }}>
+                Ngày đặt lịch
+              </Typography>
+              <Typography sx={{ flex: 2, textAlign: "right" }}>
+                {dayjs(reservation.createdAt).format("DD/MM/YYYY HH:mm:ss")}
               </Typography>
             </Box>
           </Box>

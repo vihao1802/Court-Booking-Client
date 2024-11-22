@@ -6,26 +6,36 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs, { Dayjs } from "dayjs";
 import { Box, Button } from "@mui/material";
 import { BookCourtContext } from "@/app/(user)/book-court/layout";
+import { useGetAvailableDate } from "@/hooks/court/useGetAvailableDate";
+import OvalLoader from "@/components/shared/OvalLoader";
 
 export default function BasicDatePicker({
+  courtId,
   handleNext,
 }: {
+  courtId: string;
   handleNext: () => void;
 }) {
   const { date, setDate } = React.useContext(BookCourtContext);
-  const today = dayjs();
-  const minDate = today;
-  const maxDate = today.add(7, "day");
   const [showContinueButton, setShowContinueButton] = React.useState(
     date ? true : false
   );
+  const { data: availableDates, isLoading } = useGetAvailableDate({ courtId });
 
   const handleDateChange = (val: Dayjs | null) => {
     if (val) {
-      setDate(val.toISOString());
+      setDate(val.format("YYYY-MM-DD"));
       setShowContinueButton(true);
     }
   };
+
+  if (isLoading || !availableDates) {
+    return <OvalLoader />;
+  }
+
+  const today = dayjs();
+  const minDate = today;
+  const maxDate = today.add(availableDates.length, "day");
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
@@ -37,6 +47,9 @@ export default function BasicDatePicker({
             maxDate={maxDate}
             defaultValue={date ? dayjs(date) : null}
             onChange={handleDateChange}
+            shouldDisableDate={(date) =>
+              !availableDates.includes(dayjs(date).format("YYYY-MM-DD"))
+            }
             slotProps={{
               textField: {
                 InputProps: {
