@@ -50,7 +50,6 @@ axiosInstance.interceptors.request.use(
 
       if (remainingTime <= 20 && !isRefreshing) {
         isRefreshing = true;
-        // 5 minutes
         try {
           const res = await authApi.refresh({ token: token });
           config.headers.Authorization = `Bearer ${res?.token}`;

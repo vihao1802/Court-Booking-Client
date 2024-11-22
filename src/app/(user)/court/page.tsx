@@ -26,7 +26,7 @@ const Courts = () => {
           padding: "20px",
         }}
       >
-        <FeaturedCourts />
+        {/* <FeaturedCourts /> */}
       </Box>
     </Box>
   );
