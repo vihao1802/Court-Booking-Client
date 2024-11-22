@@ -6,7 +6,7 @@ import { userApi } from '@/api/user';
 
 export function useGetUserList(params: Pagination) {
     const swrResponse = useSWR(
-        [QueryKeys.GET_USER_LIST, params],
+     [QueryKeys.GET_USER_LIST, params] ,
         () => userApi.getAll(params),
         {
 			dedupingInterval: 30 * 1000, // 30s

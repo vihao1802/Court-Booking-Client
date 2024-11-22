@@ -13,7 +13,7 @@ export interface UseCourtListProps {
 
 export function useGetCourtList({typeId, params, options, enabled = true}: UseCourtListProps) {
     const swrResponse = useSWR(
-        enabled ? [QueryKeys.GET_COURT_LIST, typeId ,params] : null,
+        enabled && Boolean(typeId)? [QueryKeys.GET_COURT_LIST, typeId ,params] : null,
         () => courtApi.getByCourtType(typeId, params),
         {
 			dedupingInterval: 30 * 1000, // 30s

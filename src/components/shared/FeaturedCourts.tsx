@@ -16,7 +16,7 @@ import CourtCard from "@/components/shared/CourtCard";
 import { exploreCategoriesTabs } from "@/constants";
 import { useRouter } from "next/navigation";
 import { useGetCourtList } from "@/hooks/court/useGetCourtList";
-import { Pagination as ApiPagination } from "@/models/api";
+import { PaginationBase as ApiPagination } from "@/models/api";
 import { useGetCourtTypeList } from "@/hooks/court-type/useGetCourtTypeList";
 import { Court } from "@/models/court";
 import TennisBallLoader from "./TennisBallLoader";
@@ -32,7 +32,7 @@ const FeaturedCourts = () => {
   const { data: courtTypeData, isLoading: courtTypeDataLoading } =
     useGetCourtTypeList({ isdisabled: 0 });
 
-  const [selectedType, setSelectedType] = useState(courtTypeData?.[0]?.id);
+  const [selectedType, setSelectedType] = useState("");
 
   const { data: courtData, isLoading: courtDataLoading } = useGetCourtList({
     typeId: selectedType,
@@ -46,13 +46,13 @@ const FeaturedCourts = () => {
   useEffect(() => {
     if (courtTypeData || !courtTypeDataLoading)
       setSelectedType(courtTypeData?.[0]?.id);
-  }, [courtTypeData]);
+  }, [courtTypeData, courtTypeDataLoading]);
 
   const handleChange = (event: SyntheticEvent, newid: string) => {
     setSelectedType(newid);
   };
 
-  // if (courtTypeDataLoading || courtDataLoading) return <TennisBallLoader />;
+  if (courtTypeDataLoading || courtDataLoading) return <TennisBallLoader />;
 
   const handlePageChange = (
     event: React.ChangeEvent<unknown>,
@@ -101,10 +101,10 @@ const FeaturedCourts = () => {
             alignItems: "center",
           }}
         >
-          <TabContext value={selectedType}>
+          <TabContext value={selectedType || courtTypeData[0]?.id}>
             <Box>
               <Tabs
-                value={selectedType}
+                value={selectedType || courtTypeData[0]?.id}
                 onChange={handleChange}
                 variant="scrollable"
                 scrollButtons="auto"
