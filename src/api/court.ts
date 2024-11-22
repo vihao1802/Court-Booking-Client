@@ -14,4 +14,18 @@ export const courtApi = {
     const res = await axiosInstance.get<Court>(`${prefix}/${courtId}`);
     return res.data;
   },
+
+  async getAvailableDate(courtId: string) {
+    const res = await axiosInstance.get<string[]>(
+      `${prefix}/${courtId}/get-available-date`
+    );
+    return res.data;
+  },
+
+  async getUnavailableHours(courtId: string, date: string) {
+    const res = await axiosInstance.get<string[]>(
+      `${prefix}/${courtId}/get-unavailable-hours?date=${date}`
+    );
+    return res.data;
+  },
 };
