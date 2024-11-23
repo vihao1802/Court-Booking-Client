@@ -133,15 +133,6 @@ const LeftSideBar = () => {
           <Menu anchorEl={anchorEl} open={open} onClose={handleCloseMenuMore}>
             <List disablePadding>
               <ListItem>
-                <ListItemButton>
-                  <ListItemIcon>
-                    <SettingsOutlined />
-                  </ListItemIcon>
-                  <ListItemText primary="Settings" />
-                </ListItemButton>
-              </ListItem>
-              <Divider />
-              <ListItem>
                 <ListItemButton onClick={handleCloseMenuMore}>
                   <ListItemIcon>
                     <ExitToAppOutlined />

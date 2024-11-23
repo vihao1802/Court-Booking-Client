@@ -30,8 +30,8 @@ import { CourtRequest } from "@/models/court";
 import { usePostCourtImageList } from "@/hooks/court/usePostCourtImageList";
 import { useGetCourtById } from "@/hooks/court/useGetCourtById";
 import { usePutCourt } from "@/hooks/court/usePutCourt";
-
 import ImageUpload from "./ImageUpload";
+import toast from "react-hot-toast";
 
 const schema = yup.object({
   courtName: yup.string().required("Không được để trống"),
@@ -91,7 +91,7 @@ const CourtForm = ({ courtId, open, handleClose }: CourtFormProps) => {
       minimumRentalTime: courtData?.minimumRentalTime || 30,
       maximumRentalTime: courtData?.maximumRentalTime || 120,
       courtTypeId: courtData?.courtType.id || "",
-      courtImageList: courtData?.courtImageList || [],
+      courtImageList: [],
     },
     validationSchema: schema,
     onSubmit: async (values) => {
@@ -116,19 +116,23 @@ const CourtForm = ({ courtId, open, handleClose }: CourtFormProps) => {
             const cId = courtResponse.id;
 
             const formData = new FormData();
-            values.courtImageList.forEach((image: File, index: number) => {
-              formData.append(
-                `courtImages[${index}].imageType`,
-                index === 0 ? "main" : "sub"
-              );
-              formData.append(`courtImages[${index}].courtImageSrc`, image);
-            });
+            (values.courtImageList as File[]).forEach(
+              (image: File, index: number) => {
+                formData.append(
+                  `courtImages[${index}].imageType`,
+                  index === 0 ? "main" : "sub"
+                );
+                formData.append(`courtImages[${index}].courtImageSrc`, image);
+              }
+            );
 
             await createCourtImageList(cId, formData);
+            toast.success("Thêm sân thành công");
           }
         } else {
           if (courtId) {
             await updateCourt(courtId, courtData);
+            toast.success("Cập nhật sân thành công");
           }
         }
       } catch (error) {
@@ -344,9 +348,15 @@ const CourtForm = ({ courtId, open, handleClose }: CourtFormProps) => {
         </Box>
 
         <Box mb="10px">
-          <Typography fontSize="12px" color="var(--buttonColor)">
-            Hình ảnh:
+          <Typography fontSize="12px" color="var(--buttonColor)" mb="10px">
+            Hình ảnh:{" "}
           </Typography>
+          {isAddMode && (
+            <Typography color="black" fontStyle="italic" fontSize="12px">
+              * Ảnh đầu tiên sẽ được chọn làm ảnh chính
+            </Typography>
+          )}
+
           {isAddMode ? (
             <>
               <ImagesUpload

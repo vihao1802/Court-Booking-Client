@@ -6,7 +6,7 @@ import Image, { StaticImageData } from "next/image";
 import React from "react";
 
 import SearchPanel from "@/components/search-panel/SearchPanel";
-import { useCourtTypeList } from "@/hooks/court-type/useGetCourtTypeList";
+import { useGetCourtTypeList } from "@/hooks/court-type/useGetCourtTypeList";
 import { CourtType } from "@/models/court-type";
 import { useRouter } from "next/navigation";
 
@@ -14,7 +14,7 @@ const page = () => {
   const router = useRouter();
 
   const { data: courtTypeList, isLoading: courtTypeListLoading } =
-    useCourtTypeList({ isdisabled: 0 });
+    useGetCourtTypeList({ isdisabled: 0 });
 
   if (courtTypeListLoading) return;
 
