@@ -15,7 +15,6 @@ import { Visibility, VisibilityOffOutlined } from "@mui/icons-material";
 import AppLogo from "@/components/shared/Logo";
 import { LoginRequest } from "@/models/auth";
 import OvalLoader from "@/components/shared/OvalLoader";
-import { authApi } from "@/api/auth";
 import { useAuthenticatedUser } from "@/hooks/auth/useAuthenticatedUser";
 import { Router } from "next/router";
 import { useRouter } from "next/navigation";
@@ -49,11 +48,18 @@ const SignInPage = () => {
       const res = await login(payload);
       if (res && res.status === 200) {
         toast.success("Đăng nhập thành công");
+
+        if (res.scope === "ADMIN") {
+          router.push("/dashboard");
+          return;
+        }
+
         let url = "/";
         if (localStorage.getItem("pageNextUrl")) {
           url = localStorage.getItem("pageNextUrl")!;
           localStorage.setItem("pageNextUrl", "/");
         }
+
         router.push(url);
       } else {
         toast.error("Đăng nhập không thành công");
@@ -180,6 +186,7 @@ const SignInPage = () => {
                     name="password"
                     type={showPassword ? "text" : "password"}
                     fullWidth
+                    autoComplete="on"
                     id="password"
                     label="Password"
                     variant="outlined"
