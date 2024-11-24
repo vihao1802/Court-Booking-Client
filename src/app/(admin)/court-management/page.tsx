@@ -20,11 +20,9 @@ import {
   SelectChangeEvent,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useState, MouseEvent } from "react";
-import { useGetUserList } from "@/hooks/user/useGetUserList";
+import React, { useEffect, useState } from "react";
 import { AddRounded, DeleteRounded, EditRounded } from "@mui/icons-material";
 import { User } from "@/models/user";
-import UserInfo from "@/components/admin-user/UserInfo";
 import { Pagination as ApiPagination } from "@/models/api";
 import OvalLoader from "@/components/shared/OvalLoader";
 import { useGetCourtTypeList } from "@/hooks/court-type/useGetCourtTypeList";
@@ -32,11 +30,35 @@ import { useGetCourtList } from "@/hooks/court/useGetCourtList";
 import { CourtType } from "@/models/court-type";
 import { formatVND } from "@/utils/format";
 import CourtForm from "@/components/admin-court/CourtForm";
+import { usePutDeleteCourt } from "@/hooks/court/usePutDeleteCourt";
+import toast from "react-hot-toast";
+import ConfirmDialog from "@/components/shared/ConfirmDialog";
 
 const CourtManagement = () => {
   // court list
   const [selectedCourtId, setSelectedCourtId] = useState<string | null>(null);
 
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+  const handleClickOpenConfirmDialog = () => {
+    setOpenConfirmDialog(true);
+  };
+
+  const handleCloseConfirmDialog = () => {
+    setOpenConfirmDialog(false);
+  };
+  const handleConfirm = async () => {
+    if (selectedCourtId) {
+      await deleteCourt(selectedCourtId);
+    }
+    setOpenConfirmDialog(false);
+    toast.success("Xóa thành công");
+  };
+  const [confirmContent, setConfirmContent] = useState({
+    title: "",
+    content: "",
+  });
+
+  const deleteCourt = usePutDeleteCourt();
   const columns: GridColDef[] = [
     {
       field: "ordinalNumber",
@@ -59,7 +81,7 @@ const CourtManagement = () => {
       renderCell(params) {
         return (
           <Typography p="12px">
-            {params.row.minimumRentalTime} - {params.row.maximumRentalTime} phút
+            {params.row.minimumRentalTime} - {params.row.maximumRentalTime} giờ
           </Typography>
         );
       },
@@ -117,7 +139,14 @@ const CourtManagement = () => {
             icon={<DeleteRounded sx={{ color: "red" }} />}
             label="Xóa"
             color="inherit"
-            onClick={() => {}}
+            onClick={async () => {
+              setSelectedCourtId(item.row.id);
+              setConfirmContent({
+                title: "Xác nhận xóa sân",
+                content: "Bạn có chắc chắn muốn xóa sân này không?",
+              });
+              handleClickOpenConfirmDialog();
+            }}
           />,
         ];
       },
@@ -313,6 +342,13 @@ const CourtManagement = () => {
         courtId={selectedCourtId}
         open={openCourtForm}
         handleClose={handleCloseCourtForm}
+      />
+      <ConfirmDialog
+        title={confirmContent.title}
+        content={confirmContent.content}
+        open={openConfirmDialog}
+        handleConfirm={handleConfirm}
+        handleClose={handleCloseConfirmDialog}
       />
     </Box>
   );

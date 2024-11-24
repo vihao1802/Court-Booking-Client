@@ -45,38 +45,6 @@ const page = () => {
             padding: "20px",
           }}
         >
-          <Autocomplete
-            disablePortal
-            options={types}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Tìm kiếm"
-                size="small"
-                fullWidth
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": {
-                      borderColor: "#E0E3E7",
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "#B2BAC2",
-                    },
-                    "&.Mui-focused fieldset": {
-                      borderColor: "#6F7E8C",
-                    },
-                  },
-                  "& label.Mui-focused": {
-                    color: "#A0AAB4",
-                  },
-                  "& .MuiInput-underline:after": {
-                    borderBottomColor: "#B2BAC2",
-                  },
-                }}
-              />
-            )}
-          />
-
           <Box
             sx={{
               paddingTop: "20px",

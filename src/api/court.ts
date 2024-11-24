@@ -1,7 +1,6 @@
-import { Pagination } from "@/models/api";
+import { AvailableCourtPagination, Pagination } from "@/models/api";
 import axiosInstance from "@/api/axios-instance";
 import { Court, CourtRequest } from "@/models/court";
-import { CourtImage } from "@/models/court-image";
 
 const prefix = "/courts";
 
@@ -13,6 +12,11 @@ export const courtApi = {
 
   async getById(courtId: string) {
     const res = await axiosInstance.get<Court>(`${prefix}/${courtId}`);
+    return res.data;
+  },
+
+  async getAvailaleCourtByTypeAndDateTime(typeId: string, params: Partial<AvailableCourtPagination>) {
+    const res = await axiosInstance.get(`${prefix}/type/${typeId}/search`, { params });
     return res.data;
   },
 
@@ -58,4 +62,9 @@ export const courtApi = {
     );
     return res.data;
   },
+
+  async deleteCourt(courtId: string) {
+    const res = await axiosInstance.put(`${prefix}/${courtId}/delete`);
+    return res.data;
+  }
 };

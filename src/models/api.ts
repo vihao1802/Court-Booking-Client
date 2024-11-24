@@ -11,3 +11,9 @@ export interface ReservationPagination extends Pagination {
 	from: string
 	to: string
 }
+
+export interface AvailableCourtPagination extends PaginationBase {
+	date: string | null
+	start: string | null
+	end: string | null
+}

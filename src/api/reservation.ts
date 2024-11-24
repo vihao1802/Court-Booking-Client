@@ -22,6 +22,14 @@ export const reservationApi = {
     return res.data;
 
   },
+
+  async getInvoice(id: String) {
+    const res = await axiosInstance.get(`/reservations/${id}/getInvoice`, {
+      responseType: "arraybuffer", // Đảm bảo nhận dữ liệu dạng byte[]
+    });
+    return res.data;
+  },
+
   async updateReservation(id: string, data: UpdateReservationRequest) {
     const res = await axiosInstance.put<Reservation>(
       `/reservations/${id}`,

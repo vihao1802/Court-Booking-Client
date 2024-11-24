@@ -36,7 +36,7 @@ import toast from "react-hot-toast";
 const schema = yup.object({
   courtName: yup.string().required("Không được để trống"),
   courtDescription: yup.string().required("Không được để trống"),
-  // courtLocation: yup.string().required("Không được để trống"),
+  courtLocation: yup.string().required("Không được để trống"),
   rentalPricePerHour: yup
     .number()
     .min(1000, "Đơn giá phải từ 1000đ")
@@ -84,13 +84,13 @@ const CourtForm = ({ courtId, open, handleClose }: CourtFormProps) => {
   const formikAdd = useFormik({
     enableReinitialize: true,
     initialValues: {
-      courtName: courtData?.courtName || "",
-      courtDescription: courtData?.courtDescription || "",
-      courtLocation: " ",
-      rentalPricePerHour: courtData?.rentalPricePerHour || 1000,
-      minimumRentalTime: courtData?.minimumRentalTime || 30,
-      maximumRentalTime: courtData?.maximumRentalTime || 120,
-      courtTypeId: courtData?.courtType.id || "",
+      courtName: "",
+      courtDescription: "",
+      courtLocation: "",
+      rentalPricePerHour: 1000,
+      minimumRentalTime: 1,
+      maximumRentalTime: 3,
+      courtTypeId: "",
       courtImageList: [],
     },
     validationSchema: schema,
@@ -155,6 +155,29 @@ const CourtForm = ({ courtId, open, handleClose }: CourtFormProps) => {
     formikAdd.setFieldValue("courtTypeId", event.target.value as string);
   };
 
+  useEffect(() => {
+    if (courtData) {
+      formikAdd.setFieldValue("courtName", courtData.courtName);
+      formikAdd.setFieldValue("courtDescription", courtData.courtDescription);
+      formikAdd.setFieldValue(
+        "rentalPricePerHour",
+        courtData.rentalPricePerHour
+      );
+      formikAdd.setFieldValue("courtLocation", courtData.courtAddress);
+      formikAdd.setFieldValue("minimumRentalTime", courtData.minimumRentalTime);
+      formikAdd.setFieldValue("maximumRentalTime", courtData.maximumRentalTime);
+      formikAdd.setFieldValue("courtTypeId", courtData.courtType.id);
+    } else {
+      formikAdd.resetForm();
+    }
+  }, [courtData]);
+
+  useEffect(() => {
+    if (isAddMode) {
+      formikAdd.resetForm();
+    }
+  }, [isAddMode]);
+
   if (courtTypeDataLoading || courtDataLoading) return <LoaderIcon />;
 
   return (
@@ -204,6 +227,35 @@ const CourtForm = ({ courtId, open, handleClose }: CourtFormProps) => {
 
         <Box mb="10px">
           <Typography fontSize="12px" color="var(--buttonColor)">
+            Địa chỉ:
+          </Typography>
+          <TextField
+            disabled={isSubmitting}
+            autoFocus
+            required
+            color="success"
+            margin="dense"
+            id="courtLocation"
+            name="courtLocation"
+            type="text"
+            fullWidth
+            variant="outlined"
+            size="small"
+            value={formikAdd.values.courtLocation}
+            helperText={
+              formikAdd.touched.courtLocation &&
+              (formikAdd.errors.courtLocation as string)
+            }
+            error={
+              formikAdd.touched.courtLocation &&
+              Boolean(formikAdd.errors.courtLocation)
+            }
+            onChange={formikAdd.handleChange}
+          />
+        </Box>
+
+        <Box mb="10px">
+          <Typography fontSize="12px" color="var(--buttonColor)">
             Đơn giá:
           </Typography>
           <TextField
@@ -238,7 +290,7 @@ const CourtForm = ({ courtId, open, handleClose }: CourtFormProps) => {
 
         <Box mb="10px">
           <Typography fontSize="12px" color="var(--buttonColor)">
-            {"Thời gian thuê tối thiểu (tiếng):"}
+            {"Thời gian thuê tối thiểu (giờ):"}
           </Typography>
           <TextField
             disabled={isSubmitting}
@@ -267,7 +319,7 @@ const CourtForm = ({ courtId, open, handleClose }: CourtFormProps) => {
 
         <Box mb="10px">
           <Typography fontSize="12px" color="var(--buttonColor)">
-            {"Thời gian thuê tối đa (tiếng):"}
+            {"Thời gian thuê tối đa (giờ):"}
           </Typography>
           <TextField
             disabled={isSubmitting}

@@ -24,7 +24,7 @@ const SelectDateTime = ({
   const { dateTime, setDateTime } = useContext(SearchContext);
   const [date, setDate] = useState<Dayjs | null>(null);
   const [time, setTime] = useState<Dayjs | null>(null);
-  const [duration, setDuration] = useState(1);
+  const [duration, setDuration] = useState(3);
 
   const handleChange = (event: SelectChangeEvent) => {
     setDuration(Number(event.target.value));
@@ -35,13 +35,6 @@ const SelectDateTime = ({
         " - " +
         (time?.add(Number(event.target.value), "hour").format("HH:mm A") || "")
     );
-  };
-
-  const cleanDateTime = () => {
-    setDate(null);
-    setTime(null);
-    setDuration(1);
-    setDateTime("");
   };
 
   return (
@@ -131,12 +124,14 @@ const SelectDateTime = ({
                   },
                 }}
                 value={time}
-                views={["hours", "minutes"]}
+                views={["hours"]}
                 format="HH:mm"
-                minutesStep={30}
-                minTime={dayjs().hour(6).minute(0)}
-                maxTime={dayjs().hour(22).minute(0)}
-                onChange={(newTime) => setTime(newTime as Dayjs)}
+                minutesStep={60}
+                minTime={dayjs().hour(5).minute(0)}
+                maxTime={dayjs().hour(23).minute(0)}
+                onChange={(newTime) => {
+                  setTime(newTime as Dayjs);
+                }}
               />
             </Box>
             <Box flex={1}>
@@ -148,8 +143,12 @@ const SelectDateTime = ({
                 fullWidth
               >
                 <MenuItem value={1}>1 tiếng</MenuItem>
-                <MenuItem value={1.5}>1.5 tiếng</MenuItem>
-                <MenuItem value={2}>2 tiếng</MenuItem>
+                {time && time.hour() !== 23 && (
+                  <MenuItem value={2}>2 tiếng</MenuItem>
+                )}
+                {time && time.hour() !== 22 && time.hour() !== 23 && (
+                  <MenuItem value={3}>3 tiếng</MenuItem>
+                )}
               </Select>
             </Box>
           </Box>
