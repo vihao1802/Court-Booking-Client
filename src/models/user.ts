@@ -17,6 +17,7 @@ export interface User extends UserBase {
   role: Role;
   createdAt: string;
   profileImage: string;
+  location: string;
 }
 
 export interface UserRequest extends UserBase {

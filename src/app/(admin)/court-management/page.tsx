@@ -125,8 +125,9 @@ const CourtManagement = () => {
   ];
 
   const [filters, setFilters] = useState<ApiPagination>({
+    search: "",
     page: 0,
-    size: 5,
+    size: 10,
   });
 
   const [rows, setRows] = React.useState<GridRowsProp>([]);
@@ -192,7 +193,7 @@ const CourtManagement = () => {
       }}
     >
       <Box>
-        <AdminTitle title="Court Management" subtitle="Manage your courts" />
+        <AdminTitle title="Quản lý sân" subtitle="Danh sách sân" />
         <Box m="0 auto" width="1000px">
           <Paper>
             <Box
@@ -289,13 +290,17 @@ const CourtManagement = () => {
                   pageSize: filters.size,
                 }}
                 onPaginationModelChange={(model) => {
-                  setFilters({ page: model.page, size: model.pageSize });
+                  setFilters({
+                    ...filters,
+                    page: model.page,
+                    size: model.pageSize,
+                  });
                   console.log(filters);
                 }}
                 initialState={{
                   pagination: { paginationModel: { pageSize: 5 } },
                 }}
-                pageSizeOptions={[5, 10]}
+                pageSizeOptions={[10, 5]}
                 sx={{ padding: "10px 20px", height: "100%" }}
                 keepNonExistentRowsSelected
               />

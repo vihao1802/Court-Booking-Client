@@ -1,7 +1,7 @@
 "use client";
 import React, { Fragment, useEffect, useState } from "react";
 import Box from "@mui/material/Box";
-import { Alert, Button, Divider, Typography } from "@mui/material";
+import { Alert, Button, Chip, Divider, Typography } from "@mui/material";
 import { useParams, useRouter } from "next/navigation";
 import { formatDate, formatVND } from "@/utils/format";
 import { List, ListItem, ListItemDecorator, Radio, RadioGroup } from "@mui/joy";
@@ -13,6 +13,7 @@ import { useGetReservationById } from "@/hooks/reservation/useGetReservationById
 import { useUpdateReservation } from "@/hooks/reservation/useUpdateReservation";
 import { PaymentMethod, ReservationState } from "@/types/enums";
 import { CalendarToday } from "@mui/icons-material";
+import Link from "next/link";
 
 const PaymentDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -50,7 +51,6 @@ const PaymentDetail = () => {
     setLoadingPayment(true);
     try {
       let res;
-      let res_status = 1;
       if (selectedPayment === 0) {
         res = await reservationApi.createPaymentZaloPay(id);
         if (res.status === 200) {
@@ -62,14 +62,13 @@ const PaymentDetail = () => {
         }
       } else if (selectedPayment === 1) {
         res = await reservationApi.createPaymentMomo(id, {
-          requestType: "payWithCC",
+          requestType: "captureWallet",
         });
 
         router.push(res.payUrl);
       }
     } catch (error) {
       console.log("handlePayment: " + error);
-    } finally {
       setLoadingPayment(false);
     }
   };
@@ -80,6 +79,7 @@ const PaymentDetail = () => {
         reservationState: ReservationState.FAILED,
         paymentMethod: PaymentMethod.NO,
       });
+      setLoadingPayment(false);
       window.location.reload();
     } catch (error) {
       console.log("handleTimeOutPayment: " + error);
@@ -149,22 +149,10 @@ const PaymentDetail = () => {
               flex: 1,
             }}
           >
-            <Typography
-              sx={{
-                color: "var(--buttonHoverColor)",
-              }}
-              variant="h5"
-            >
-              {reservation.court.courtName}
+            <Typography variant="h5">{reservation.court.courtName} </Typography>
+            <Typography sx={{ color: "GrayText" }}>
+              {reservation.court.courtAddress}{" "}
             </Typography>
-            <Typography
-              sx={{
-                color: "var(--buttonColor)",
-              }}
-            >
-              {reservation.court.courtType.courtTypeName}
-            </Typography>
-            <Typography>{reservation.court.courtAddress}</Typography>
           </Box>
           <Box
             sx={{
@@ -190,14 +178,7 @@ const PaymentDetail = () => {
           </Box>
         </Box>
         <Box>
-          <Typography
-            sx={{
-              color: "var(--buttonHoverColor)",
-            }}
-            variant="h5"
-          >
-            Chi tiết
-          </Typography>
+          <Typography variant="h5">Chi tiết</Typography>
 
           <Box
             sx={{
@@ -206,6 +187,7 @@ const PaymentDetail = () => {
               justifyContent: "space-between",
               alignItems: "end",
               margin: "10px 0",
+              color: "GrayText",
             }}
           >
             <Box>
@@ -223,11 +205,10 @@ const PaymentDetail = () => {
                 <Typography
                   sx={{
                     fontSize: "14px",
-                    color: "var(--buttonColor)",
                     textDecoration: "none",
                     ...(reservation.reservationState ===
                       ReservationState.FAILED && {
-                      fontSize: "18px",
+                      fontSize: "16px",
                       color: "#48445A",
                       textDecoration: "line-through",
                     }),
@@ -235,13 +216,22 @@ const PaymentDetail = () => {
                 >
                   {formatDate(reservation.reservationDate)}
                 </Typography>
+                {reservation.reservationState === ReservationState.FAILED && (
+                  <Link href={`/book-court/${reservation.court.id}/date-time`}>
+                    <Typography
+                      sx={{
+                        fontSize: "16px",
+                        color: "var(--buttonColor)",
+                        marginLeft: "10px",
+                      }}
+                    >
+                      Đặt lại
+                    </Typography>
+                  </Link>
+                )}
               </Box>
 
-              <Typography
-                sx={{
-                  color: "var(--buttonColor)",
-                }}
-              >
+              <Typography>
                 {reservation.checkInTime}:00 - {reservation.checkOutTime}:00
               </Typography>
             </Box>
@@ -260,11 +250,11 @@ const PaymentDetail = () => {
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",
+              fontWeight: "normal",
             }}
           >
-            <Typography variant="h6">Tổng tiền</Typography>
+            <Typography>Tổng tiền</Typography>
             <Typography
-              variant="h6"
               sx={{
                 textAlign: "right",
                 ...(reservation.reservationState ===
@@ -282,14 +272,7 @@ const PaymentDetail = () => {
         {reservation?.reservationState === ReservationState.PENDING && (
           <Fragment>
             <Box>
-              <Typography
-                sx={{
-                  color: "var(--buttonHoverColor)",
-                }}
-                variant="h5"
-              >
-                Phương thức thanh toán
-              </Typography>
+              <Typography variant="h5">Phương thức thanh toán</Typography>
               <RadioGroup
                 aria-label="Phương thức thanh toán"
                 name="payment"

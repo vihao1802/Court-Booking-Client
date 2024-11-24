@@ -9,6 +9,12 @@ export const userApi = {
         const res = await axiosInstance.get(`${prefix}/paginated`, { params });
         return res.data;
     },
+
+    async disableUser(id: string, { isDisabled }: { isDisabled: number }) {
+        const res = await axiosInstance.put(`${prefix}/${id}/disable-user`, { isDisabled });
+        return res.data;
+    },
+
     async updateUser(requestBody: UpdateUserRequest) {
         const res = await axiosInstance.put<User>(`${prefix}/update`, requestBody);
         return res.data;

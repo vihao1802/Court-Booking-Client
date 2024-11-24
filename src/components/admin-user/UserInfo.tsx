@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import Avatar from "@mui/joy/Avatar";
 import Chip from "@mui/joy/Chip";
 import Box from "@mui/joy/Box";
@@ -14,25 +14,38 @@ import SvgIcon from "@mui/joy/SvgIcon";
 import { User } from "@/models/user";
 import dayjs from "dayjs";
 
-export default function BioCard({
-  id,
-  userName,
-  email,
-  phoneNumber,
-  dayOfBirth,
-  createdAt,
-  location,
-  isDisabled,
-  profileImage,
-}: Partial<User>) {
+interface UserInfoProps {
+  user: Partial<User>;
+  setDisable: Dispatch<SetStateAction<number>>;
+  setConfirmContent: Dispatch<
+    SetStateAction<{ title: string; content: string }>
+  >;
+  handleClickOpenConfirmDialog: () => void;
+}
+
+export default function UserInfo({
+  user,
+  setDisable,
+  setConfirmContent,
+  handleClickOpenConfirmDialog,
+}: UserInfoProps) {
+  const handleClick = () => {
+    setDisable(0);
+    setConfirmContent({
+      title: "Bỏ chặn người dùng",
+      content: `Bạn có chắc chắn muốn bỏ chặn người dùng ${user.userName}?`,
+    });
+    handleClickOpenConfirmDialog();
+  };
+
   return (
     <Card sx={{ width: 320, maxWidth: "100%", boxShadow: "lg" }}>
       <CardContent sx={{ alignItems: "center", textAlign: "center" }}>
-        <Avatar src={profileImage} sx={{ "--Avatar-size": "4rem" }} />
+        <Avatar src={user.profileImage} sx={{ "--Avatar-size": "4rem" }} />
         <Chip
           size="sm"
           variant="soft"
-          color={isDisabled ? "danger" : "success"}
+          color={user.isDisabled ? "danger" : "success"}
           sx={{
             mt: -1,
             mb: 1,
@@ -40,9 +53,9 @@ export default function BioCard({
             borderColor: "background.surface",
           }}
         >
-          {isDisabled ? "Đã chặn" : "Đang hoạt động"}
+          {user.isDisabled ? "Đã chặn" : "Đang hoạt động"}
         </Chip>
-        <Typography level="title-lg">{userName}</Typography>
+        <Typography level="title-lg">{user.userName}</Typography>
         <Box
           sx={{
             alignItems: "left",
@@ -50,34 +63,36 @@ export default function BioCard({
           }}
         >
           <Typography level="body-sm" sx={{ maxWidth: "24ch" }}>
-            User ID: {id?.split("-")[0]}
+            User ID: {user.id?.split("-")[0]}
           </Typography>
           <Typography level="body-sm" sx={{ maxWidth: "24ch" }}>
-            Phone: {phoneNumber}
+            Phone: {user.phoneNumber}
           </Typography>
           <Typography level="body-sm" sx={{ maxWidth: "24ch" }}>
-            Created at: {dayjs(createdAt).format("DD/MM/YYYY")}
+            Created at: {dayjs(user.createdAt).format("DD/MM/YYYY")}
           </Typography>
 
           <Typography level="body-sm" sx={{ maxWidth: "24ch" }}>
-            Location: {location}
+            Location: {user.location}
           </Typography>
           <Typography level="body-sm" sx={{ maxWidth: "24ch" }}>
-            Birthday: {dayjs(dayOfBirth).format("DD/MM/YYYY")}
+            Birthday: {dayjs(user.dayOfBirth).format("DD/MM/YYYY")}
           </Typography>
           <Typography level="body-sm" sx={{ maxWidth: "24ch" }}>
-            Email: {email}
+            Email: {user.email}
           </Typography>
         </Box>
       </CardContent>
-      {Boolean(isDisabled) && (
+      {Boolean(user.isDisabled) && (
         <CardOverflow sx={{ bgcolor: "background.level1" }}>
           <CardActions buttonFlex="1">
             <ButtonGroup
               variant="outlined"
               sx={{ bgcolor: "background.surface" }}
             >
-              <Button color="success">Bỏ Chặn</Button>
+              <Button color="success" onClick={handleClick}>
+                Bỏ Chặn
+              </Button>
             </ButtonGroup>
           </CardActions>
         </CardOverflow>

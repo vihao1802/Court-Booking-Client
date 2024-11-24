@@ -47,13 +47,9 @@ axiosInstance.interceptors.request.use(
       const tokenPayload = JSON.parse(atob(token.split(".")[1]));
       const currentTime = Math.floor(Date.now() / 1000);
       const remainingTime = tokenPayload.exp - currentTime;
-      console.log("config.url:", config.url);
-      console.log("Remaining time:", remainingTime);
-      console.log("token in config:", token);
 
       if (remainingTime <= 20 && !isRefreshing) {
         isRefreshing = true;
-        // 5 minutes
         try {
           const res = await authApi.refresh({ token: token });
           config.headers.Authorization = `Bearer ${res?.token}`;

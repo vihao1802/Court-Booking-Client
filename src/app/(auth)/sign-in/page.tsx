@@ -8,28 +8,16 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import * as Yup from "yup";
 import { Form, Formik, Field, ErrorMessage } from "formik";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Visibility, VisibilityOffOutlined } from "@mui/icons-material";
 import AppLogo from "@/components/shared/Logo";
 import { LoginRequest } from "@/models/auth";
 import OvalLoader from "@/components/shared/OvalLoader";
-import { authApi } from "@/api/auth";
 import { useAuthenticatedUser } from "@/hooks/auth/useAuthenticatedUser";
-import { Router } from "next/router";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-
-const SignInSchema = Yup.object().shape({
-  email: Yup.string().email("Email không hợp lệ").required("Email là bắt buộc"),
-  password: Yup.string().required("Mật khẩu là bắt buộc"),
-  // .matches(
-  //   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-  //   "Mật khẩu phải chứa ít nhất một chữ in hoa, một chữ in thường, một số và một ký tự đặc biệt"
-  // )
-  // .min(8, "Mật khẩu phải có ít nhất 8 ký tự"),
-});
+import { SignInSchema } from "@/validations/signin.schema";
 
 const SignInPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -49,11 +37,18 @@ const SignInPage = () => {
       const res = await login(payload);
       if (res && res.status === 200) {
         toast.success("Đăng nhập thành công");
+
+        if (res.scope === "ADMIN") {
+          router.push("/dashboard");
+          return;
+        }
+
         let url = "/";
         if (localStorage.getItem("pageNextUrl")) {
           url = localStorage.getItem("pageNextUrl")!;
           localStorage.setItem("pageNextUrl", "/");
         }
+
         router.push(url);
       } else {
         toast.error("Đăng nhập không thành công");
@@ -180,6 +175,7 @@ const SignInPage = () => {
                     name="password"
                     type={showPassword ? "text" : "password"}
                     fullWidth
+                    autoComplete="on"
                     id="password"
                     label="Password"
                     variant="outlined"

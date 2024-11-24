@@ -4,6 +4,7 @@ import {
   ReservationRequest,
   UpdateReservationRequest,
 } from "@/models/reservation";
+import { ReservationPagination } from "@/models/api";
 import axiosInstance from "./axios-instance";
 
 export const reservationApi = {
@@ -12,6 +13,14 @@ export const reservationApi = {
       `/reservations/${reservationId}`
     );
     return res.data;
+  },
+  async getReservations(params: ReservationPagination) {
+    const res = await axiosInstance.get("/reservations/paginated", {
+      params,
+    });
+    
+    return res.data;
+
   },
   async getMyReservation() {
     const res = await axiosInstance.get<Reservation[]>("/reservations/my-reservations");

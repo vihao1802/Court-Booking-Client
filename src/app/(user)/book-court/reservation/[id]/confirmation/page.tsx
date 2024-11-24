@@ -1,25 +1,13 @@
 "use client";
 import React, { Fragment } from "react";
 import { useParams, useSearchParams } from "next/navigation";
-import {
-  Box,
-  Link,
-  Typography,
-  Stepper,
-  Step,
-  StepLabel,
-  Button,
-} from "@mui/material";
+import { Box, Link, Typography, Button } from "@mui/material";
 import { CheckCircle, Cancel } from "@mui/icons-material";
-import { ColorlibStepIcon } from "@/components/styles/StepperStyles";
 import { formatVND } from "@/utils/format";
-import { reservationApi } from "@/api/reservation";
 import OvalLoader from "@/components/shared/OvalLoader";
-import useSWR from "swr";
 import { useGetReservationById } from "@/hooks/reservation/useGetReservationById";
 import StepperPayment from "@/components/book-court/payment/StepperPayment";
-
-const steps = ["Đặt lịch", "Thanh toán", "Kết quả"];
+import dayjs from "dayjs";
 
 const BookCourtPaymentStatusPage = () => {
   const searchParams = useSearchParams();
@@ -186,6 +174,20 @@ const BookCourtPaymentStatusPage = () => {
               </Typography>
               <Typography sx={{ flex: 2, textAlign: "right" }}>
                 {reservation.checkOutTime}:00
+              </Typography>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              <Typography sx={{ flex: 1, textAlign: "left", color: "gray" }}>
+                Ngày đặt lịch
+              </Typography>
+              <Typography sx={{ flex: 2, textAlign: "right" }}>
+                {dayjs(reservation.createdAt).format("DD/MM/YYYY HH:mm:ss")}
               </Typography>
             </Box>
           </Box>

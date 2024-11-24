@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import dayjs from "dayjs";
 import {
   Box,
@@ -11,6 +11,9 @@ import {
 } from "@mui/material";
 import { BookCourtContext } from "@/app/(user)/book-court/layout";
 import { Court } from "@/models/court";
+import { useGetUnavailableHour } from "@/hooks/court/useGetUnavailableHours";
+import OvalLoader from "@/components/shared/OvalLoader";
+import HourPicker from "./HourPicker";
 
 export default function TimePickerViews({
   handleNext,
@@ -19,9 +22,9 @@ export default function TimePickerViews({
 }: {
   handleNext: () => void;
   handleBack: () => void;
-  court: Court | undefined;
+  court: Court;
 }) {
-  const { startTime, setStartTime, duration, setDuration, setTotalPrice } =
+  const { startTime, setStartTime, duration, date } =
     useContext(BookCourtContext);
   const [disabledDuration, setDisabledDuration] = useState(
     startTime ? false : true
@@ -29,8 +32,16 @@ export default function TimePickerViews({
   const [showContinueButton, setShowContinueButton] = useState(
     startTime && duration ? true : false
   );
+  const [timeDurationOptions, setTimeDurationOptions] = useState<number[]>([]);
 
-  const maximumRentalTime = court?.maximumRentalTime || 1;
+  const { data: hours, isLoading } = useGetUnavailableHour({
+    courtId: court.id,
+    date,
+  });
+
+  if (isLoading || !hours) {
+    return <OvalLoader />;
+  }
 
   const handleChangeStartTime = (event: SelectChangeEvent) => {
     const t = Number(event.target.value);
@@ -38,24 +49,22 @@ export default function TimePickerViews({
     setDisabledDuration(false);
   };
 
-  const handleChangeDuration = (event: SelectChangeEvent) => {
-    const dur = Number(event.target.value);
-    setDuration(dur.toString());
-    if (court) setTotalPrice(court?.rentalPricePerHour * dur);
-    setShowContinueButton(true);
-  };
+  console.log({ timeDurationOptions });
 
-  const timeOptions = [];
+  const hourOptions = [];
   const now = dayjs();
   const currentHour = now.hour();
   const startHour = Math.max(currentHour + 1, 8);
-  for (let hour = startHour; hour <= 22; hour++) {
-    timeOptions.push(hour);
-  }
 
-  const timeDurationOptions = [];
-  for (let i = 1; i <= maximumRentalTime; i++) {
-    timeDurationOptions.push(i);
+  if (!hours) return;
+  for (let hour = startHour; hour <= 22; hour++) {
+    if (hours.includes(hour.toString())) {
+      if (!hours.includes((hour + 1).toString())) {
+        hourOptions.push(hour);
+      }
+    } else {
+      hourOptions.push(hour);
+    }
   }
 
   return (
@@ -91,42 +100,43 @@ export default function TimePickerViews({
             value={startTime}
             onChange={handleChangeStartTime}
           >
-            {timeOptions.map((time) => (
+            {hourOptions.map((time) => (
               <MenuItem key={time} value={time}>
                 {time}:00
               </MenuItem>
             ))}
           </Select>
         </FormControl>
-        <FormControl
-          fullWidth
-          disabled={disabledDuration}
-          sx={{
-            ".MuiOutlinedInput-root": {
-              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                borderColor: "var(--buttonColor)",
+        {!disabledDuration ? (
+          <HourPicker
+            court={court}
+            hours={hours}
+            disabledDuration={disabledDuration}
+            timeDurationOptions={timeDurationOptions}
+            setShowContinueButton={setShowContinueButton}
+            setTimeDurationOptions={setTimeDurationOptions}
+          />
+        ) : (
+          <FormControl
+            fullWidth
+            disabled={disabledDuration}
+            sx={{
+              ".MuiOutlinedInput-root": {
+                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "var(--buttonColor)",
+                },
+                "&:hover .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "var(--buttonColor)",
+                },
               },
-              "&:hover .MuiOutlinedInput-notchedOutline": {
-                borderColor: "var(--buttonColor)",
-              },
-            },
-          }}
-        >
-          <FormHelperText sx={{ fontSize: "16px" }}>
-            Khoảng thời gian
-          </FormHelperText>
-          <Select
-            defaultValue={duration}
-            value={duration}
-            onChange={handleChangeDuration}
+            }}
           >
-            {timeDurationOptions.map((time) => (
-              <MenuItem key={time} value={time}>
-                {time} tiếng
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+            <FormHelperText sx={{ fontSize: "16px" }}>
+              Khoảng thời gian
+            </FormHelperText>
+            <Select defaultValue={duration} value={duration}></Select>
+          </FormControl>
+        )}
       </Box>
       <Box
         sx={{

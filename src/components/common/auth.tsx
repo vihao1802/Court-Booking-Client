@@ -13,8 +13,9 @@ export default function AuthProvider({
   const { user, firstLoading } = useAuthenticatedUser();
 
   useEffect(() => {
-    if (!firstLoading && !user) {
-      router.push("/sign-in");
+    if (!firstLoading) {
+      if (!user) router.push("/sign-in");
+      else if (user.role.roleName === "ADMIN") router.push("/dashboard");
     }
   }, [user, firstLoading]);
 

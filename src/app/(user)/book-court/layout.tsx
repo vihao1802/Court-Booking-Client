@@ -1,19 +1,7 @@
 "use client";
 import AuthProvider from "@/components/common/auth";
-import Loader from "@/components/shared/TennisBallLoader";
 import { Box } from "@mui/material";
-import { useParams, useRouter } from "next/navigation";
-import React, { createContext, useEffect, useState } from "react";
-
-interface Reservation {
-  userId: string;
-  courtId: string;
-  checkInTime: string;
-  checkOutTime: string;
-  totalPrice: number;
-  reservationDate: string;
-  reservationState: number;
-}
+import React, { createContext, useState } from "react";
 
 export const BookCourtContext = createContext({
   date: "",
