@@ -15,8 +15,10 @@ import AppLogo from "@/components/shared/Logo";
 import { useAuthenticatedUser } from "@/hooks/auth/useAuthenticatedUser";
 import toast from "react-hot-toast";
 import { SignUpSchema } from "@/validations/signun.schema";
+import { useRouter } from "next/navigation";
 
 const SignUpPage = () => {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { register } = useAuthenticatedUser();
@@ -133,7 +135,7 @@ const SignUpPage = () => {
 
                 if (res && res.status === 200) {
                   toast.success("Đăng ký thành công");
-                  window.location.href = "/sign-in";
+                  router.push("/sign-in");
                 } else {
                   toast.error("Đăng ký thất bại");
                 }
