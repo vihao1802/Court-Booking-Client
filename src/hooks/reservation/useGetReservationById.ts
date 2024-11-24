@@ -25,5 +25,5 @@ export function useGetReservationById({
       ...options,
     }
   );
-  return {swrResponse};
+  return swrResponse;
 }
