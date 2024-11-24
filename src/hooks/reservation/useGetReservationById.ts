@@ -1,3 +1,4 @@
+import { UnauthorizedError } from "@/api/http-errors";
 import { reservationApi } from "@/api/reservation";
 import { QueryKeys } from "@/constants/query-keys";
 import { UpdateReservationRequest } from "@/models/reservation";
@@ -24,6 +25,5 @@ export function useGetReservationById({
       ...options,
     }
   );
-
-  return swrResponse;
+  return {swrResponse};
 }

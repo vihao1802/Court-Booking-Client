@@ -9,7 +9,7 @@ export function useGetCourtTypeList(params: {isdisabled: number}) {
 			dedupingInterval: 30 * 1000, // 30s
 			keepPreviousData: true,
 			fallbackData: null,
-		}
+		}   
     )
 
     return swrResponse;

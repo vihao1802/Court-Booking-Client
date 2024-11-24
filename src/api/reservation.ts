@@ -22,6 +22,10 @@ export const reservationApi = {
     return res.data;
 
   },
+  async getMyReservation() {
+    const res = await axiosInstance.get<Reservation[]>("/reservations/my-reservations");
+    return res.data
+    },
   async updateReservation(id: string, data: UpdateReservationRequest) {
     const res = await axiosInstance.put<Reservation>(
       `/reservations/${id}`,
@@ -46,4 +50,6 @@ export const reservationApi = {
     );
     return res.data;
   },
+
+  
 };
