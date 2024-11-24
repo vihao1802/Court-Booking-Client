@@ -158,9 +158,7 @@ const BookingComponent = ({ reservation }: BookingComponentProps) => {
             alignreservations: "center",
           }}
         >
-          <Link href={`/user/profile/booking/${reservation.id}`}>
-            View detail
-          </Link>
+          <Link href={`/booking/${reservation.id}`}>View detail</Link>
           <ArrowForward
             sx={{
               color: "rgb(67 97 238)",
