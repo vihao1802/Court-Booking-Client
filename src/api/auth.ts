@@ -58,6 +58,7 @@ export const authApi = {
     const res = await axiosInstance.get<User>("/users/my-info");
 
     console.log("getAuthenticatedUser");
+    console.log(res.data);
 
     if (res.status === 400 || res.status === 401) {
       // getAuthenticatedUser: status 400 or 401, refresh token and try again

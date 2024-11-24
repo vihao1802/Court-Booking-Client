@@ -6,9 +6,9 @@ export default function UserRootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <main>
+    <div>
       <Header />
       {children}
-    </main>
+    </div>
   );
 }

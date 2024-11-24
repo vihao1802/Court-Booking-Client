@@ -146,8 +146,8 @@ const ModalUserProfile = ({
               color: "#2C6BFF",
             },
           }}
-          href={"/profile"}
-          onClick={() => router.push("/profile")}
+          href={"/user/profile"}
+          onClick={() => router.push("/user/profile")}
         >
           <CalendarToday
             sx={{
@@ -170,8 +170,8 @@ const ModalUserProfile = ({
               color: "#2C6BFF",
             },
           }}
-          href={"/profile"}
-          onClick={() => router.push("/profile")}
+          href={"/user/profile"}
+          onClick={() => router.push("/user/profile")}
         >
           <Person
             sx={{

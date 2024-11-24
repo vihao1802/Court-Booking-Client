@@ -14,6 +14,7 @@ export default function AuthLayout({
 
   useEffect(() => {
     if (!firstLoading && user) {
+      if (user.role.roleName === "ADMIN") router.push("/dashboard");
       router.push("/");
     }
   }, [user, firstLoading]);

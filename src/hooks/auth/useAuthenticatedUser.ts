@@ -1,9 +1,11 @@
 import { authApi } from "@/api/auth";
 import { UnauthorizedError } from "@/api/http-errors";
+import { QueryKeys } from "@/constants/query-keys";
 import { LoginRequest } from "@/models/auth";
 import { User, UserRequest } from "@/models/user";
 import useSWR, { SWRConfiguration } from "swr";
 import cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
 
 export function useAuthenticatedUser(options?: Partial<SWRConfiguration>) {
   const {
@@ -11,7 +13,7 @@ export function useAuthenticatedUser(options?: Partial<SWRConfiguration>) {
     error,
     mutate,
   } = useSWR(
-    "authenticated_user",
+    QueryKeys.GET_AUTHENTICATED,
     async () => {
       try {
         if (
@@ -39,8 +41,13 @@ export function useAuthenticatedUser(options?: Partial<SWRConfiguration>) {
 
   async function login(payload: LoginRequest) {
     const res = await authApi.login(payload);
+    let decoded = null;
+
     await mutate();
-    return res;
+    if (res) {
+      decoded = jwtDecode<{ scope: string }>(res.data.token);
+    }
+    return { ...res, scope: decoded?.scope };
   }
 
   async function logout() {

@@ -11,7 +11,7 @@ import {
   Link,
 } from "@mui/material";
 import { Lato } from "next/font/google";
-import React from "react";
+import React, { useEffect } from "react";
 
 import { navItems } from "@/constants";
 import { usePathname, useRouter } from "next/navigation";
@@ -27,6 +27,12 @@ const Header = () => {
   const { user, logout, firstLoading } = useAuthenticatedUser();
   const [open, setOpen] = React.useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    if (!firstLoading && user) {
+      if (user.role.roleName === "ADMIN") router.push("/dashboard");
+    }
+  }, [user, firstLoading]);
 
   return (
     <Box
