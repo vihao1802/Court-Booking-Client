@@ -1,26 +1,13 @@
 "use client";
 import React, { Fragment } from "react";
 import { useParams, useSearchParams } from "next/navigation";
-import {
-  Box,
-  Link,
-  Typography,
-  Stepper,
-  Step,
-  StepLabel,
-  Button,
-} from "@mui/material";
+import { Box, Link, Typography, Button } from "@mui/material";
 import { CheckCircle, Cancel } from "@mui/icons-material";
-import { ColorlibStepIcon } from "@/components/styles/StepperStyles";
 import { formatVND } from "@/utils/format";
-import { reservationApi } from "@/api/reservation";
 import OvalLoader from "@/components/shared/OvalLoader";
-import useSWR from "swr";
 import { useGetReservationById } from "@/hooks/reservation/useGetReservationById";
 import StepperPayment from "@/components/book-court/payment/StepperPayment";
 import dayjs from "dayjs";
-
-const steps = ["Đặt lịch", "Thanh toán", "Kết quả"];
 
 const BookCourtPaymentStatusPage = () => {
   const searchParams = useSearchParams();

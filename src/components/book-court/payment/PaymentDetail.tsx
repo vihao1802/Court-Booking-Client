@@ -13,6 +13,7 @@ import { useGetReservationById } from "@/hooks/reservation/useGetReservationById
 import { useUpdateReservation } from "@/hooks/reservation/useUpdateReservation";
 import { PaymentMethod, ReservationState } from "@/types/enums";
 import { CalendarToday } from "@mui/icons-material";
+import Link from "next/link";
 
 const PaymentDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -50,7 +51,6 @@ const PaymentDetail = () => {
     setLoadingPayment(true);
     try {
       let res;
-      let res_status = 1;
       if (selectedPayment === 0) {
         res = await reservationApi.createPaymentZaloPay(id);
         if (res.status === 200) {
@@ -62,7 +62,7 @@ const PaymentDetail = () => {
         }
       } else if (selectedPayment === 1) {
         res = await reservationApi.createPaymentMomo(id, {
-          requestType: "payWithCC",
+          requestType: "captureWallet",
         });
 
         router.push(res.payUrl);
@@ -79,6 +79,7 @@ const PaymentDetail = () => {
         reservationState: ReservationState.FAILED,
         paymentMethod: PaymentMethod.NO,
       });
+      setLoadingPayment(false);
       window.location.reload();
     } catch (error) {
       console.log("handleTimeOutPayment: " + error);
@@ -207,7 +208,7 @@ const PaymentDetail = () => {
                     textDecoration: "none",
                     ...(reservation.reservationState ===
                       ReservationState.FAILED && {
-                      fontSize: "18px",
+                      fontSize: "16px",
                       color: "#48445A",
                       textDecoration: "line-through",
                     }),
@@ -215,6 +216,19 @@ const PaymentDetail = () => {
                 >
                   {formatDate(reservation.reservationDate)}
                 </Typography>
+                {reservation.reservationState === ReservationState.FAILED && (
+                  <Link href={`/book-court/${reservation.court.id}/date-time`}>
+                    <Typography
+                      sx={{
+                        fontSize: "16px",
+                        color: "var(--buttonColor)",
+                        marginLeft: "10px",
+                      }}
+                    >
+                      Đặt lại
+                    </Typography>
+                  </Link>
+                )}
               </Box>
 
               <Typography>

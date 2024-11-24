@@ -5,7 +5,6 @@ export interface UserBase {
   email: string;
   phoneNumber: string;
   dayOfBirth: string;
-  location: string;
 }
 
 export interface User extends UserBase {
@@ -14,6 +13,7 @@ export interface User extends UserBase {
   role: Role;
   createdAt: string;
   profileImage: string;
+  location: string;
 }
 
 export interface UserRequest extends UserBase {

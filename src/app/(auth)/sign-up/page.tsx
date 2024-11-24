@@ -8,28 +8,17 @@ import {
   Typography,
   IconButton,
 } from "@mui/material";
-import * as Yup from "yup";
 import { Form, Formik, Field, ErrorMessage } from "formik";
 import { useState } from "react";
 import { Visibility, VisibilityOffOutlined } from "@mui/icons-material";
 import AppLogo from "@/components/shared/Logo";
 import { useAuthenticatedUser } from "@/hooks/auth/useAuthenticatedUser";
 import toast from "react-hot-toast";
-
-const SignInSchema = Yup.object().shape({
-  username: Yup.string().required("Tên đăng nhập là bắt buộc"),
-  email: Yup.string().email("Email không hợp lệ").required("Email là bắt buộc"),
-  phone: Yup.string()
-    .matches(/^[0-9]{10}$/, "Số điện thoại không hợp lệ. Phải có 10 số")
-    .required("Số điện thoại là bắt buộc"),
-  password: Yup.string().required("Mật khẩu là bắt buộc"),
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref("password"), undefined], "Mật khẩu xác nhận không khớp")
-    .required("Mật khẩu xác nhận là bắt buộc"),
-  dayOfBirth: Yup.string().required("Ngày sinh là bắt buộc"),
-});
+import { SignUpSchema } from "@/validations/signun.schema";
+import { useRouter } from "next/navigation";
 
 const SignUpPage = () => {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { register } = useAuthenticatedUser();
@@ -134,7 +123,7 @@ const SignUpPage = () => {
                 confirmPassword: "",
                 dayOfBirth: "",
               }}
-              validationSchema={SignInSchema}
+              validationSchema={SignUpSchema}
               onSubmit={async (values) => {
                 const res = await register({
                   userName: values.username,
@@ -146,7 +135,7 @@ const SignUpPage = () => {
 
                 if (res && res.status === 200) {
                   toast.success("Đăng ký thành công");
-                  window.location.href = "/sign-in";
+                  router.push("/sign-in");
                 } else {
                   toast.error("Đăng ký thất bại");
                 }
