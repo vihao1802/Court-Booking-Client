@@ -22,7 +22,13 @@ const SignInSchema = Yup.object().shape({
   phone: Yup.string()
     .matches(/^[0-9]{10}$/, "Số điện thoại không hợp lệ. Phải có 10 số")
     .required("Số điện thoại là bắt buộc"),
-  password: Yup.string().required("Mật khẩu là bắt buộc"),
+  password: Yup.string()
+    .required("Mật khẩu là bắt buộc")
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+      "Mật khẩu phải chứa ít nhất một chữ in hoa, một chữ in thường, một số và một ký tự đặc biệt"
+    )
+    .min(8, "Mật khẩu phải có ít nhất 8 ký tự"),
   confirmPassword: Yup.string()
     .oneOf([Yup.ref("password"), undefined], "Mật khẩu xác nhận không khớp")
     .required("Mật khẩu xác nhận là bắt buộc"),
@@ -142,6 +148,7 @@ const SignUpPage = () => {
                   phoneNumber: values.phone,
                   password: values.password,
                   dayOfBirth: values.dayOfBirth,
+                  location: "HCM",
                 });
 
                 if (res && res.status === 200) {
