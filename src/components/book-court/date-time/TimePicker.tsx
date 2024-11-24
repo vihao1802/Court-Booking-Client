@@ -94,7 +94,16 @@ export default function TimePickerViews({
             },
           }}
         >
-          <FormHelperText sx={{ fontSize: "16px" }}>Giờ bắt đầu</FormHelperText>
+          <FormHelperText
+            sx={{
+              fontSize: "16px",
+              ...(hourOptions.length === 0 && {
+                color: "red",
+              }),
+            }}
+          >
+            {hourOptions.length === 0 ? "Ngoài giờ hoạt động" : "Giờ bắt đầu"}
+          </FormHelperText>
           <Select
             defaultValue={startTime}
             value={startTime}
