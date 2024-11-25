@@ -39,8 +39,6 @@ export function Sales({ sx }: SalesProps): React.JSX.Element {
   React.useEffect(() => {
     if (data) {
       const list_category = data.data.result.map((item: ChartData) => {
-        console.log("item", item);
-
         return (
           dayjs()
             .month(item.month - 1)
@@ -52,8 +50,6 @@ export function Sales({ sx }: SalesProps): React.JSX.Element {
       const list_revenue = data.data.result.map(
         (item: ChartData) => item.revenue
       );
-      console.log("date", list_category);
-
       setChartOptions(useChartOptions(theme, list_category));
       setRevenue({ data: list_revenue });
     }
@@ -65,20 +61,7 @@ export function Sales({ sx }: SalesProps): React.JSX.Element {
 
   return (
     <Card sx={sx}>
-      <CardHeader
-        action={
-          <Button
-            color="inherit"
-            size="small"
-            startIcon={
-              <ArrowClockwiseIcon fontSize="var(--icon-fontSize-md)" />
-            }
-          >
-            Sync
-          </Button>
-        }
-        title="Sales"
-      />
+      <CardHeader title="Doanh thu" />
       <CardContent>
         {isValidating ? (
           <ChartSkeleton
@@ -106,15 +89,6 @@ export function Sales({ sx }: SalesProps): React.JSX.Element {
         )}
       </CardContent>
       <Divider />
-      <CardActions sx={{ justifyContent: "flex-end" }}>
-        <Button
-          color="inherit"
-          endIcon={<ArrowRightIcon fontSize="var(--icon-fontSize-md)" />}
-          size="small"
-        >
-          Overview
-        </Button>
-      </CardActions>
     </Card>
   );
 }
@@ -127,8 +101,8 @@ function useChartOptions(theme: Theme, categories: string[]): ApexOptions {
       toolbar: { show: false },
     },
     colors: [
-      theme.palette.primary.main,
-      alpha(theme.palette.primary.main, 0.25),
+      theme.palette.success.main, // Màu chính của success
+      alpha(theme.palette.success.main, 0.25), // Màu nhạt hơn, với alpha
     ],
     dataLabels: { enabled: false },
     fill: { opacity: 1, type: "solid" },

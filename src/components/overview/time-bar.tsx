@@ -50,6 +50,7 @@ const TimeNavBar = () => {
           <Box
             sx={{
               display: "flex",
+              flexDirection: "row",
               justifyContent: "center",
               alignItems: "center",
               gap: "1rem",
@@ -142,7 +143,7 @@ const TimeNavBar = () => {
               </DemoContainer>
             </LocalizationProvider>
 
-            <Button variant="contained" type="submit">
+            <Button variant="contained" color="success" type="submit">
               Thống kê
             </Button>
           </Box>
