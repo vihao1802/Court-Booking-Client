@@ -7,109 +7,112 @@ import { Court } from "@/models/court";
 import { useParams, useRouter } from "next/navigation";
 import { useGetCourtById } from "@/hooks/court/useGetCourtById";
 import { getDay } from "@/utils/format";
+import { useGetReservationById } from "@/hooks/reservation/useGetReservationById";
+import OvalLoader from "../shared/OvalLoader";
+import { ReservationState } from "@/types/enums";
 
 interface BookingSectionProps {
   id: string;
-  checkInTime: Date;
-  checkOutTime: Date;
-  courtId: string;
-  reservationDate: Date;
 }
-const BookingSectionComponent = async ({
-  id,
-  checkInTime,
-  checkOutTime,
-  courtId,
-  reservationDate,
-}: BookingSectionProps) => {
+const BookingSectionComponent = async ({ id }: BookingSectionProps) => {
   const paramId = useParams();
   const router = useRouter();
-  const { data, isLoading, isValidating, mutate, error } = useGetCourtById({
-    courtId,
+  const { data: reservation, isLoading } = useGetReservationById({
+    reservationId: id,
   });
   function handleButtonClick() {
     router.push(`/user/${paramId}/booking`);
   }
+
+  if (isLoading || !reservation) {
+    return <OvalLoader />;
+  }
+
   return (
     <Section
-      sectionHeader={"My Bookings"}
-      sectionButton={"See all"}
+      sectionHeader={"Lịch đặt gần đây"}
+      sectionButton={"Tất cả"}
       handleButtonClick={handleButtonClick}
     >
       <Box
         sx={{
+          width: "100%",
           display: "flex",
-          flexDirection: "row",
+          flexDirection: {
+            sm: "column",
+            md: "row",
+          },
           gap: "1rem",
-          padding: "1rem",
-          border: "1px solid rgb(235 238 253 )",
           borderRadius: "8px",
         }}
       >
         <Box
           sx={{
             display: "flex",
-            flexDirection: "column",
+            flexDirection: {
+              sm: "row",
+              md: "column",
+            },
             alignItems: "center",
+            justifyContent: "center",
             gap: "1rem",
           }}
         >
-          <Typography>{getDay(reservationDate)}</Typography>
+          <Typography>{reservation.reservationDate.split("-")[0]}</Typography>
           <Typography
             sx={{
-              color: "rgb(67 97 238)",
+              color: "var(--buttonColor)",
               fontWeight: "700",
               fontSize: "2.5rem",
             }}
           >
-            {dayjs(reservationDate).format("DD")}
+            {reservation.reservationDate.split("-")[2]}
           </Typography>
-          <Typography>{dayjs(reservationDate).format("MMM")}</Typography>
+          <Typography>{reservation.reservationDate.split("-")[1]}</Typography>
         </Box>
         <Box>
           <Divider orientation="vertical"></Divider>
         </Box>
-        <Box>
+        <Box
+          sx={{
+            flexGrow: 1,
+          }}
+        >
           <Box
             sx={{
               display: "flex",
               flexDirection: "row",
               gap: "0.5rem",
               marginBottom: "1rem",
+              justifyContent: "space-between",
             }}
           >
-            <Button
-              variant="outlined"
+            <Typography
               sx={{
-                fontSize: "0.7rem", // For 'typography-caption', using a small text style
-                border: "0.5px solid transparent", // For 'border-0.5', 'border-solid', and 'border-transparent'
-                borderRadius: "4px", // For 'rounded'
-                padding: "0.15rem",
-                fontWeight: "bold", // For 'font-bold'
-                textTransform: "uppercase", // For 'uppercase'
-                backgroundColor: "gray", // 'bg-primary-50' can be mapped to MUI's theme color shades
-                color: "text.secondary", // 'text-blue-grey-900' mapped to MUI's theme text color
+                backgroundColor: "var(--buttonLightColor)",
+                color: "var(--buttonColor)",
+                borderRadius: "15px",
+                padding: "2px 10px",
               }}
             >
-              Futsal
-            </Button>
-            <Button
-              variant="outlined"
+              {reservation.court.courtType.courtTypeName}
+            </Typography>
+            <Typography
               sx={{
-                typography: "caption", // For 'typography-micro', using a small text style
-                border: "0.5px solid", // 'border-0.5' and 'border-solid'
-                borderColor: "destructive.main", // 'border-destructive-600'
-                borderRadius: "4px", // 'rounded'
-                paddingX: "4px", // 'px-1' translates to 4px horizontal padding
-                paddingY: "2px", // 'py-0.5' translates to 2px vertical padding
-                fontWeight: "bold", // 'font-bold'
-                textTransform: "uppercase", // 'uppercase'
-                backgroundColor: "red", // 'bg-destructive-600'
-                color: "white",
+                color:
+                  reservation.reservationState === ReservationState.SUCCESS
+                    ? "var(--buttonColor)"
+                    : reservation.reservationState === ReservationState.PENDING
+                    ? "GrayText"
+                    : "red",
               }}
             >
-              Pending
-            </Button>
+              {reservation.reservationState === ReservationState.PENDING
+                ? "Đang chờ"
+                : reservation.reservationState === ReservationState.SUCCESS
+                ? "Đã xác nhận"
+                : "Đã hủy"}
+            </Typography>
           </Box>
           <Box sx={{ marginBottom: "0.2rem" }}>
             <Typography
@@ -118,7 +121,7 @@ const BookingSectionComponent = async ({
                 fontWeight: "700",
               }}
             >
-              {data && data.courtName}
+              {reservation.court.courtName}
             </Typography>
           </Box>
           <Box
@@ -126,15 +129,14 @@ const BookingSectionComponent = async ({
               display: "flex",
               flexDirection: "column",
               gap: "0.5rem",
+              color: "rgb(109 105 123)",
             }}
           >
             <Typography variant="body2">
-              On {dayjs(checkInTime).format("DD/MM/YYYY")}
+              {reservation.reservationDate}
             </Typography>
             <Typography variant="body2">
-              {`At ${dayjs(checkInTime).format("HH:MMA")}
-              -
-              ${dayjs(checkOutTime).format("HH:MMA")} `}
+              {reservation.checkInTime}:00 - {reservation.checkOutTime}:00
             </Typography>
           </Box>
         </Box>

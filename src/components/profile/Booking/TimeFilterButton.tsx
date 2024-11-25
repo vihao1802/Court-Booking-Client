@@ -22,13 +22,13 @@ const TimeFilterButton: React.FC<TimeFilterButtonProps> = ({
         cursor: "pointer",
         alignItems: "center", // items-center
         borderRadius: "8px", // rounded-lg (lg is 8px)
-        border: "1px solid rgb(67 97 238)",
+        border: "1px solid var(--buttonColor)",
         paddingX: "12px", // px-3 (3 * 4px = 12px)
         paddingY: "4px", // py-1 (1 * 4px = 4px)
         transition: "all 0.2s", // transition-all
         borderColor: "", // border-primary
-        backgroundColor: "rgb(235 238 253)", // bg-primary-50
-        color: "rgb(0 37 140)", // text-primary-700
+        backgroundColor: "var(--buttonLightColor)", // bg-primary-50
+        color: "var(--buttonColor)", // text-primary-700
       }}
     >
       {children}

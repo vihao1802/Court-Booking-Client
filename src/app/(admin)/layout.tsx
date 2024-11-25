@@ -2,6 +2,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import "../globals.css";
 import LeftSideBar from "@/components/shared/LeftSideBar";
+import AuthProvider from "@/components/common/auth";
 
 export default function AdminRootLayout({
   children,
@@ -12,7 +13,7 @@ export default function AdminRootLayout({
     <main className="flex flex-row">
       <LeftSideBar />
       <div className="h-screen w-[calc(100%-250px)] ml-auto flex flex-row justify-center">
-        {children}
+        <AuthProvider>{children}</AuthProvider>
       </div>
     </main>
   );

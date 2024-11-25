@@ -19,11 +19,14 @@ import {
 import { sideBarItems } from "@/constants/index";
 import React, { useState } from "react";
 import AppLogo from "@/components/shared/Logo";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
+import { useAuthenticatedUser } from "@/hooks/auth/useAuthenticatedUser";
 
 const LeftSideBar = () => {
   const pathname = usePathname();
+  const { logout } = useAuthenticatedUser();
+  const router = useRouter();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -32,6 +35,8 @@ const LeftSideBar = () => {
   };
   const handleCloseMenuMore = () => {
     setAnchorEl(null);
+    logout();
+    router.push("/login");
   };
 
   return (
@@ -126,7 +131,7 @@ const LeftSideBar = () => {
                 <ListItemIcon>
                   <MenuOutlined />
                 </ListItemIcon>
-                <ListItemText primary="More" />
+                <ListItemText primary="Cài đặt" />
               </ListItemButton>
             </ListItem>
           </List>
@@ -137,7 +142,7 @@ const LeftSideBar = () => {
                   <ListItemIcon>
                     <ExitToAppOutlined />
                   </ListItemIcon>
-                  <ListItemText primary="Log out" />
+                  <ListItemText primary="Đăng xuất" />
                 </ListItemButton>
               </ListItem>
             </List>

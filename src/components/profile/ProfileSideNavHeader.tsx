@@ -124,9 +124,11 @@ const ProfileSideNavHeader = () => {
                   selected={pathname === item.url}
                   onClick={(event) => handleListItemClick(event, item.url)}
                 >
-                  <ListItemIcon>
-                    <Person2 />
-                  </ListItemIcon>
+                  {item.icon && (
+                    <ListItemIcon>
+                      <item.icon />
+                    </ListItemIcon>
+                  )}
                   <ListItemText primary={item.title} />
                 </ListItemButton>
               </List>
