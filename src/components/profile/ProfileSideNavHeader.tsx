@@ -91,9 +91,10 @@ const ProfileSideNavHeader = () => {
           justifyContent: "center",
         }}
       >
-        {NAVIGATE_ENDPOINT.map((group) => {
+        {NAVIGATE_ENDPOINT.map((group, groupIndex) => {
           const groupHeader = (
             <ListItemButton
+              key={`group-header-${groupIndex}`}
               onClick={handleClick}
               sx={{
                 width: "100%",
@@ -108,8 +109,9 @@ const ProfileSideNavHeader = () => {
               {openMe ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
           );
-          const groupItem = group.item.map((item) => (
+          const groupItem = group.item.map((item, itemIndex) => (
             <Collapse
+              key={`group-item-${groupIndex}-${itemIndex}`}
               in={openMe}
               timeout="auto"
               unmountOnExit

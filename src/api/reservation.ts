@@ -4,7 +4,7 @@ import {
   ReservationRequest,
   UpdateReservationRequest,
 } from "@/models/reservation";
-import { ReservationPagination } from "@/models/api";
+import { Pagination, ReservationPagination } from "@/models/api";
 import axiosInstance from "./axios-instance";
 
 export const reservationApi = {
@@ -18,14 +18,15 @@ export const reservationApi = {
     const res = await axiosInstance.get("/reservations/paginated", {
       params,
     });
-    
-    return res.data;
 
+    return res.data;
   },
-  async getMyReservation() {
-    const res = await axiosInstance.get<Reservation[]>("/reservations/my-reservations");
-    return res.data
-    },
+  async getMyReservation(params: Partial<Pagination & { sort?: string }>) {
+    const res = await axiosInstance.get("/reservations/my-reservations", {
+      params,
+    });
+    return res.data;
+  },
 
   async getInvoice(id: String) {
     const res = await axiosInstance.get(`/reservations/${id}/getInvoice`, {
@@ -58,6 +59,4 @@ export const reservationApi = {
     );
     return res.data;
   },
-
-  
 };

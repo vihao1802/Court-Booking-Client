@@ -1,7 +1,14 @@
 "use client";
-import { Box, Button, Divider, Link, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Divider,
+  Link,
+  Pagination,
+  Typography,
+} from "@mui/material";
 import { Tune, ArrowForward } from "@mui/icons-material";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useGetMyReservation } from "@/hooks/reservation/useGetMyReservation";
 import { getDay } from "@/utils/format";
 import dayjs from "dayjs";
@@ -9,21 +16,33 @@ import { ReservationProvider } from "@/context/reservation-context";
 import BookingComponent from "@/components/profile/Booking/BookingComponent";
 import MonthDivider from "@/components/profile/Booking/MonthDivider";
 import TimeFilterButton from "@/components/profile/Booking/TimeFilterButton";
+import { PaginationBase as ApiPagination } from "@/models/api";
+import { Reservation } from "@/models/reservation";
 
 const MyBooking = () => {
-  const { data } = useGetMyReservation({
-    enabled: true,
+  const [filters, setFilters] = useState<ApiPagination>({
+    page: 0,
+    size: 8,
   });
 
-  const [dataFilter, setDataFilter] = React.useState(data);
+  const { data: reservations, isLoading: isLoadingReservations } =
+    useGetMyReservation({
+      params: filters,
+      enabled: false,
+    });
+
+  // const [dataFilter, setDataFilter] = React.useState(reservations);
   const [isActive, setIsActive] = React.useState(0); // 0: all, 1: upcoming, 2: past
 
-  useEffect(() => {
+  const { pageNumber, pageSize } = reservations?.pageable || {};
+  const totalPages = reservations?.totalPages;
+
+  /*  useEffect(() => {
     setDataFilter(data);
-  }, [data]);
+  }, [data]); */
 
   const handleUpcomingButton = () => {
-    if (isActive === 1) {
+    /*  if (isActive === 1) {
       setIsActive(0);
       setDataFilter(data);
       return;
@@ -32,10 +51,10 @@ const MyBooking = () => {
     setDataFilter(
       data.filter((item) => dayjs(item.checkInTime).isAfter(dayjs()))
     );
-    setIsActive(1);
+    setIsActive(1); */
   };
   const handlePastButton = () => {
-    if (isActive === 2) {
+    /* if (isActive === 2) {
       setIsActive(0);
       setDataFilter(data);
       return;
@@ -43,8 +62,23 @@ const MyBooking = () => {
     setDataFilter(
       data.filter((item) => dayjs(item.checkInTime).isBefore(dayjs()))
     );
-    setIsActive(2);
+    setIsActive(2); */
   };
+
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    page: number
+  ) => {
+    console.log(page);
+
+    setFilters({
+      ...filters,
+      page: page - 1,
+    });
+  };
+
+  console.log(pageNumber);
+
   return (
     <ReservationProvider>
       <Box
@@ -102,7 +136,7 @@ const MyBooking = () => {
                 color: "gray",
               }}
             >
-              {dataFilter ? dataFilter.length : 0} lịch đặt
+              {reservations ? reservations.totalElements : 0} lịch đặt
             </Typography>
             <Button
               startIcon={<Tune />}
@@ -113,14 +147,31 @@ const MyBooking = () => {
           </Box>
           {/* body-body */}
           <Box>
-            {dataFilter &&
-              dataFilter.map((item) => (
+            {reservations &&
+              !isLoadingReservations &&
+              reservations.content.map((item: Reservation) => (
                 <Box key={item.id}>
                   {/* <MonthDivider date={dayjs(item.createdAt)} /> */}
                   <BookingComponent reservation={item} />
                 </Box>
               ))}
           </Box>
+          {!isLoadingReservations && (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                marginTop: "20px",
+              }}
+            >
+              <Pagination
+                count={totalPages}
+                page={pageNumber + 1}
+                variant="outlined"
+                onChange={handlePageChange}
+              />
+            </Box>
+          )}
         </Box>
       </Box>
     </ReservationProvider>

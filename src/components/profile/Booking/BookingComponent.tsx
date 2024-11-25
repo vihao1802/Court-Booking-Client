@@ -15,56 +15,17 @@ const BookingComponent = ({ reservation }: BookingComponentProps) => {
   return (
     <Box
       sx={{
-        height: "110px",
         display: "flex",
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        // border: "1px solid rgb(235 238 253)",
-        // borderRadius: "8px",
         boxShadow: "0px 2px 2px rgba(0, 0, 0, 0.1)",
         padding: "1rem",
       }}
     >
-      {/* <Box
-        sx={{
-          height: "100%",
-          flex: "1",
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          gap: "1rem",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <Typography>{reservation.reservationDate.split("-")[0]}</Typography>
-          <Typography
-            sx={{
-              color: "var(--buttonColor)",
-              fontWeight: "700",
-              fontSize: "2.5rem",
-            }}
-          >
-            {reservation.reservationDate.split("-")[2]}
-          </Typography>
-          <Typography>{reservation.reservationDate.split("-")[1]}</Typography>
-        </Box>
-        <Divider
-          sx={{ display: "flex", justifyContent: "center" }}
-          orientation="vertical"
-          flexItem
-        ></Divider>
-      </Box> */}
-
       <Box
         sx={{
-          flex: "3",
+          flex: "2",
           display: "flex",
           flexDirection: "column",
         }}
@@ -77,6 +38,9 @@ const BookingComponent = ({ reservation }: BookingComponentProps) => {
             marginBottom: "0.5rem",
           }}
         >
+          <Typography variant="body1" sx={{ fontWeight: "700" }}>
+            {reservation.court.courtName}
+          </Typography>
           <Typography
             sx={{
               padding: "0.2rem",
@@ -108,9 +72,7 @@ const BookingComponent = ({ reservation }: BookingComponentProps) => {
               : "Đã hủy"}
           </Typography>
         </Box>
-        <Typography variant="body1" sx={{ fontWeight: "700" }}>
-          {reservation.court.courtName}
-        </Typography>
+
         <Box
           sx={{
             display: "flex",
@@ -124,11 +86,24 @@ const BookingComponent = ({ reservation }: BookingComponentProps) => {
             {reservation.checkInTime}:00 - {reservation.checkOutTime}:00
           </Typography>
         </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            gap: "0.5rem",
+            color: "rgb(109 105 123)",
+          }}
+        >
+          <Typography>
+            Ngày tạo đơn:{" "}
+            {dayjs(reservation.createdAt).format("DD/MM/YYYY HH:mm:ss")}
+          </Typography>
+        </Box>
       </Box>
       <Box
         sx={{
           height: "100%",
-          flex: "3",
+          flex: "1",
           display: "flex",
           gap: "0.5rem",
         }}
