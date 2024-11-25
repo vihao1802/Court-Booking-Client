@@ -29,6 +29,11 @@ const UserProvider: React.FC<UserProviderProps> = ({
     location: "",
     profileImage: "",
     gender: true,
+    isDisabled: false,
+    role: {
+      id: "",
+      roleName: "",
+    },
   });
   const { user } = useAuthenticatedUser();
   useEffect(() => {
