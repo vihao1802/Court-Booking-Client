@@ -47,7 +47,7 @@ const schema = yup.object({
     .required("Không được để trống"),
   maximumRentalTime: yup
     .number()
-    .min(3, "Thời gian thuê tối đa là 3 tiếng")
+    .max(3, "Thời gian thuê tối đa là 3 tiếng")
     .required("Không được để trống"),
   courtTypeId: yup.string().required("Không được để trống"),
   courtImageList: yup
