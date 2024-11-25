@@ -14,9 +14,9 @@ export interface Court extends CourtBase {
   id: string;
   courtType: CourtType;
   courtImageList: CourtImage[];
+  isDeleted: number;
 }
 
 export interface CourtRequest extends CourtBase {
   courtTypeId: string;
-  // courtImageList: CourtImageRequest[];
 }

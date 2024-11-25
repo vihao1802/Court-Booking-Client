@@ -263,7 +263,6 @@ const Account = () => {
   }, [userData, isUserDataLoading, filters.page]);
 
   if (isUserDataLoading) return <OvalLoader />;
-  console.log(userData);
 
   return (
     <Box
@@ -337,7 +336,11 @@ const Account = () => {
                   pagination: { paginationModel: { pageSize: 10 } },
                 }}
                 pageSizeOptions={[10, 5]}
-                sx={{ padding: "10px 20px", height: "100%" }}
+                sx={{
+                  padding: "10px 20px",
+                  height: "100%",
+                  minHeight: "500px",
+                }}
                 slots={{
                   toolbar: () => {
                     return (
