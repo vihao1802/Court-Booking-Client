@@ -188,10 +188,7 @@ const FeaturedCourts = () => {
                 : courtData?.content.map((court: Court, index: number) => (
                     <CourtCard
                       key={index}
-                      id={court?.id}
-                      name={court?.courtName}
-                      people={4}
-                      type={court?.courtType?.courtTypeName}
+                      court={court}
                     />
                   ))}
             </TabPanel>
