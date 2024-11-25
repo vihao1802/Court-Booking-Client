@@ -21,6 +21,7 @@ import { UseGetLatestReservation } from "@/hooks/reservation/useGetLatestReserva
 import { Skeleton } from "@mui/joy";
 import { Reservation } from "@/models/reservation";
 import TableSkeleton from "./skeleton/TableSkeleton";
+import OvalLoader from "../shared/OvalLoader";
 
 const statusMap = {
   0: { label: "Đang chờ", color: "warning" },
@@ -51,6 +52,10 @@ export function LatestReservation({
 
   function handleRefresh() {
     mutate();
+  }
+
+  if (!data) {
+    return <OvalLoader />;
   }
 
   return (
@@ -86,8 +91,8 @@ export function LatestReservation({
                 <TableCell>Tên người dùng</TableCell>
                 <TableCell>Đặt lúc</TableCell>
                 <TableCell>Tên sân</TableCell>
-                <TableCell>Check in</TableCell>
-                <TableCell>Thời gian sử dụng sân</TableCell>
+                <TableCell>Vào sân</TableCell>
+                <TableCell>Ra sân</TableCell>
                 <TableCell>Trạng thái đơn</TableCell>
               </TableRow>
             </TableHead>
@@ -124,22 +129,9 @@ export function LatestReservation({
                       {dayjs(reservation.createdAt).format("DD/MM/YYYY MM:HHA")}
                     </TableCell>
                     <TableCell>{reservation.court.courtName}</TableCell>
-                    <TableCell>
-                      {" "}
-                      {dayjs(reservation.checkInTime).format(
-                        "DD/MM/YYYY MM:HHA"
-                      )}
-                    </TableCell>
+                    <TableCell> {reservation.checkInTime}:00</TableCell>
                     <TableCell align="center">
-                      {dayjs(
-                        reservation?.checkOutTime,
-                        "MM/DD/YY, h:mm A"
-                      ).diff(
-                        dayjs(reservation.checkInTime, "MM/DD/YY, h:mm A"),
-                        "hour",
-                        true
-                      )}
-                      {" giờ"}
+                      {reservation.checkOutTime}:00
                     </TableCell>
                     <TableCell>
                       <Chip color={color} label={label} size="small" />

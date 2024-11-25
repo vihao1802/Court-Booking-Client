@@ -12,15 +12,14 @@ import React from "react";
 import { useParams, useRouter } from "next/navigation";
 import courtDemo from "@/assets/images/court_demo.png";
 import { useAuthenticatedUser } from "@/hooks/auth/useAuthenticatedUser";
+import { Court } from "@/models/court";
 
 interface CourtProps {
-  id: string;
-  name: string;
-  people: number;
-  type: string;
+  key: number;
+  court: Court;
 }
 
-const CourtCard = ({ id, name, people, type }: CourtProps) => {
+const CourtCard = ({ key, court }: CourtProps) => {
   const router = useRouter();
   const { user } = useAuthenticatedUser();
 
@@ -38,19 +37,22 @@ const CourtCard = ({ id, name, people, type }: CourtProps) => {
         component="img"
         alt="green iguana"
         height="140"
-        image={courtDemo.src}
+        image={
+          court.courtImageList.find((image) => image.imageType === "main")
+            ?.courtImageSrc
+        }
       />
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
-          {name}
+          {court.courtName}
         </Typography>
 
         <Typography variant="body2" sx={{ color: "text.secondary" }}>
-          {type} ● {people} người
+          {court.courtDescription}
         </Typography>
       </CardContent>
 
-      <Rating name="read-only" value={4} readOnly sx={{ padding: "0 10px" }} />
+      {/* <Rating name="read-only" value={4} readOnly sx={{ padding: "0 10px" }} /> */}
       <CardActions
         sx={{
           display: "flex",
@@ -68,7 +70,7 @@ const CourtCard = ({ id, name, people, type }: CourtProps) => {
               borderColor: "var(--buttonHoverColor)",
             },
           }}
-          onClick={() => router.push(`/court/${id}`)}
+          onClick={() => router.push(`/court/${court.id}`)}
         >
           Chi tiết
         </Button>
@@ -82,7 +84,7 @@ const CourtCard = ({ id, name, people, type }: CourtProps) => {
             },
           }}
           onClick={() => {
-            const url = `/book-court/${id}/date-time`;
+            const url = `/book-court/${court.id}/date-time`;
             if (!user) {
               localStorage.setItem("pageNextUrl", url);
             }
