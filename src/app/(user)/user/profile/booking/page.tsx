@@ -80,101 +80,99 @@ const MyBooking = () => {
   console.log(pageNumber);
 
   return (
-    <ReservationProvider>
+    <Box
+      sx={{
+        width: "100%",
+        minHeight: "100vh",
+        padding: "1rem",
+        backgroundColor: "white",
+        borderRadius: "8px",
+      }}
+    >
+      {/* header */}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          gap: "1rem  ",
+          marginBottom: "1rem",
+        }}
+      >
+        <TimeFilterButton
+          isActive={isActive === 1}
+          handleButtonClick={() => handleUpcomingButton()}
+        >
+          Lịch đặt sắp tới
+        </TimeFilterButton>
+        <TimeFilterButton
+          isActive={isActive === 2}
+          handleButtonClick={() => handlePastButton()}
+        >
+          Lịch đặt trong quá khứ
+        </TimeFilterButton>
+      </Box>
+      {/* body */}
       <Box
         sx={{
           width: "100%",
-          minHeight: "100vh",
-          padding: "1rem",
-          backgroundColor: "white",
-          borderRadius: "8px",
         }}
       >
-        {/* header */}
+        {/* body-header */}
         <Box
           sx={{
+            height: "3rem",
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
-            gap: "1rem  ",
+            justifyContent: "space-between",
             marginBottom: "1rem",
           }}
         >
-          <TimeFilterButton
-            isActive={isActive === 1}
-            handleButtonClick={() => handleUpcomingButton()}
-          >
-            Lịch đặt sắp tới
-          </TimeFilterButton>
-          <TimeFilterButton
-            isActive={isActive === 2}
-            handleButtonClick={() => handlePastButton()}
-          >
-            Lịch đặt trong quá khứ
-          </TimeFilterButton>
-        </Box>
-        {/* body */}
-        <Box
-          sx={{
-            width: "100%",
-          }}
-        >
-          {/* body-header */}
-          <Box
+          <Typography
+            variant="body2"
             sx={{
-              height: "3rem",
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: "1rem",
+              color: "gray",
             }}
           >
-            <Typography
-              variant="body2"
-              sx={{
-                color: "gray",
-              }}
-            >
-              {reservations ? reservations.totalElements : 0} lịch đặt
-            </Typography>
-            <Button
-              startIcon={<Tune />}
-              sx={{ backgroundColor: "var(--buttonColor)", color: "white" }}
-            >
-              Filter
-            </Button>
-          </Box>
-          {/* body-body */}
-          <Box>
-            {reservations &&
-              !isLoadingReservations &&
-              reservations.content.map((item: Reservation) => (
-                <Box key={item.id}>
-                  {/* <MonthDivider date={dayjs(item.createdAt)} /> */}
-                  <BookingComponent reservation={item} />
-                </Box>
-              ))}
-          </Box>
-          {!isLoadingReservations && (
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                marginTop: "20px",
-              }}
-            >
-              <Pagination
-                count={totalPages}
-                page={pageNumber + 1}
-                variant="outlined"
-                onChange={handlePageChange}
-              />
-            </Box>
-          )}
+            {reservations ? reservations.totalElements : 0} lịch đặt
+          </Typography>
+          <Button
+            startIcon={<Tune />}
+            sx={{ backgroundColor: "var(--buttonColor)", color: "white" }}
+          >
+            Filter
+          </Button>
         </Box>
+        {/* body-body */}
+        <Box>
+          {reservations &&
+            !isLoadingReservations &&
+            reservations.content.map((item: Reservation) => (
+              <Box key={item.id}>
+                {/* <MonthDivider date={dayjs(item.createdAt)} /> */}
+                <BookingComponent reservation={item} />
+              </Box>
+            ))}
+        </Box>
+        {!isLoadingReservations && (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              marginTop: "20px",
+            }}
+          >
+            <Pagination
+              count={totalPages}
+              page={pageNumber + 1}
+              variant="outlined"
+              onChange={handlePageChange}
+            />
+          </Box>
+        )}
       </Box>
-    </ReservationProvider>
+    </Box>
   );
 };
 

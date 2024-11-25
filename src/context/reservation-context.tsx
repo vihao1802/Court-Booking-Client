@@ -17,7 +17,10 @@ export const ReservationProvider: React.FC<ReservationProviderProps> = ({
   children,
 }: ReservationProviderProps) => {
   const [reservationData, setReservationData] = useState<Reservation[]>([]);
-  const { data } = useGetMyReservation({ enabled: true });
+  const { data } = useGetMyReservation({
+    enabled: true,
+    params: { page: 0, size: 8 },
+  });
   useEffect(() => {
     if (data) {
       setReservationData(data);
