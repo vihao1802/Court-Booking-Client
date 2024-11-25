@@ -1,22 +1,23 @@
 "use client";
 import React, { Suspense, useEffect, useState } from "react";
 import { Divider, Box } from "@mui/material";
-import dayjs from "dayjs";
 import ProfileWall from "@/components/profile/ProfileWall";
-import Section from "@/components/profile/ProfileSection";
-import { User } from "@/models/user";
-import { IError } from "@/models/error";
 import BookingInfoComponent from "@/components/profile/BookingInfoComponent";
 import BookingSectionComponent from "@/components/profile/BookingSectionComponent";
 import ProfileContactComponent from "@/components/profile/ProfileContactComponent";
 import { useRouter, useParams } from "next/navigation";
 import { useGetMyReservation } from "@/hooks/reservation/useGetMyReservation";
+import { Reservation } from "@/models/reservation";
 
 async function Profile() {
   const [totalHours, setTotalHours] = useState<number>(0);
   const router = useRouter();
   const params = useParams();
-  const { data, isLoading, error, mutate } = useGetMyReservation({
+  const { data, error } = useGetMyReservation({
+    params: {
+      page: 0,
+      size: 1,
+    },
     enabled: true,
   });
 
@@ -27,7 +28,7 @@ async function Profile() {
   useEffect(() => {
     if (data === undefined || error) return;
     let totalhours: number = 0;
-    data?.forEach((reservation) => {
+    data?.content.forEach((reservation: Reservation) => {
       // Parse check-in and check-out times with dayjs
       const checkIn = Number(reservation.checkInTime);
       const checkOut = Number(reservation.checkOutTime);
@@ -93,7 +94,7 @@ async function Profile() {
           >
             <BookingInfoComponent
               title="Số lần đặt lịch"
-              info={(data?.length ?? 0).toString()}
+              info={(data?.totalElements ?? 0).toString()}
             />
             <Divider orientation="vertical" variant="middle" flexItem />
             <BookingInfoComponent
@@ -120,9 +121,9 @@ async function Profile() {
         }}
       >
         {/* Booking */}
-        {data && data.length > 0 && (
+        {data && data.content.length > 0 && (
           <Suspense fallback={<p>Loading...</p>}>
-            <BookingSectionComponent id={data[0].id} />
+            <BookingSectionComponent id={data.content[0].id} />
           </Suspense>
         )}
         {/* Contact */}

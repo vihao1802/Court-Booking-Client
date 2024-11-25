@@ -237,7 +237,7 @@ const CourtDetail = ({ params: { id } }: { params: { id: string } }) => {
               {courtDetail?.courtDescription}
             </Typography>
           </Box>
-          <Box
+          {/* <Box
             sx={{
               padding: "30px 0",
             }}
@@ -283,8 +283,8 @@ const CourtDetail = ({ params: { id } }: { params: { id: string } }) => {
             >
               (5 đánh giá)
             </Typography>
-          </Box>
-
+          </Box> 
+          
           <Box
             sx={{
               padding: "20px 0",
@@ -337,213 +337,7 @@ const CourtDetail = ({ params: { id } }: { params: { id: string } }) => {
               </Box>
             </Box>
           </Box>
-          <Box
-            sx={{
-              padding: "20px 0",
-            }}
-          >
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-              }}
-            >
-              <Avatar
-                alt="Cindy Baker"
-                src="https://mui.com/static/images/avatar/1.jpg"
-                sx={{
-                  marginRight: "20px",
-                }}
-              />
-
-              <Box>
-                <Typography>Cindy Baker</Typography>
-                <Rating
-                  name="rating-read-only"
-                  value={4.5}
-                  precision={0.5}
-                  size="medium"
-                  readOnly
-                  sx={{
-                    marginLeft: "-2px",
-                  }}
-                />
-                <Typography
-                  sx={{
-                    color: "gray",
-                    fontWeight: "400",
-                    fontSize: "14px",
-                    marginBottom: "20px",
-                  }}
-                >
-                  2024-10-03 11:50
-                </Typography>
-                <Typography
-                  sx={{
-                    fontWeight: "500",
-                  }}
-                >
-                  Sân đẹp và thoáng mát. Bãi đỗ xe khá vắng nên cũng dễ dàng ra
-                  vào mà không phải bon chen.
-                </Typography>
-              </Box>
-            </Box>
-          </Box>
-          <Box
-            sx={{
-              padding: "20px 0",
-            }}
-          >
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-              }}
-            >
-              <Avatar
-                alt="Cindy Baker"
-                src="https://mui.com/static/images/avatar/1.jpg"
-                sx={{
-                  marginRight: "20px",
-                }}
-              />
-
-              <Box>
-                <Typography>Cindy Baker</Typography>
-                <Rating
-                  name="rating-read-only"
-                  value={4.5}
-                  precision={0.5}
-                  size="medium"
-                  readOnly
-                  sx={{
-                    marginLeft: "-2px",
-                  }}
-                />
-                <Typography
-                  sx={{
-                    color: "gray",
-                    fontWeight: "400",
-                    fontSize: "14px",
-                    marginBottom: "20px",
-                  }}
-                >
-                  2024-10-03 11:50
-                </Typography>
-                <Typography
-                  sx={{
-                    fontWeight: "500",
-                  }}
-                >
-                  Hôm qua em tuyệt lắm@@
-                </Typography>
-              </Box>
-            </Box>
-          </Box>
-          <Box
-            sx={{
-              padding: "20px 0",
-            }}
-          >
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-              }}
-            >
-              <Avatar
-                alt="Cindy Baker"
-                src="https://mui.com/static/images/avatar/1.jpg"
-                sx={{
-                  marginRight: "20px",
-                }}
-              />
-
-              <Box>
-                <Typography>Cindy Baker</Typography>
-                <Rating
-                  name="rating-read-only"
-                  value={4.5}
-                  precision={0.5}
-                  size="medium"
-                  readOnly
-                  sx={{
-                    marginLeft: "-2px",
-                  }}
-                />
-                <Typography
-                  sx={{
-                    color: "gray",
-                    fontWeight: "400",
-                    fontSize: "14px",
-                    marginBottom: "20px",
-                  }}
-                >
-                  2024-10-03 11:50
-                </Typography>
-                <Typography
-                  sx={{
-                    fontWeight: "500",
-                  }}
-                >
-                  Sân đẹp và thoáng mát. Bãi đỗ xe khá vắng nên cũng dễ dàng ra
-                  vào mà không phải bon chen.
-                </Typography>
-              </Box>
-            </Box>
-          </Box>
-          <Box
-            sx={{
-              padding: "20px 0",
-            }}
-          >
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-              }}
-            >
-              <Avatar
-                alt="Cindy Baker"
-                src="https://mui.com/static/images/avatar/1.jpg"
-                sx={{
-                  marginRight: "20px",
-                }}
-              />
-
-              <Box>
-                <Typography>Cindy Baker</Typography>
-                <Rating
-                  name="rating-read-only"
-                  value={4.5}
-                  precision={0.5}
-                  size="medium"
-                  readOnly
-                  sx={{
-                    marginLeft: "-2px",
-                  }}
-                />
-                <Typography
-                  sx={{
-                    color: "gray",
-                    fontWeight: "400",
-                    fontSize: "14px",
-                    marginBottom: "20px",
-                  }}
-                >
-                  2024-10-03 11:50
-                </Typography>
-                <Typography
-                  sx={{
-                    fontWeight: "500",
-                  }}
-                >
-                  Sân đẹp và thoáng mát. Bãi đỗ xe khá vắng nên cũng dễ dàng ra
-                  vào mà không phải bon chen.
-                </Typography>
-              </Box>
-            </Box>
-          </Box>
+          */}
         </Box>
         {/* Box booking button*/}
         {courtDetail && (
