@@ -9,12 +9,41 @@ import dayjs from "dayjs";
 import { Reservation } from "@/models/reservation";
 import { formatVND } from "@/utils/format";
 import { ReservationState } from "@/types/enums";
+import { Button, ButtonGroup, CardActions, CardOverflow } from "@mui/joy";
+import { reservationApi } from "@/api/reservation";
+import toast from "react-hot-toast";
 
 export default function ReservationInfo({
   reservation,
 }: {
   reservation: Partial<Reservation>;
 }) {
+  const handleClick = async () => {
+    try {
+      if (reservation.id) {
+        const response = await reservationApi.getInvoice(reservation.id);
+        // Tạo một Blob từ dữ liệu trả về
+        const blob = new Blob([response], { type: "application/pdf" });
+
+        // Tạo URL từ Blob
+        const url = URL.createObjectURL(blob);
+
+        // Tạo thẻ <a> để tải file hoặc mở file trong tab mới
+        const link = document.createElement("a");
+        link.href = url;
+        link.target = "_blank"; // Mở trong tab mới
+        link.download = "invoice.pdf"; // Tên file khi tải về
+        link.click();
+
+        // Giải phóng URL sau khi sử dụng
+        URL.revokeObjectURL(url);
+      } else {
+        toast.error("Reservation ID is undefined");
+      }
+    } catch (error) {
+      console.error("Failed to fetch PDF:", error);
+    }
+  };
   return (
     <Card sx={{ width: 320, maxWidth: "100%", boxShadow: "lg" }}>
       <CardContent sx={{ alignItems: "center", textAlign: "center" }}>
@@ -80,6 +109,20 @@ export default function ReservationInfo({
           </Typography>
         </Box>
       </CardContent>
+      {reservation.reservationState === 1 && (
+        <CardOverflow sx={{ bgcolor: "background.level1" }}>
+          <CardActions buttonFlex="1">
+            <ButtonGroup
+              variant="outlined"
+              sx={{ bgcolor: "background.surface" }}
+            >
+              <Button color="success" onClick={handleClick}>
+                In hóa đơn
+              </Button>
+            </ButtonGroup>
+          </CardActions>
+        </CardOverflow>
+      )}
     </Card>
   );
 }
