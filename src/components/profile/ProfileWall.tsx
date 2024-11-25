@@ -47,7 +47,9 @@ const ProfileWall = async ({ handleButtonAvatarClicked }: profileWallProps) => {
             width: "640px",
             transform: "translateX(-50%)",
             borderRadius: "50%",
-            background: "linear-gradient(to bottom, #4A19C3, #557EEA)",
+            background:
+              "linear-gradient(to bottom, rgb(46, 125, 50), rgb(100, 180, 100), rgb(255, 255, 255))",
+
             ["@media (min-width: 600px)"]: {
               top: "-128px",
               width: "1067px",

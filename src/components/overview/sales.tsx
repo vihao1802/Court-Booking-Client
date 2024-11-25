@@ -20,8 +20,10 @@ import { ChartData } from "@/models/chart-data";
 import { AspectRatio, Skeleton } from "@mui/joy";
 import { Typography } from "@mui/material";
 import ChartSkeleton from "./skeleton/ChartSkeleton";
+import { log } from "console";
 
 export interface SalesProps {
+  chartSeries: ApexOptions["series"];
   sx?: SxProps;
 }
 
@@ -33,7 +35,10 @@ export function Sales({ sx }: SalesProps): React.JSX.Element {
     startDate: context?.period.from || dayjs().subtract(1, "month"),
     endDate: context?.period.to || dayjs(),
   });
-  const [chartOptions, setChartOptions] = React.useState<ApexOptions>();
+
+  const [chartOptions, setChartOptions] = React.useState<ApexOptions>(
+    useChartOptions(theme, [])
+  );
   const [revenue, setRevenue] = React.useState<{ data: number[] } | null>(null);
 
   React.useEffect(() => {
@@ -59,9 +64,26 @@ export function Sales({ sx }: SalesProps): React.JSX.Element {
     mutate();
   }, [context?.period]);
 
+  function handleRefresh() {
+    mutate();
+  }
   return (
     <Card sx={sx}>
-      <CardHeader title="Doanh thu" />
+      <CardHeader
+        action={
+          <Button
+            color="inherit"
+            size="small"
+            startIcon={
+              <ArrowClockwiseIcon fontSize="var(--icon-fontSize-md)" />
+            }
+            onClick={handleRefresh}
+          >
+            Tải lại
+          </Button>
+        }
+        title="Sales"
+      />
       <CardContent>
         {isValidating ? (
           <ChartSkeleton
@@ -81,9 +103,9 @@ export function Sales({ sx }: SalesProps): React.JSX.Element {
         ) : (
           <Chart
             height={350}
+            type="bar"
             options={chartOptions}
             series={[{ name: "Doanh thu", data: revenue?.data || [] }]}
-            type="bar"
             width="100%"
           />
         )}
@@ -92,7 +114,6 @@ export function Sales({ sx }: SalesProps): React.JSX.Element {
     </Card>
   );
 }
-
 function useChartOptions(theme: Theme, categories: string[]): ApexOptions {
   return {
     chart: {
@@ -116,10 +137,12 @@ function useChartOptions(theme: Theme, categories: string[]): ApexOptions {
     plotOptions: { bar: { columnWidth: "40px" } },
     stroke: { colors: ["transparent"], show: true, width: 2 },
     theme: { mode: theme.palette.mode },
+
     xaxis: {
       axisBorder: { color: theme.palette.divider, show: true },
       axisTicks: { color: theme.palette.divider, show: true },
-      categories: categories,
+      categories: categories || [],
+
       labels: { offsetY: 5, style: { colors: theme.palette.text.secondary } },
     },
     yaxis: {

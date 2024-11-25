@@ -70,6 +70,17 @@ export function TotalUser({
               <UsersIcon fontSize="2rem" />
             </Avatar>
           </Stack>
+          {isValidating ? (
+            <Skeleton variant="text" sx={{ fontSize: "1.125rem" }} />
+          ) : (
+            <Typography
+              color="text.secondary"
+              variant="h6"
+              sx={{ fontWeight: "bold" }}
+            >
+              người đã đăng kí
+            </Typography>
+          )}
         </Stack>
       </CardContent>
     </Card>

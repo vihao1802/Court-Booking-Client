@@ -16,7 +16,7 @@ async function Profile() {
   const [totalHours, setTotalHours] = useState<number>(0);
   const router = useRouter();
   const params = useParams();
-  const { data, isLoading, error, mutate } = useGetMyReservation({
+  const { data, isValidating, error, mutate } = useGetMyReservation({
     enabled: true,
   });
 
@@ -25,7 +25,8 @@ async function Profile() {
   }
 
   useEffect(() => {
-    if (data === undefined || error) return;
+    if (!data || error) return;
+
     let totalhours: number = 0;
     data?.forEach((reservation) => {
       // Parse check-in and check-out times with dayjs
@@ -98,7 +99,7 @@ async function Profile() {
             <Divider orientation="vertical" variant="middle" flexItem />
             <BookingInfoComponent
               title="Tổng thời gian đã đến sân"
-              info={totalHours.toString()}
+              info={isValidating ? totalHours.toString() : "0"}
             />
           </Box>
         </Box>
@@ -120,10 +121,8 @@ async function Profile() {
         }}
       >
         {/* Booking */}
-        {data && data.length > 0 && (
-          <Suspense fallback={<p>Loading...</p>}>
-            <BookingSectionComponent id={data[0].id} />
-          </Suspense>
+        {!isValidating && data.length > 0 && (
+          <BookingSectionComponent id={data[0].id} />
         )}
         {/* Contact */}
         <Suspense fallback={<p>Loading...</p>}>

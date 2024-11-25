@@ -1,5 +1,6 @@
 "use client";
 import ProfileSideNavHeader from "@/components/profile/ProfileSideNavHeader";
+import ProfileSkeleton from "@/components/profile/Skeleton/ProfileSkeleton";
 import { UserProvider } from "@/context/user-context";
 import { Box } from "@mui/material";
 import React, { Suspense } from "react";
@@ -33,7 +34,7 @@ export default function UserRootLayout({
               }}
             >
               <ProfileSideNavHeader />
-              {children}
+              <Suspense fallback={<ProfileSkeleton />}>{children}</Suspense>
             </Box>
           </Box>
         </Box>

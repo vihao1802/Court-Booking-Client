@@ -47,7 +47,15 @@ export default function Page(): React.JSX.Element {
       </Grid>
       {/* sale chart */}
       <Grid size={{ lg: 8, xs: 12 }}>
-        <Sales sx={{ height: "100%" }} />
+        <Sales
+          sx={{ height: "100%" }}
+          chartSeries={[
+            {
+              name: "Sales",
+              data: [30, 40, 35, 50, 49, 60, 70, 91, 125],
+            },
+          ]}
+        />
       </Grid>
       {/* latest order */}
       <Grid size={{ lg: 12, sm: 12, xs: 12 }}>

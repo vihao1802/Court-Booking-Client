@@ -30,6 +30,7 @@ const Header = () => {
 
   useEffect(() => {
     if (!firstLoading && user) {
+      console.log("user", user);
       if (user.role.roleName === "ADMIN") router.push("/dashboard");
     }
   }, [user, firstLoading]);
