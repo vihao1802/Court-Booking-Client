@@ -98,9 +98,14 @@ const ModalUserProfile = ({
           width: "380px",
         }}
       >
-        <img
+        <Box
+          component="img"
           src={user.profileImage}
-          className="rounded-full w-[100px] h-[100px]"
+          sx={{
+            width: "100px",
+            height: "100px",
+            borderRadius: "50%",
+          }}
         />
         <Typography
           sx={{
@@ -146,8 +151,8 @@ const ModalUserProfile = ({
               color: "#2C6BFF",
             },
           }}
-          href={"/user/profile"}
-          onClick={() => router.push("/user/profile")}
+          href={"/user/profile/booking"}
+          // onClick={() => router.push("/user/profile")}
         >
           <CalendarToday
             sx={{
@@ -171,7 +176,7 @@ const ModalUserProfile = ({
             },
           }}
           href={"/user/profile"}
-          onClick={() => router.push("/user/profile")}
+          // onClick={() => router.push("/user/profile")}
         >
           <Person
             sx={{

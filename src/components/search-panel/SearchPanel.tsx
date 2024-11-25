@@ -14,46 +14,24 @@ import {
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import ModalSelectSport from "@/components/search-panel/ModalSelectSport";
 import SelectDateTime from "@/components/search-panel/SelectDateTime";
 import { Dayjs } from "dayjs";
-
-const types = [
-  {
-    label: "Cầu lông",
-  },
-  {
-    label: "Bóng bàn",
-  },
-  {
-    label: "Futsal",
-  },
-  {
-    label: "Bóng chuyền",
-  },
-  {
-    label: "Bóng đá",
-  },
-  {
-    label: "Tennis",
-  },
-  {
-    label: "Bóng rổ",
-  },
-];
+import { CourtType } from "@/models/court-type";
 
 export const SearchContext = React.createContext({
-  sport: "",
-  setSport: (sport: string) => {},
+  sport: {} as Partial<CourtType> | null,
+  setSport: ({}: Partial<CourtType>) => {},
   dateTime: "",
   setDateTime: (dateTime: string) => {},
 });
 
 const SearchPanel = () => {
   const pathname = usePathname();
+  const router = useRouter();
 
-  const [sport, setSport] = useState("");
+  const [sport, setSport] = useState<Partial<CourtType> | null>(null);
   const [dateTime, setDateTime] = useState("");
 
   // Modal select sport
@@ -196,13 +174,16 @@ const SearchPanel = () => {
                 color="#858585"
                 onClick={handleOpenModalSelectSport}
               >
-                {sport || "Chọn môn thể thao"}
+                {sport?.courtTypeName || "Chọn môn thể thao"}
               </Typography>
-              {sport !== "" && (
+              {sport !== null && (
                 <Typography
                   variant="body2"
                   color="#858585"
-                  onClick={() => setSport("")}
+                  onClick={() => {
+                    setSport(null);
+                    setDateTime("");
+                  }}
                 >
                   <CloseRoundedIcon />
                 </Typography>
@@ -214,7 +195,8 @@ const SearchPanel = () => {
             sx={{
               flex: 2,
               margin: "5px 0",
-              cursor: "pointer",
+              cursor: sport === null ? "no-drop" : "pointer",
+              opacity: sport === null ? 0.5 : 1,
             }}
           >
             <Typography fontWeight="bold" mb="2px">
@@ -230,7 +212,7 @@ const SearchPanel = () => {
               <Typography
                 variant="body2"
                 color="#858585"
-                onClick={handleClickSelectDateTime}
+                onClick={sport !== null ? handleClickSelectDateTime : undefined}
               >
                 {dateTime || "Chọn thời gian"}
               </Typography>
@@ -260,6 +242,34 @@ const SearchPanel = () => {
                 color: "white",
               }}
               startIcon={<SearchOutlinedIcon />}
+              onClick={() => {
+                if (sport === null) return;
+                if (sport !== null && dateTime === "")
+                  router.push(`/explore/category/${sport.id}`);
+                else {
+                  const input = dateTime; // "24/11/2024 07:00 AM - 09:00 AM"
+
+                  // Tách phần ngày tháng năm
+                  const datePart = input.split(" ")[0].split("/"); // ["24", "11", "2024"]
+                  const formattedDate = `${datePart[2]}-${datePart[1]}-${datePart[0]}`; // "2024-11-24"
+
+                  // Tách giờ từ "07:00 AM - 09:00 AM"
+                  const times = input.split(" - ")[0].split(" ")[1]; // "07"
+                  const endTime = input.split(" - ")[1].split(" ")[0]; // "09"
+
+                  // Chuyển đổi giờ thành định dạng số
+                  const startHour = parseInt(times, 10); // 7
+                  const endHour = parseInt(endTime, 10); // 9
+
+                  router.push(
+                    `/explore/category/${
+                      sport.id
+                    }?date=${formattedDate}&start=${startHour}&end=${
+                      endHour === 0 ? 24 : endHour
+                    }`
+                  );
+                }
+              }}
             >
               Tìm kiếm
             </Button>

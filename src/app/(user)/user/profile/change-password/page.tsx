@@ -99,6 +99,7 @@ const ChangePassword = () => {
                 type={showPassword ? "text" : "password"}
                 name="oldPassword"
                 label="Mật khẩu hiện tại"
+                color="success"
                 value={values.oldPassword}
                 onChange={handleChange}
                 onBlur={handleBlur}
@@ -122,6 +123,7 @@ const ChangePassword = () => {
                 type={showPassword ? "text" : "password"}
                 name="newPassword"
                 label="Mật khẩu mới"
+                color="success"
                 value={values.newPassword}
                 onChange={handleChange}
                 onBlur={handleBlur}
@@ -144,6 +146,7 @@ const ChangePassword = () => {
                 as={TextField}
                 type={showPassword ? "text" : "password"}
                 name="confirmPassword"
+                color="success"
                 label="Xác nhận mật khẩu mới"
                 value={values.confirmPassword}
                 onChange={handleChange}
@@ -168,7 +171,7 @@ const ChangePassword = () => {
               <Button
                 type="submit"
                 variant="contained"
-                color="primary"
+                color="success"
                 disabled={isSubmitting}
                 fullWidth
               >

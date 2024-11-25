@@ -29,17 +29,18 @@ async function Profile() {
     let totalhours: number = 0;
     data?.forEach((reservation) => {
       // Parse check-in and check-out times with dayjs
-      const checkIn = dayjs(reservation.checkInTime, "MM/DD/YY, h:mm A");
-      const checkOut = dayjs(reservation.checkOutTime, "MM/DD/YY, h:mm A");
+      const checkIn = Number(reservation.checkInTime);
+      const checkOut = Number(reservation.checkOutTime);
 
       // Calculate the difference in hours
-      const hours = checkOut.diff(checkIn, "hour", true); // 'true' returns a float
+      const hours = checkOut - checkIn;
 
       // Add to total hours
       totalhours += hours;
     });
     setTotalHours(totalhours);
   }, [data]);
+
   return (
     <Box
       sx={{
@@ -91,12 +92,12 @@ async function Profile() {
             }}
           >
             <BookingInfoComponent
-              title="Booking made"
+              title="Số lần đặt lịch"
               info={(data?.length ?? 0).toString()}
             />
             <Divider orientation="vertical" variant="middle" flexItem />
             <BookingInfoComponent
-              title="Booking hours"
+              title="Tổng thời gian đã đến sân"
               info={totalHours.toString()}
             />
           </Box>
@@ -107,7 +108,10 @@ async function Profile() {
       <Box
         sx={{
           display: "flex",
-          flexDirection: "row",
+          flexDirection: {
+            sm: "column",
+            md: "row",
+          },
           justifyContent: "space-evenly",
           gap: "1rem",
           width: "100%",
@@ -118,13 +122,7 @@ async function Profile() {
         {/* Booking */}
         {data && data.length > 0 && (
           <Suspense fallback={<p>Loading...</p>}>
-            <BookingSectionComponent
-              id={data[0].id}
-              checkInTime={new Date(data[0].checkInTime)}
-              checkOutTime={new Date(data[0].checkOutTime)}
-              courtId={data[0].court.id}
-              reservationDate={new Date(data[0].reservationDate)}
-            />
+            <BookingSectionComponent id={data[0].id} />
           </Suspense>
         )}
         {/* Contact */}

@@ -11,6 +11,7 @@ import { DashboardContext } from "@/context/dash-board-context";
 import { UseGetRevenue } from "@/hooks/statistic/useGetRevenue";
 import dayjs from "dayjs";
 import { Skeleton } from "@mui/material";
+import OvalLoader from "../shared/OvalLoader";
 
 export interface TotalRevenueProps {
   sx?: SxProps;
@@ -30,6 +31,8 @@ export function TotalRevenue({
   React.useEffect(() => {
     mutate();
   }, [context?.period]);
+
+  if (!data) return <OvalLoader />;
   return (
     <Card sx={sx}>
       <CardContent>

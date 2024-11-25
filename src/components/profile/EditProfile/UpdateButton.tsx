@@ -42,6 +42,7 @@ const UpdateButton: React.FC<UpdateButtonProps> = ({ width, children }) => {
       <Button
         onClick={handleUpdateButtonClick}
         variant="contained"
+        color="success"
         disabled={isValidating}
         sx={{
           width: width || "100%",
@@ -55,6 +56,7 @@ const UpdateButton: React.FC<UpdateButtonProps> = ({ width, children }) => {
           outline: "none",
           transition: "all 0.2s ease-in-out", // Adjust transition if necessary
           boxShadow: "none", // Equivalent to `active:shadow-none`
+          backgroundColor: "var(--buttonColor)", // `bg-primary`
           "&:active": {
             boxShadow: "none",
             borderColor: "transparent", // `active:border-transparent`
@@ -66,7 +68,6 @@ const UpdateButton: React.FC<UpdateButtonProps> = ({ width, children }) => {
             backgroundColor: "#ECEFF1", // `disabled:bg-blue-grey-50`
             color: "#B0BEC5", // `disabled:text-blue-grey-200`
           },
-          backgroundColor: "primary.main", // `bg-primary`
           color: "white", // `text-white`
           "&:hover": {
             color: "white", // `hover:text-white`

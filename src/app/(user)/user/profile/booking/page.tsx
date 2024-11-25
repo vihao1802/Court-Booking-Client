@@ -102,9 +102,12 @@ const MyBooking = () => {
                 color: "gray",
               }}
             >
-              {dataFilter ? dataFilter.length : 0} booking(s)
+              {dataFilter ? dataFilter.length : 0} lịch đặt
             </Typography>
-            <Button variant="outlined" startIcon={<Tune />}>
+            <Button
+              startIcon={<Tune />}
+              sx={{ backgroundColor: "var(--buttonColor)", color: "white" }}
+            >
               Filter
             </Button>
           </Box>
@@ -112,8 +115,8 @@ const MyBooking = () => {
           <Box>
             {dataFilter &&
               dataFilter.map((item) => (
-                <Box>
-                  <MonthDivider date={dayjs(item.createdAt)} />
+                <Box key={item.id}>
+                  {/* <MonthDivider date={dayjs(item.createdAt)} /> */}
                   <BookingComponent reservation={item} />
                 </Box>
               ))}
