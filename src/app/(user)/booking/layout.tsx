@@ -10,13 +10,14 @@ const BookingRootLayout = ({
     <Box
       sx={{
         padding: 3,
-        height: "100vh",
+        height: "auto",
         display: "flex",
         flexDirection: "row",
         justifyContent: "center",
         alignItems: "flex-start",
         gap: "1rem",
-        background: "linear-gradient(to bottom, #f5f5f5,#FFFFFF )",
+        // background: "linear-gradient(to bottom, #f5f5f5,#FFFFFF )",
+        background: "#f5f5f5",
       }}
     >
       {children}

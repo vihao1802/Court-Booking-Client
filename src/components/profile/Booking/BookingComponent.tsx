@@ -19,12 +19,14 @@ const BookingComponent = ({ reservation }: BookingComponentProps) => {
         display: "flex",
         flexDirection: "row",
         justifyContent: "space-between",
-        border: "1px solid rgb(235 238 253)",
-        borderRadius: "8px",
+        alignItems: "center",
+        // border: "1px solid rgb(235 238 253)",
+        // borderRadius: "8px",
+        boxShadow: "0px 2px 2px rgba(0, 0, 0, 0.1)",
         padding: "1rem",
       }}
     >
-      <Box
+      {/* <Box
         sx={{
           height: "100%",
           flex: "1",
@@ -41,32 +43,24 @@ const BookingComponent = ({ reservation }: BookingComponentProps) => {
             alignItems: "center",
           }}
         >
+          <Typography>{reservation.reservationDate.split("-")[0]}</Typography>
           <Typography
             sx={{
-              fontSize: "0.7rem",
-            }}
-          >
-            {getDay(new Date(reservation.checkInTime))}
-          </Typography>
-          <Typography
-            sx={{
-              color: "rgb(67 97 238)",
+              color: "var(--buttonColor)",
               fontWeight: "700",
-              fontSize: "2rem",
+              fontSize: "2.5rem",
             }}
           >
-            {dayjs(reservation.checkInTime).format("DD")}
+            {reservation.reservationDate.split("-")[2]}
           </Typography>
-          <Typography>
-            {dayjs(reservation.checkInTime).format("MMM")}
-          </Typography>
+          <Typography>{reservation.reservationDate.split("-")[1]}</Typography>
         </Box>
         <Divider
           sx={{ display: "flex", justifyContent: "center" }}
           orientation="vertical"
           flexItem
         ></Divider>
-      </Box>
+      </Box> */}
 
       <Box
         sx={{
@@ -83,25 +77,6 @@ const BookingComponent = ({ reservation }: BookingComponentProps) => {
             marginBottom: "0.5rem",
           }}
         >
-          <Typography
-            sx={{
-              padding: "0.2rem",
-              height: "1.5rem",
-              fontSize: "0.5rem",
-              border: "0.5px solid", // 'border-0.5' and 'border-solid'
-              borderColor: "destructive.main", // 'border-destructive-600'
-              borderRadius: "4px", // 'rounded'
-              fontWeight: "bold", // 'font-bold'
-              textTransform: "uppercase", // 'uppercase'
-              backgroundColor: "#1976d2", // 'bg-destructive-600'
-              color: "white",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            {reservation.court.courtType.courtTypeName}
-          </Typography>
           <Typography
             sx={{
               padding: "0.2rem",
@@ -127,7 +102,7 @@ const BookingComponent = ({ reservation }: BookingComponentProps) => {
             }
           >
             {reservation.reservationState === 0
-              ? "Chờ xác nhận"
+              ? "Đang chờ"
               : reservation.reservationState === 1
               ? "Đã xác nhận"
               : "Đã hủy"}
@@ -136,35 +111,51 @@ const BookingComponent = ({ reservation }: BookingComponentProps) => {
         <Typography variant="body1" sx={{ fontWeight: "700" }}>
           {reservation.court.courtName}
         </Typography>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            gap: "0.5rem",
+            color: "rgb(109 105 123)",
+          }}
+        >
+          <Typography>{reservation.reservationDate}</Typography>
+          <Typography>
+            {reservation.checkInTime}:00 - {reservation.checkOutTime}:00
+          </Typography>
+        </Box>
       </Box>
       <Box
         sx={{
           height: "100%",
           flex: "3",
           display: "flex",
-          flexDirection: "column",
-          alignreservations: "flex-start",
           gap: "0.5rem",
         }}
       >
-        <Typography variant="body2">21 Oct 2024, Monday</Typography>
-        <Typography variant="body2">09:00AM - 11:00AM</Typography>
         <Box
           sx={{
             display: "flex",
-            flexDirection: "row",
             gap: "0.5rem",
-            justifyContent: "flex-start",
-            alignreservations: "center",
+            alignItems: "center",
+            justifyContent: "end",
+            flex: "1",
           }}
         >
-          <Link href={`/booking/${reservation.id}`}>View detail</Link>
-          <ArrowForward
+          <Link
+            href={`/booking/${reservation.id}`}
             sx={{
-              color: "rgb(67 97 238)",
-              fontSize: "1rem",
+              color: "var(--buttonColor)",
             }}
-          />
+          >
+            Chi tiết
+            <ArrowForward
+              sx={{
+                color: "var(--buttonColor)",
+                fontSize: "1rem",
+              }}
+            />
+          </Link>
         </Box>
       </Box>
     </Box>

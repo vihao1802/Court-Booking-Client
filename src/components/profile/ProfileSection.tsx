@@ -49,7 +49,7 @@ const Section: React.FC<SectionProps> = ({
           <Button
             variant="text"
             sx={{
-              color: "rgb(67 97 238)",
+              color: "var(--buttonColor)",
             }}
             onClick={() => handleButtonClick && handleButtonClick()}
           >

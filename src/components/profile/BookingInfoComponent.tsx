@@ -1,4 +1,3 @@
-import { fetchGET } from "@/data/user/fetchGET";
 import { Box, Typography } from "@mui/material";
 import React, { Suspense } from "react";
 
@@ -25,7 +24,7 @@ const BookingInfoComponent: React.FC<BookingInfoComponentProps> = async ({
         <Typography
           variant="h6"
           sx={{
-            color: "rgb(67 97 238)",
+            color: "var(--buttonColor)",
             fontWeight: "500",
             fontSize: "1.5rem",
           }}
