@@ -2,7 +2,6 @@ import { Box } from "@mui/material";
 import React, { useContext, useState } from "react";
 import ProfileTextField from "../ProfileTextField";
 import ProfileAutocomplete from "../ProfileAutocomplete";
-import { UpdateUserRequest } from "@/models/user";
 import { UserContext } from "@/context/user-context";
 import { isValidatePhoneNumber } from "@/utils/validate";
 
