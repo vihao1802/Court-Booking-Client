@@ -1,15 +1,18 @@
-import { UpdateUserRequest, User } from "@/models/user"
-import dayjs from "dayjs"
+import { User } from "@/models/user";
+import { UpdateUserRequest } from "@/models/update-user";
+import dayjs from "dayjs";
 
-export const ToUpdateUser = (user: User | null | undefined ): UpdateUserRequest | null |undefined => {
+export const ToUpdateUser = (
+  user: User | null | undefined
+): UpdateUserRequest | null | undefined => {
   if (!user) {
-    return null
+    return null;
   }
-  return { 
+  return {
     userName: user.userName,
     phoneNumber: user.phoneNumber,
-    dayOfBirth: dayjs(user.dayOfBirth).format('YYYY-MM-DD'),
+    dayOfBirth: dayjs(user.dayOfBirth).format("YYYY-MM-DD"),
     location: user.location,
-    gender : user.gender
-  }
-}
+    gender: user.gender,
+  };
+};
