@@ -2,7 +2,8 @@ import { reservationApi } from "@/api/reservation";
 import { userApi } from "@/api/user";
 import { QueryKeys } from "@/constants/query-keys";
 import { UpdateReservationRequest } from "@/models/reservation";
-import { UpdatePasswordRequest, UpdateUserRequest } from "@/models/user";
+import { UpdateUserRequest } from "@/models/update-user";
+import { UpdatePasswordRequest } from "@/models/update-password";
 import useSWR, { SWRConfiguration } from "swr";
 
 export function useUpdateUser() {
@@ -12,28 +13,22 @@ export function useUpdateUser() {
     fallbackData: null,
   });
 
-  async function updateUser(
-    payload: UpdateUserRequest
-  ) {
+  async function updateUser(payload: UpdateUserRequest) {
     await userApi.updateUser(payload);
     swrResponse.mutate({ revalidate: true });
     return;
   }
 
-  async function updateProfileImage(
-    payload: FormData
-  ) {
+  async function updateProfileImage(payload: FormData) {
     const res = await userApi.updateProfileImage(payload);
     swrResponse.mutate();
     return res;
   }
 
-  async function updatePassword(
-    payload: UpdatePasswordRequest
-  ) {
+  async function updatePassword(payload: UpdatePasswordRequest) {
     const res = await userApi.updatePassword(payload);
     swrResponse.mutate();
     return res;
   }
-  return { ...swrResponse, updateUser,updateProfileImage,updatePassword };
+  return { ...swrResponse, updateUser, updateProfileImage, updatePassword };
 }
