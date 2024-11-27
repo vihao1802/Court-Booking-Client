@@ -21,8 +21,12 @@ export const reservationApi = {
 
     return res.data;
   },
-  async getMyReservation(params: Partial<Pagination & { sort?: string }>) {
-    const res = await axiosInstance.get("/reservations/my-reservations", {
+  async getMyReservation() {
+    const res = await axiosInstance.get("/reservations/my-reservations");
+    return res.data;
+  },
+  async getMyReservationPage(params: Partial<Pagination & { sort?: string }>) {
+    const res = await axiosInstance.get("/reservations/my-reservation-page", {
       params,
     });
     return res.data;

@@ -29,7 +29,7 @@ const ProfileAvatar = ({ handleOpen }: ProfileAvatarProps) => {
         startIcon={<CameraAlt />}
         onClick={handleOpen}
       >
-        Edit photo
+        Đổi ảnh
       </Button>
     </Box>
   );

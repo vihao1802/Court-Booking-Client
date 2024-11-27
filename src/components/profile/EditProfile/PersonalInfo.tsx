@@ -34,7 +34,7 @@ const PersonalInfo = () => {
         id="username"
         label="Tên người dùng"
         variant="outlined"
-        description="Tên người dùng sẽ được hiển thị trên hệ thống."
+        description="Tên người dùng sẽ được hiển thị trên website."
         onChangeHandle={(e) => {
           if (e.target.value.length <= 0) {
             context?.setError(true);

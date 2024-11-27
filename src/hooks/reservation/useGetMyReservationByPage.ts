@@ -9,14 +9,14 @@ export interface UseGetMyReservationProps {
   enabled?: boolean;
 }
 
-export const useGetMyReservation = ({
+export const useGetMyReservationPage = ({
   options,
   enabled,
   params,
 }: UseGetMyReservationProps) => {
   const swrResponse = useSWR(
-    enabled ? [QueryKeys.GET_RESERVATION] : "get_my_reservation",
-    () => reservationApi.getMyReservation(),
+    enabled &&  "get_my_reservation_page",
+    () => reservationApi.getMyReservationPage(params),
     {
       dedupingInterval: 30 * 1000, // 30s
       keepPreviousData: true,

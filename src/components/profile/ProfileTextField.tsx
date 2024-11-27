@@ -45,7 +45,7 @@ const ProfileTextField: React.FC<ProfileTextFieldProps> = ({
         size={size}
         disabled={disable || false}
         type={type || "text"}
-        value={children}
+        value={children || ""}
         onChange={(e) => {
           onChangeHandle && onChangeHandle(e);
         }}

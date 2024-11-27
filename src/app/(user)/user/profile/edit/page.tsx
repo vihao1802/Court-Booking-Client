@@ -18,12 +18,16 @@ import UpdateButton from "@/components/profile/EditProfile/UpdateButton";
 import { useUpdateUser } from "@/hooks/user/useUpdateUser";
 import { UnauthorizedError } from "@/api/http-errors";
 import ProfileAvatar from "@/components/profile/EditProfile/ProfileAvatar";
+import { useAuthenticatedUser } from "@/hooks/auth/useAuthenticatedUser";
+import toast from "react-hot-toast";
 const EditProfile = () => {
   const { updateProfileImage, mutate } = useUpdateUser();
+  const { user } = useAuthenticatedUser();
   // for modal upload avatar
   const [open, setOpen] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -37,22 +41,27 @@ const EditProfile = () => {
   };
   const handleUpload = async () => {
     if (selectedFile) {
-      console.log("Uploading file:", selectedFile);
-      if (selectedFile.size >= 2 * 1024 * 1024) {
+      if (selectedFile.size >= 5 * 1024 * 1024) {
+        toast.error("Kích thước ảnh quá lớn, vui lòng chọn ảnh dưới 5MB");
         return;
       }
+      setIsUploading(true);
       const formData = new FormData();
       formData.append("imageFile", selectedFile);
-
       try {
-        await updateProfileImage(formData);
+        const res = await updateProfileImage(formData);
+        if (res && res.status === 200) {
+          mutate({ ...user, profileImage: preview });
+        } else {
+          console.error(res);
+          toast.error("Cập nhật ảnh đại diện không thành công");
+        }
       } catch (error) {
         console.error(error);
-        if (error instanceof UnauthorizedError) {
-          throw new UnauthorizedError();
-        }
+        toast.error("Cập nhật ảnh đại diện không thành công");
       }
       handleClose();
+      setIsUploading(false);
     }
   };
   return (
@@ -75,9 +84,7 @@ const EditProfile = () => {
           marginBottom: "1rem",
         }}
       >
-        <Suspense fallback={<p>Loading...</p>}>
-          <ProfileWall />
-        </Suspense>
+        <ProfileWall />
       </Box>
       <Box
         sx={{
@@ -96,10 +103,10 @@ const EditProfile = () => {
             gap: "1rem",
           }}
         >
-          <Section sectionHeader={"AVATAR"}>
+          <Section sectionHeader={"Ảnh đại diện"}>
             <ProfileAvatar handleOpen={handleOpen} />
           </Section>
-          <Section sectionHeader={"CONTACT"}>
+          <Section sectionHeader={"Thông tin liên hệ"}>
             <PersonalContact />
           </Section>
         </Box>
@@ -111,12 +118,13 @@ const EditProfile = () => {
             gap: "1rem",
           }}
         >
-          <Section sectionHeader="PERSONAL">
+          <Section sectionHeader="Thông tin cá nhân">
             <PersonalInfo />
           </Section>
           <UpdateButton width={"70%"}>Cập nhật</UpdateButton>
         </Box>
       </Box>
+
       {/* Modal */}
       <Modal open={open} onClose={handleClose}>
         <Box
@@ -133,14 +141,14 @@ const EditProfile = () => {
           }}
         >
           <Typography variant="h6" component="h2" mb={2}>
-            Upload Avatar
+            Tải ảnh đại diện từ máy
           </Typography>
 
           {/* Avatar preview */}
           <Box display="flex" justifyContent="center" mb={2}>
             <Avatar
-              src={preview || ""}
-              alt="Preview"
+              src={preview || user?.profileImage}
+              alt="ảnh đại diện xem trước"
               sx={{ width: 100, height: 100 }}
             />
           </Box>
@@ -150,9 +158,10 @@ const EditProfile = () => {
             <Button
               variant="contained"
               component="label"
+              color="success"
               startIcon={<PhotoCamera />}
             >
-              Choose File
+              Chọn ảnh đại diện
               <input
                 hidden
                 accept="image/*"
@@ -164,16 +173,16 @@ const EditProfile = () => {
 
           {/* Actions */}
           <Box display="flex" justifyContent="space-between">
-            <Button variant="outlined" onClick={handleClose}>
-              Cancel
+            <Button color="success" variant="outlined" onClick={handleClose}>
+              Hủy
             </Button>
             <Button
               variant="contained"
-              color="primary"
+              color="success"
               onClick={handleUpload}
-              disabled={!selectedFile} // Disable if no file selected
+              disabled={!selectedFile || isUploading} // Disable if no file selected
             >
-              Upload
+              {isUploading ? "Đang tải lên..." : "Tải lên"}
             </Button>
           </Box>
         </Box>

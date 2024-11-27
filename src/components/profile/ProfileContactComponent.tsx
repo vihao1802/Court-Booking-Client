@@ -7,17 +7,16 @@ import { PhoneIphone, Edit, Email, LocationOn } from "@mui/icons-material";
 import { User } from "@/models/user";
 import { useAuthenticatedUser } from "@/hooks/auth/useAuthenticatedUser";
 
-const ProfileContactComponent = async () => {
-  const idParam = useParams();
+const ProfileContactComponent = () => {
   const router = useRouter();
   const { user, error, mutate, logout } = useAuthenticatedUser();
   function handleButtonClick() {
-    router.push(`/user/${idParam}/edit`);
+    router.push(`/user/profile/edit`);
   }
   return (
     <Section
-      sectionHeader={"Contacts"}
-      sectionButton={"Edit"}
+      sectionHeader={"Thông tin người dùng"}
+      sectionButton={"Chỉnh sửa"}
       handleButtonClick={handleButtonClick}
     >
       <Box
@@ -105,7 +104,9 @@ const ProfileContactComponent = async () => {
             }}
           >
             <LocationOn />
-            <Typography>{user?.location}</Typography>
+            <Typography>
+              {user?.location === "" ? user.location : "Chưa đặt địa chỉ"}
+            </Typography>
           </Box>
         </Box>
       </Box>
