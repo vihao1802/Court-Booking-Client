@@ -21,16 +21,15 @@ function Profile() {
     },
     enabled: false,
   });
-  // console.log("data", data);
 
   function handleProfileWallButton() {
-    router.push(`/user/${params}/edit`);
+    router.push(`/user/profile/edit`);
   }
 
   useEffect(() => {
     if (data === undefined || error) return;
     let totalhours: number = 0;
-    data?.forEach((reservation: Reservation) => {
+    data?.content.forEach((reservation: Reservation) => {
       // Calculate the difference in hours
       const hours = dayjs(reservation.checkOutTime).diff(
         reservation.checkInTime,
@@ -95,7 +94,7 @@ function Profile() {
           >
             <BookingInfoComponent
               title="Tổng số lần đặt sân"
-              info={(data?.length ?? 0).toString()}
+              info={(data?.totalElements ?? 0).toString()}
             />
             <Divider orientation="vertical" variant="middle" flexItem />
             <BookingInfoComponent
@@ -122,8 +121,8 @@ function Profile() {
         }}
       >
         {/* Booking */}
-        {data && data.length > 0 ? (
-          <BookingSectionComponent id={data[0].id} />
+        {data && data.totalElements > 0 ? (
+          <BookingSectionComponent id={data.content[0].id} />
         ) : null}
         {/* Contact */}
         <ProfileContactComponent />

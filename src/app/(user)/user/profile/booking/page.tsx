@@ -37,9 +37,6 @@ const MyBooking = () => {
     enabled: true,
   });
 
-  // const [dataFilter, setDataFilter] = React.useState(reservations);
-  const [isActive, setIsActive] = React.useState(0); // 0: all, 1: upcoming, 2: past
-
   const { pageNumber, pageSize } = reservations?.pageable || {};
   const totalPages = reservations?.totalPages;
 
@@ -53,7 +50,6 @@ const MyBooking = () => {
       page: page - 1,
     });
   };
-  console.log("reservations", isValidating);
 
   return (
     <Box
@@ -93,22 +89,13 @@ const MyBooking = () => {
         </Box>
         {/* body-body */}
         <Box>
-          {isValidating ? (
-            <Skeleton>
-              <Box>
-                <Typography>Hello</Typography>
-                <MonthDivider date={dayjs()} />
-              </Box>
-            </Skeleton>
-          ) : (
-            reservations &&
+          {reservations &&
             reservations.content.map((item: Reservation) => (
               <Box key={item.id}>
                 {/* <MonthDivider date={dayjs(item.createdAt)} /> */}
                 <BookingComponent reservation={item} />
               </Box>
-            ))
-          )}
+            ))}
         </Box>
         {!isLoadingReservations && (
           <Box
