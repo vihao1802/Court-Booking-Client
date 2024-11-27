@@ -34,6 +34,7 @@ const UserProvider: React.FC<UserProviderProps> = ({
       id: "",
       roleName: "",
     },
+    changedPassword: false,
   });
   const { user } = useAuthenticatedUser();
   useEffect(() => {

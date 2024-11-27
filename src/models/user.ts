@@ -15,6 +15,7 @@ export interface User extends UserBase {
   profileImage: string;
   location: string;
   gender: boolean;
+  changedPassword: boolean;
 }
 
 export interface UserRequest extends UserBase {

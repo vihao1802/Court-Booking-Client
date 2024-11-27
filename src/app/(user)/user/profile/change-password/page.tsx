@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { use, useEffect } from "react";
 import { Form, Formik, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import {
@@ -15,6 +15,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useUpdateUser } from "@/hooks/user/useUpdateUser";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
+import { useAuthenticatedUser } from "@/hooks/auth/useAuthenticatedUser";
 
 const PasswordChangeSchema = Yup.object().shape({
   oldPassword: Yup.string().required("Vui lòng nhập mật khẩu hiện tại"),
@@ -25,15 +26,31 @@ const PasswordChangeSchema = Yup.object().shape({
     .oneOf([Yup.ref("newPassword"), undefined], "Mật khẩu không khớp")
     .required("Vui lòng xác nhận mật khẩu mới"),
 });
+const PasswordChangeSchemaSecond = Yup.object().shape({
+  newPassword: Yup.string()
+    .min(6, "Mật khẩu mới phải có ít nhất 6 ký tự")
+    .required("Vui lòng nhập mật khẩu mới"),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref("newPassword"), undefined], "Mật khẩu không khớp")
+    .required("Vui lòng xác nhận mật khẩu mới"),
+});
 
 const ChangePassword = () => {
+  const { user, mutate, firstLoading } = useAuthenticatedUser();
   const [showPassword, setShowPassword] = React.useState(false);
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [isChangePassword, setIsChangePassword] = React.useState(true);
 
   const { updatePassword } = useUpdateUser();
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };
+  useEffect(() => {
+    if (user) {
+      setIsChangePassword(user.changedPassword);
+    }
+  }, [user]);
+
+  console.log("user", user?.changedPassword);
 
   return (
     <Box
@@ -51,19 +68,22 @@ const ChangePassword = () => {
           newPassword: "",
           confirmPassword: "",
         }}
-        validationSchema={PasswordChangeSchema}
+        validationSchema={
+          isChangePassword ? PasswordChangeSchema : PasswordChangeSchemaSecond
+        }
         onSubmit={async (values, { setSubmitting, resetForm }) => {
-          // Xử lý khi form submit
-          console.log("Form Data:", values);
           try {
             const res = await updatePassword({
               oldPassword: values.oldPassword,
               newPassword: values.newPassword,
             });
-            if (res instanceof AxiosError) throw res;
-
-            toast.success("Đổi mật khẩu thành công");
-            resetForm();
+            if (res && res.status >= 200) {
+              toast.success("Đổi mật khẩu thành công");
+              mutate();
+              resetForm();
+            } else {
+              toast.error("Đổi mật khẩu thất bại");
+            }
             setSubmitting(false);
           } catch (error) {
             if (error instanceof AxiosError) {
@@ -94,8 +114,10 @@ const ChangePassword = () => {
               }}
             >
               {/* Mật khẩu hiện tại */}
+
               <Field
                 as={TextField}
+                sx={{ display: isChangePassword ? "block" : "none" }}
                 type={showPassword ? "text" : "password"}
                 name="oldPassword"
                 label="Mật khẩu hiện tại"

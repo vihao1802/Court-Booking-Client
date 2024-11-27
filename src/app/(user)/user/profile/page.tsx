@@ -1,5 +1,5 @@
 "use client";
-import React, { Suspense, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Divider, Box } from "@mui/material";
 import ProfileWall from "@/components/profile/ProfileWall";
 import BookingInfoComponent from "@/components/profile/BookingInfoComponent";
@@ -8,8 +8,9 @@ import ProfileContactComponent from "@/components/profile/ProfileContactComponen
 import { useRouter, useParams } from "next/navigation";
 import { useGetMyReservation } from "@/hooks/reservation/useGetMyReservation";
 import { Reservation } from "@/models/reservation";
+import dayjs from "dayjs";
 
-async function Profile() {
+function Profile() {
   const [totalHours, setTotalHours] = useState<number>(0);
   const router = useRouter();
   const params = useParams();
@@ -18,8 +19,9 @@ async function Profile() {
       page: 0,
       size: 1,
     },
-    enabled: true,
+    enabled: false,
   });
+  // console.log("data", data);
 
   function handleProfileWallButton() {
     router.push(`/user/${params}/edit`);
@@ -28,13 +30,12 @@ async function Profile() {
   useEffect(() => {
     if (data === undefined || error) return;
     let totalhours: number = 0;
-    data?.content.forEach((reservation: Reservation) => {
-      // Parse check-in and check-out times with dayjs
-      const checkIn = Number(reservation.checkInTime);
-      const checkOut = Number(reservation.checkOutTime);
-
+    data?.forEach((reservation: Reservation) => {
       // Calculate the difference in hours
-      const hours = checkOut - checkIn;
+      const hours = dayjs(reservation.checkOutTime).diff(
+        reservation.checkInTime,
+        "hour"
+      );
 
       // Add to total hours
       totalhours += hours;
@@ -66,11 +67,9 @@ async function Profile() {
         }}
       >
         {/* top of top part */}
-        <Suspense fallback={<p>Loading...</p>}>
-          <ProfileWall
-            handleButtonAvatarClicked={() => handleProfileWallButton()}
-          />
-        </Suspense>
+        <ProfileWall
+          handleButtonAvatarClicked={() => handleProfileWallButton()}
+        />
         {/* bottom of top part */}
         <Box
           sx={{
@@ -86,19 +85,19 @@ async function Profile() {
             sx={{
               display: "flex",
               flexDirection: "row",
-              gap: "1rem",
               justifyContent: "space-evenly",
               alignItems: "center",
+              gap: "1rem",
               width: "100%",
             }}
           >
             <BookingInfoComponent
-              title="Số lần đặt lịch"
-              info={(data?.totalElements ?? 0).toString()}
+              title="Tổng số lần đặt sân"
+              info={(data?.length ?? 0).toString()}
             />
             <Divider orientation="vertical" variant="middle" flexItem />
             <BookingInfoComponent
-              title="Tổng thời gian đã đến sân"
+              title="Tổng số giờ đã đến sân"
               info={totalHours.toString()}
             />
           </Box>
@@ -121,15 +120,11 @@ async function Profile() {
         }}
       >
         {/* Booking */}
-        {data && data.content.length > 0 && (
-          <Suspense fallback={<p>Loading...</p>}>
-            <BookingSectionComponent id={data.content[0].id} />
-          </Suspense>
-        )}
+        {data && data.length > 0 ? (
+          <BookingSectionComponent id={data[0].id} />
+        ) : null}
         {/* Contact */}
-        <Suspense fallback={<p>Loading...</p>}>
-          <ProfileContactComponent />
-        </Suspense>
+        <ProfileContactComponent />
       </Box>
     </Box>
   );

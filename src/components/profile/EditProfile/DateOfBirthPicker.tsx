@@ -18,8 +18,6 @@ function DateOfBirthPicker() {
       });
     }
   };
-  console.log("date", context?.userData.dayOfBirth); // Kiểm tra giá trị
-
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DemoContainer components={["DatePicker"]}>

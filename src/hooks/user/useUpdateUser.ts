@@ -14,9 +14,9 @@ export function useUpdateUser() {
   });
 
   async function updateUser(payload: UpdateUserRequest) {
-    await userApi.updateUser(payload);
+    const res = await userApi.updateUser(payload);
     swrResponse.mutate({ revalidate: true });
-    return;
+    return res;
   }
 
   async function updateProfileImage(payload: FormData) {

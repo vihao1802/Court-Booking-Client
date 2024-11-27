@@ -11,8 +11,8 @@ import { string } from "yup";
 interface profileWallProps {
   handleButtonAvatarClicked?: () => void;
 }
-
-const ProfileWall = async ({ handleButtonAvatarClicked }: profileWallProps) => {
+dayjs.locale("vi");
+const ProfileWall = ({ handleButtonAvatarClicked }: profileWallProps) => {
   const { user } = useAuthenticatedUser();
 
   return (
@@ -159,7 +159,7 @@ const ProfileWall = async ({ handleButtonAvatarClicked }: profileWallProps) => {
           }}
         >
           {user &&
-            `Joined since ${dayjs(user.createdAt).format("DD MMM YYYY")}`}
+            `Đăng ký từ ngày ${dayjs(user.createdAt).format("DD MMMM YYYY")}`}
         </Divider>
       </Box>
     </Box>

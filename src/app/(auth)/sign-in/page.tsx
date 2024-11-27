@@ -8,6 +8,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import GoogleIcon from "@mui/icons-material/Google";
 import { Form, Formik, Field, ErrorMessage } from "formik";
 import { useState } from "react";
 import { Visibility, VisibilityOffOutlined } from "@mui/icons-material";
@@ -236,6 +237,29 @@ const SignInPage = () => {
                     }}
                   >
                     {isLogin ? <OvalLoader size="28" /> : "Đăng nhập"}
+                  </Button>
+                  <Button
+                    size="large"
+                    disabled={isLogin}
+                    sx={{
+                      marginTop: "25px",
+                      width: "100%",
+                      color: "white",
+                      backgroundColor: "var(--buttonColor)",
+                      ":hover": {
+                        backgroundColor: "var(--buttonHoverColor)",
+                      },
+                      ":disabled": {
+                        backgroundColor: "gray",
+                      },
+                    }}
+                    onClick={() => {
+                      window.location.href =
+                        "http://localhost:8080/oauth2/authorization/google";
+                    }}
+                    startIcon={<GoogleIcon />}
+                  >
+                    Đăng nhập với Google
                   </Button>
                 </Form>
               )}

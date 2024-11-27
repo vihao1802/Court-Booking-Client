@@ -14,14 +14,14 @@ import { ReservationState } from "@/types/enums";
 interface BookingSectionProps {
   id: string;
 }
-const BookingSectionComponent = async ({ id }: BookingSectionProps) => {
+const BookingSectionComponent = ({ id }: BookingSectionProps) => {
   const paramId = useParams();
   const router = useRouter();
   const { data: reservation, isLoading } = useGetReservationById({
     reservationId: id,
   });
   function handleButtonClick() {
-    router.push(`/user/${paramId}/booking`);
+    router.push(`/user/profile/booking`);
   }
 
   if (isLoading || !reservation) {

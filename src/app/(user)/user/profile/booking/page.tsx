@@ -18,18 +18,24 @@ import MonthDivider from "@/components/profile/Booking/MonthDivider";
 import TimeFilterButton from "@/components/profile/Booking/TimeFilterButton";
 import { PaginationBase as ApiPagination } from "@/models/api";
 import { Reservation } from "@/models/reservation";
+import { useGetMyReservationPage } from "@/hooks/reservation/useGetMyReservationByPage";
+import { Skeleton } from "@mui/joy";
 
 const MyBooking = () => {
   const [filters, setFilters] = useState<ApiPagination>({
     page: 0,
-    size: 8,
+    size: 5,
   });
 
-  const { data: reservations, isLoading: isLoadingReservations } =
-    useGetMyReservation({
-      params: filters,
-      enabled: false,
-    });
+  const {
+    data: reservations,
+    isLoading: isLoadingReservations,
+    isValidating,
+    mutate,
+  } = useGetMyReservationPage({
+    params: filters,
+    enabled: true,
+  });
 
   // const [dataFilter, setDataFilter] = React.useState(reservations);
   const [isActive, setIsActive] = React.useState(0); // 0: all, 1: upcoming, 2: past
@@ -37,47 +43,17 @@ const MyBooking = () => {
   const { pageNumber, pageSize } = reservations?.pageable || {};
   const totalPages = reservations?.totalPages;
 
-  /*  useEffect(() => {
-    setDataFilter(data);
-  }, [data]); */
-
-  const handleUpcomingButton = () => {
-    /*  if (isActive === 1) {
-      setIsActive(0);
-      setDataFilter(data);
-      return;
-    }
-
-    setDataFilter(
-      data.filter((item) => dayjs(item.checkInTime).isAfter(dayjs()))
-    );
-    setIsActive(1); */
-  };
-  const handlePastButton = () => {
-    /* if (isActive === 2) {
-      setIsActive(0);
-      setDataFilter(data);
-      return;
-    }
-    setDataFilter(
-      data.filter((item) => dayjs(item.checkInTime).isBefore(dayjs()))
-    );
-    setIsActive(2); */
-  };
-
   const handlePageChange = (
     event: React.ChangeEvent<unknown>,
     page: number
   ) => {
-    console.log(page);
-
+    console.log("page", page);
     setFilters({
       ...filters,
       page: page - 1,
     });
   };
-
-  console.log(pageNumber);
+  console.log("reservations", isValidating);
 
   return (
     <Box
@@ -89,29 +65,6 @@ const MyBooking = () => {
         borderRadius: "8px",
       }}
     >
-      {/* header */}
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          gap: "1rem  ",
-          marginBottom: "1rem",
-        }}
-      >
-        <TimeFilterButton
-          isActive={isActive === 1}
-          handleButtonClick={() => handleUpcomingButton()}
-        >
-          Lịch đặt sắp tới
-        </TimeFilterButton>
-        <TimeFilterButton
-          isActive={isActive === 2}
-          handleButtonClick={() => handlePastButton()}
-        >
-          Lịch đặt trong quá khứ
-        </TimeFilterButton>
-      </Box>
       {/* body */}
       <Box
         sx={{
@@ -137,23 +90,25 @@ const MyBooking = () => {
           >
             {reservations ? reservations.totalElements : 0} lịch đặt
           </Typography>
-          <Button
-            startIcon={<Tune />}
-            sx={{ backgroundColor: "var(--buttonColor)", color: "white" }}
-          >
-            Filter
-          </Button>
         </Box>
         {/* body-body */}
         <Box>
-          {reservations &&
-            !isLoadingReservations &&
+          {isValidating ? (
+            <Skeleton>
+              <Box>
+                <Typography>Hello</Typography>
+                <MonthDivider date={dayjs()} />
+              </Box>
+            </Skeleton>
+          ) : (
+            reservations &&
             reservations.content.map((item: Reservation) => (
               <Box key={item.id}>
                 {/* <MonthDivider date={dayjs(item.createdAt)} /> */}
                 <BookingComponent reservation={item} />
               </Box>
-            ))}
+            ))
+          )}
         </Box>
         {!isLoadingReservations && (
           <Box

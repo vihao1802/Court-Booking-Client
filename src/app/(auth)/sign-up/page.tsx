@@ -8,9 +8,10 @@ import {
   Typography,
   IconButton,
 } from "@mui/material";
+import GoogleIcon from "@mui/icons-material/Google";
 import { Form, Formik, Field, ErrorMessage } from "formik";
 import { useState } from "react";
-import { Visibility, VisibilityOffOutlined } from "@mui/icons-material";
+import { Google, Visibility, VisibilityOffOutlined } from "@mui/icons-material";
 import AppLogo from "@/components/shared/Logo";
 import { useAuthenticatedUser } from "@/hooks/auth/useAuthenticatedUser";
 import toast from "react-hot-toast";
@@ -280,6 +281,25 @@ const SignUpPage = () => {
                     }}
                   >
                     Đăng ký
+                  </Button>
+                  <Button
+                    size="large"
+                    sx={{
+                      marginTop: "10px",
+                      width: "100%",
+                      color: "white",
+                      backgroundColor: "var(--buttonColor)",
+                      ":hover": {
+                        backgroundColor: "var(--buttonHoverColor)",
+                      },
+                    }}
+                    startIcon={<GoogleIcon />}
+                    onClick={() =>
+                      (window.location.href =
+                        "http://localhost:8080/oauth2/authorization/google")
+                    }
+                  >
+                    Đăng ký với google
                   </Button>
                 </Form>
               )}

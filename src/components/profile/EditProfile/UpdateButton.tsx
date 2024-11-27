@@ -4,6 +4,7 @@ import { useUpdateUser } from "@/hooks/user/useUpdateUser";
 import { ToUpdateUser } from "@/mapping/userMapping";
 import { Box, Button } from "@mui/material";
 import React, { useContext, useEffect } from "react";
+import toast from "react-hot-toast";
 
 interface UpdateButtonProps {
   width?: string;
@@ -11,24 +12,29 @@ interface UpdateButtonProps {
 }
 const UpdateButton: React.FC<UpdateButtonProps> = ({ width, children }) => {
   const context = useContext(UserContext);
-  const { updateUser, isValidating } = useUpdateUser();
+  const [isUpdating, setIsUpdating] = React.useState(false);
+  const { updateUser } = useUpdateUser();
 
   const handleUpdateButtonClick = async () => {
     try {
+      setIsUpdating(true);
       const updateUserData = ToUpdateUser(context?.userData);
 
       if (!updateUserData) throw new Error("Update user is null");
-      await updateUser(updateUserData);
+      const res = await updateUser(updateUserData);
+      if (res && res.status >= 200) {
+        toast.success("Cập nhật thông tin thành công");
+      } else {
+        toast.error("Cập nhật thông tin không thành công");
+      }
+      setIsUpdating(false);
+      return;
     } catch (error) {
       console.error(error);
-      if (error instanceof UnauthorizedError) {
-        throw new UnauthorizedError();
-      }
+      toast.error("Có lỗi xảy ra, vui lòng thử lại sau");
+      setIsUpdating(false);
     }
   };
-  useEffect(() => {
-    console.log("validate", isValidating);
-  }, [isValidating]);
 
   return (
     <Box
@@ -43,7 +49,7 @@ const UpdateButton: React.FC<UpdateButtonProps> = ({ width, children }) => {
         onClick={handleUpdateButtonClick}
         variant="contained"
         color="success"
-        disabled={isValidating}
+        disabled={isUpdating}
         sx={{
           width: width || "100%",
           display: "flex",

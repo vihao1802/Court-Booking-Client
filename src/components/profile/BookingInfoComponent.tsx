@@ -6,7 +6,7 @@ interface BookingInfoComponentProps {
   info: string;
   children?: React.ReactNode;
 }
-const BookingInfoComponent: React.FC<BookingInfoComponentProps> = async ({
+const BookingInfoComponent: React.FC<BookingInfoComponentProps> = ({
   children,
   title,
   info,
@@ -20,21 +20,19 @@ const BookingInfoComponent: React.FC<BookingInfoComponentProps> = async ({
         gap: "0.5rem",
       }}
     >
-      <Suspense fallback={<p>Loading...</p>}>
-        <Typography
-          variant="h6"
-          sx={{
-            color: "var(--buttonColor)",
-            fontWeight: "500",
-            fontSize: "1.5rem",
-          }}
-        >
-          {info}
-        </Typography>
-        <Typography variant="body2" color="rgb(109 105 123)">
-          {title}
-        </Typography>
-      </Suspense>
+      <Typography
+        variant="h6"
+        sx={{
+          color: "var(--buttonColor)",
+          fontWeight: "500",
+          fontSize: "1.5rem",
+        }}
+      >
+        {info}
+      </Typography>
+      <Typography variant="body2" color="rgb(109 105 123)">
+        {title}
+      </Typography>
     </Box>
   );
 };

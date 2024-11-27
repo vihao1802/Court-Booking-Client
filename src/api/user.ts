@@ -21,7 +21,7 @@ export const userApi = {
 
   async updateUser(requestBody: UpdateUserRequest) {
     const res = await axiosInstance.put<User>(`${prefix}/update`, requestBody);
-    return res.data;
+    return res;
   },
 
   async updateProfileImage(requestBody: FormData) {
@@ -34,7 +34,7 @@ export const userApi = {
         },
       }
     );
-    return res.data;
+    return res;
   },
 
   async updatePassword(requestBody: UpdatePasswordRequest) {
