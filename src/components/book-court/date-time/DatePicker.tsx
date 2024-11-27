@@ -5,7 +5,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs, { Dayjs } from "dayjs";
 import { Box, Button } from "@mui/material";
-import { BookCourtContext } from "@/app/(user)/book-court/layout";
+import { BookCourtContext } from "@/context/book-court-context";
 import { useGetAvailableDate } from "@/hooks/court/useGetAvailableDate";
 import OvalLoader from "@/components/shared/OvalLoader";
 

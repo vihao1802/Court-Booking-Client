@@ -9,7 +9,7 @@ import {
   Select,
   SelectChangeEvent,
 } from "@mui/material";
-import { BookCourtContext } from "@/app/(user)/book-court/layout";
+import { BookCourtContext } from "@/context/book-court-context";
 import { Court } from "@/models/court";
 import { useGetUnavailableHour } from "@/hooks/court/useGetUnavailableHours";
 import OvalLoader from "@/components/shared/OvalLoader";
@@ -54,10 +54,12 @@ export default function TimePickerViews({
   const hourOptions = [];
   const now = dayjs();
   const currentHour = now.hour();
-  const startHour = Math.max(currentHour + 1, 8);
+  const startHour = dayjs().isSame(dayjs(date), "date")
+    ? Math.max(currentHour + 1, 8)
+    : 5;
 
   if (!hours) return;
-  for (let hour = startHour; hour <= 22; hour++) {
+  for (let hour = startHour; hour <= 23; hour++) {
     if (hours.includes(hour.toString())) {
       if (!hours.includes((hour + 1).toString())) {
         hourOptions.push(hour);

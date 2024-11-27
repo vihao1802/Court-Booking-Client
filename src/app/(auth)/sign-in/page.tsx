@@ -245,9 +245,9 @@ const SignInPage = () => {
                       marginTop: "25px",
                       width: "100%",
                       color: "white",
-                      backgroundColor: "var(--buttonColor)",
+                      backgroundColor: "#c94238",
                       ":hover": {
-                        backgroundColor: "var(--buttonHoverColor)",
+                        backgroundColor: "#cc372d",
                       },
                       ":disabled": {
                         backgroundColor: "gray",

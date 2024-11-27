@@ -4,7 +4,6 @@ import ModalSliderImages from "@/components/court-detail/ModalSliderImages";
 import Loader from "@/components/shared/TennisBallLoader";
 import { Avatar, Box, Rating, Typography } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import { BookCourtContext } from "../../book-court/layout";
 import { useGetCourtById } from "@/hooks/court/useGetCourtById";
 import { CourtImage } from "@/models/court-image";
 

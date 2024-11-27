@@ -14,8 +14,8 @@ const CallBackHandle = () => {
     router.push("/sign-in");
   } else {
     cookies.set("token", token);
-
-    router.push("/");
+    // router.push("/");
+    window.location.href = "/";
   }
   return (
     <Box
