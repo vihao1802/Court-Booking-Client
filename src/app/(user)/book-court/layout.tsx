@@ -1,18 +1,8 @@
 "use client";
 import AuthProvider from "@/components/common/auth";
 import { Box } from "@mui/material";
-import React, { createContext, useState } from "react";
-
-export const BookCourtContext = createContext({
-  date: "",
-  setDate: (date: string) => {},
-  startTime: "",
-  setStartTime: (startTime: string) => {},
-  duration: "",
-  setDuration: (duration: string) => {},
-  totalPrice: 0,
-  setTotalPrice: (totalPrice: number) => {},
-});
+import React, { useState } from "react";
+import { BookCourtContext } from "@/context/book-court-context";
 
 const BookCourtLayout = ({ children }: { children: React.ReactNode }) => {
   const [date, setDate] = useState("");

@@ -9,7 +9,7 @@ import {
   Select,
   SelectChangeEvent,
 } from "@mui/material";
-import { BookCourtContext } from "@/app/(user)/book-court/layout";
+import { BookCourtContext } from "@/context/book-court-context";
 import { Court } from "@/models/court";
 import { useGetUnavailableHour } from "@/hooks/court/useGetUnavailableHours";
 import OvalLoader from "@/components/shared/OvalLoader";

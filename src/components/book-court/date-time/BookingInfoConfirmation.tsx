@@ -1,4 +1,4 @@
-import { BookCourtContext } from "@/app/(user)/book-court/layout";
+import { BookCourtContext } from "@/context/book-court-context";
 import { formatDate, formatVND } from "@/utils/format";
 import { Box, Button, Divider, Typography } from "@mui/material";
 import { useParams, useRouter } from "next/navigation";

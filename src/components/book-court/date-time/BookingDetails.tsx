@@ -19,7 +19,7 @@ import { useAuthenticatedUser } from "@/hooks/auth/useAuthenticatedUser";
 import toast from "react-hot-toast";
 import { useGetCourtById } from "@/hooks/court/useGetCourtById";
 import OvalLoader from "@/components/shared/OvalLoader";
-import { BookCourtContext } from "@/app/(user)/book-court/layout";
+import { BookCourtContext } from "@/context/book-court-context";
 import dayjs from "dayjs";
 
 const steps = [
