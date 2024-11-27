@@ -288,9 +288,9 @@ const SignUpPage = () => {
                       marginTop: "10px",
                       width: "100%",
                       color: "white",
-                      backgroundColor: "var(--buttonColor)",
+                      backgroundColor: "#c94238",
                       ":hover": {
-                        backgroundColor: "var(--buttonHoverColor)",
+                        backgroundColor: "#cc372d",
                       },
                     }}
                     startIcon={<GoogleIcon />}
