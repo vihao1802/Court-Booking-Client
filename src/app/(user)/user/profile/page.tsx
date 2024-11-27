@@ -43,6 +43,8 @@ function Profile() {
     setTotalHours(totalhours);
   }, [data]);
 
+  if (!data) return null;
+
   return (
     <Box
       sx={{
