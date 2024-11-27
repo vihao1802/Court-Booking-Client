@@ -96,11 +96,11 @@ function Profile() {
               title="Tổng số lần đặt sân"
               info={(data?.totalElements ?? 0).toString()}
             />
-            <Divider orientation="vertical" variant="middle" flexItem />
+           {/*  <Divider orientation="vertical" variant="middle" flexItem />
             <BookingInfoComponent
               title="Tổng số giờ đã đến sân"
               info={totalHours.toString()}
-            />
+            /> */}
           </Box>
         </Box>
       </Box>
