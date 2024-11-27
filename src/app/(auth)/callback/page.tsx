@@ -1,4 +1,5 @@
 "use client";
+import { useAuthenticatedUser } from "@/hooks/auth/useAuthenticatedUser";
 import { Box, Skeleton, Typography } from "@mui/material";
 import cookies from "js-cookie";
 import { useParams, useSearchParams } from "next/navigation";
@@ -9,12 +10,11 @@ const CallBackHandle = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
-  console.log("token", token);
-
   if (!token) {
     router.push("/sign-in");
   } else {
     cookies.set("token", token);
+
     router.push("/");
   }
   return (
