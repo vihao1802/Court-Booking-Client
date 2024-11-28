@@ -36,11 +36,13 @@ const CourtCard = ({ key, court }: CourtProps) => {
       <CardMedia
         component="img"
         alt="green iguana"
-        height="140"
         image={
           court.courtImageList.find((image) => image.imageType === "main")
             ?.courtImageSrc
         }
+        sx={{
+          height: "200px"
+        }}
       />
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
