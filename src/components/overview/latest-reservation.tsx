@@ -145,7 +145,7 @@ export function LatestReservation({
       </Box>
       <Divider />
       <CardActions sx={{ justifyContent: "flex-end" }}>
-        <Link href="#">
+        <Link href="/booking-management">
           View all
           {<ArrowRightIcon fontSize="var(--icon-fontSize-md)" />}
         </Link>
