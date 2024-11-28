@@ -12,6 +12,7 @@ import { UseGetRevenue } from "@/hooks/statistic/useGetRevenue";
 import dayjs from "dayjs";
 import { Skeleton } from "@mui/material";
 import OvalLoader from "../shared/OvalLoader";
+import { formatDate, formatVND } from "@/utils/format";
 
 export interface TotalRevenueProps {
   sx?: SxProps;
@@ -53,7 +54,7 @@ export function TotalRevenue({
               {isValidating ? (
                 <Skeleton variant="text" sx={{ fontSize: "2.125rem" }} />
               ) : (
-                <Typography variant="h4">{data.data.result}</Typography>
+                <Typography variant="h4">{formatVND(data.data.result)}</Typography>
               )}
             </Stack>
             <Avatar
